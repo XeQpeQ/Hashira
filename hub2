@@ -162,6 +162,9 @@ local Toggle = MainTab:CreateToggle({
 	Flag = "AF", 
 	Callback = function(Value)
 		getgenv().AllBosses = Value
+		if workspace.Dungeon_Timer < 1 then
+		Value = false
+		end
 	end,
 })
 local Toggle = MainTab:CreateToggle({
