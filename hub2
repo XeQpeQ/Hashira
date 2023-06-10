@@ -563,7 +563,6 @@ game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireSer
 game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 3, "ground_slash")
 game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 4, "ground_slash")
 game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-repeat task.wait(0.1) until Plr:WaitForChild("combotangasd123").Value <= 0
 end
 local attackMethods = {
 	["Combat"] = 'fist_combat',
@@ -576,7 +575,8 @@ task.spawn(function()
 	while task.wait() do
 		pcall(function()
 			if killaura then
-				attack2(attackMethods[Method])
+				attack(attackMethods[Method])
+				task.wait(1.72)
 			end
 		end)
 	end
