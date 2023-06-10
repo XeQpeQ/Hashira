@@ -569,6 +569,7 @@ local function attack2(method)
                             [6] = 6
                         }
                         game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+				task.wait(0.5)
                         local args = {
                             [1] = "fist_combat",
                             [2] = game:GetService("Players").LocalPlayer,
@@ -578,6 +579,7 @@ local function attack2(method)
                             [6] = 6
                         }
                         game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+				task.wait(0.5)
                         local args = {
                             [1] = "fist_combat",
                             [2] = game:GetService("Players").LocalPlayer,
@@ -587,6 +589,7 @@ local function attack2(method)
                             [6] = 6
                         }
                         game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+		        task.wait(0.5)
                         local args = {
                             [1] = "fist_combat",
                             [2] = game:GetService("Players").LocalPlayer,
@@ -610,7 +613,7 @@ task.spawn(function()
 		pcall(function()
 			if killaura then
 				attack2(attackMethods[Method])
-				task.wait(2)
+				task.wait(1)
 			end
 		end)
 	end
