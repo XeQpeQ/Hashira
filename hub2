@@ -214,7 +214,7 @@ getgenv().Method = "Combat"
 		--Method = Option
 	--end,
 --})
-getgenv().FarmMethod = "Behind"
+getgenv().FarmMethod = "Above"
 --local Dropdown = MainTab:CreateDropdown({
 	--Name = "AutoFarm Method(In process)",
 	--Options = {"Above","Below","Behind"},
@@ -236,7 +236,7 @@ getgenv().FarmMethod = "Behind"
 		--getgenv().tweenspeed = self
 	--end,
 --})
-getgenv().Distance = 5
+getgenv().Distance = 10
 --local Slider = MainTab:CreateSlider({
 	--Name = "AutoFarm Distance ",
 	--Range = {0, 20},
@@ -539,7 +539,6 @@ spawn(function()
 		end
 	end
 end)
---Ka Settings
 local function attack(method)
 	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
 	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, math.huge, "ground_slash")
@@ -559,45 +558,6 @@ local function attack(method)
 	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, math.huge, "ground_slash")
 end
 
-local function attack2(method)
-	local args = {
-                            [1] = "fist_combat",
-                            [2] = game:GetService("Players").LocalPlayer,
-                            [3] = game:GetService("Players").LocalPlayer.Character,
-                            [4] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
-                            [5] = game:GetService("Players").LocalPlayer.Character.Humanoid,
-                            [6] = 6
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
-                        local args = {
-                            [1] = "fist_combat",
-                            [2] = game:GetService("Players").LocalPlayer,
-                            [3] = game:GetService("Players").LocalPlayer.Character,
-                            [4] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
-                            [5] = game:GetService("Players").LocalPlayer.Character.Humanoid,
-                            [6] = 6
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
-                        local args = {
-                            [1] = "fist_combat",
-                            [2] = game:GetService("Players").LocalPlayer,
-                            [3] = game:GetService("Players").LocalPlayer.Character,
-                            [4] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
-                            [5] = game:GetService("Players").LocalPlayer.Character.Humanoid,
-                            [6] = 6
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
-                        local args = {
-                            [1] = "fist_combat",
-                            [2] = game:GetService("Players").LocalPlayer,
-                            [3] = game:GetService("Players").LocalPlayer.Character,
-                            [4] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
-                            [5] = game:GetService("Players").LocalPlayer.Character.Humanoid,
-                            [6] = 6
-                        }
-                        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
-end
-
 local attackMethods = {
 	["Combat"] = 'fist_combat',
 	["Sword"] = 'Sword_Combat_Slash',
@@ -609,8 +569,8 @@ task.spawn(function()
 	while task.wait() do
 		pcall(function()
 			if killaura then
-				attack2(attackMethods[Method])
-				task.wait(2)
+				attack(attackMethods[Method])
+				task.wait(1.7)
 			end
 		end)
 	end
