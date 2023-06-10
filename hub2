@@ -560,22 +560,42 @@ local function attack(method)
 end
 
 local function attack2(method)
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
-	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 919, "ground_slash")
+	local args = {
+                            [1] = "fist_combat",
+                            [2] = game:GetService("Players").LocalPlayer,
+                            [3] = game:GetService("Players").LocalPlayer.Character,
+                            [4] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+                            [5] = game:GetService("Players").LocalPlayer.Character.Humanoid,
+                            [6] = 6
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+                        local args = {
+                            [1] = "fist_combat",
+                            [2] = game:GetService("Players").LocalPlayer,
+                            [3] = game:GetService("Players").LocalPlayer.Character,
+                            [4] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+                            [5] = game:GetService("Players").LocalPlayer.Character.Humanoid,
+                            [6] = 6
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+                        local args = {
+                            [1] = "fist_combat",
+                            [2] = game:GetService("Players").LocalPlayer,
+                            [3] = game:GetService("Players").LocalPlayer.Character,
+                            [4] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+                            [5] = game:GetService("Players").LocalPlayer.Character.Humanoid,
+                            [6] = 6
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
+                        local args = {
+                            [1] = "fist_combat",
+                            [2] = game:GetService("Players").LocalPlayer,
+                            [3] = game:GetService("Players").LocalPlayer.Character,
+                            [4] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+                            [5] = game:GetService("Players").LocalPlayer.Character.Humanoid,
+                            [6] = 6
+                        }
+                        game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S_:InvokeServer(unpack(args))
 end
 
 local attackMethods = {
@@ -590,7 +610,7 @@ task.spawn(function()
 		pcall(function()
 			if killaura then
 				attack2(attackMethods[Method])
-				task.wait(1.7)
+				task.wait(2)
 			end
 		end)
 	end
