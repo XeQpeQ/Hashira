@@ -70,7 +70,7 @@ hook = hookmetamethod(game, "__namecall", function(self, ...)
 	return hook(self, ...)
 end)
 
-getgenv().tweenspeed = 300
+getgenv().tweenspeed = 600
 local LP = game.Players.LocalPlayer
 local client = game:GetService("Players").LocalPlayer
 local Plr = game:GetService("Players").LocalPlayer
@@ -236,7 +236,7 @@ getgenv().FarmMethod = "Behind"
 		--getgenv().tweenspeed = self
 	--end,
 --})
-getgenv().Distance = 8
+getgenv().Distance = 5
 --local Slider = MainTab:CreateSlider({
 	--Name = "AutoFarm Distance ",
 	--Range = {0, 20},
