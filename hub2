@@ -205,48 +205,48 @@ local Toggle = MainTab:CreateToggle({
 local AutofarmSettingSection = MainTab:CreateSection("Farming Settings")
 getgenv().Method = "Combat"
 --local Dropdown = MainTab:CreateDropdown({
-	--Name = "KillAura Method(In process)",
-	--Options = {},
-	--CurrentOption = {""},
-	--MultipleOptions = false,
-	--Flag = "Dropdown2",
-	--Callback = function(Option)
-		--Method = Option
-	--end,
+--Name = "KillAura Method(In process)",
+--Options = {},
+--CurrentOption = {""},
+--MultipleOptions = false,
+--Flag = "Dropdown2",
+--Callback = function(Option)
+--Method = Option
+--end,
 --})
-getgenv().FarmMethod = "Behind"
---local Dropdown = MainTab:CreateDropdown({
-	--Name = "AutoFarm Method(In process)",
-	--Options = {"Above","Below","Behind"},
-	--CurrentOption = {"None"},
-	--MultipleOptions = false,
-	--Flag = "AutoFarmMethod", 
-	--Callback = function(v)
-		--FarmMethod = v
-	--end,
---})
+local Dropdown = MainTab:CreateDropdown({
+	Name = "AutoFarm Method(In process)",
+	Options = {"Above","Below","Behind"},
+	CurrentOption = {"None"},
+	MultipleOptions = true,
+	Flag = "AutoFarmMethod", 
+	Callback = function(Option)
+		getgenv().FarmMethod = Option
+	end,
+})
+getgenv().FarmMethod = ""
 --local Slider = MainTab:CreateSlider({
-	--Name = "AutoFarm Speed",
-	--Range = {0, 300},
-	--Increment = 10,
-	--Suffix = "Tween",
-	--CurrentValue = 1,
-	--Flag = "Slider2",
-	--Callback = function(self)
-		--getgenv().tweenspeed = self
-	--end,
+--Name = "AutoFarm Speed",
+--Range = {0, 300},
+--Increment = 10,
+--Suffix = "Tween",
+--CurrentValue = 1,
+--Flag = "Slider2",
+--Callback = function(self)
+--getgenv().tweenspeed = self
+--end,
 --})
 getgenv().Distance = 5
 --local Slider = MainTab:CreateSlider({
-	--Name = "AutoFarm Distance ",
-	--Range = {0, 20},
-	--Increment = 1,
-	--Suffix = "Distance",
-	--CurrentValue = 1,
-	--Flag = "Slider1",
-	--Callback = function(selfd)
-		--getgenv().Distance = selfd
-	--end,
+--Name = "AutoFarm Distance ",
+--Range = {0, 20},
+--Increment = 1,
+--Suffix = "Distance",
+--CurrentValue = 1,
+--Flag = "Slider1",
+--Callback = function(selfd)
+--getgenv().Distance = selfd
+--end,
 --})
 local Toggle = MainTab:CreateToggle({
 	Name = "Use Skills",
@@ -558,17 +558,17 @@ local function attack(method)
 	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, math.huge, "ground_slash")
 end
 local function attack2(method)
-game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
-task.wait(0.5)
-game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
-task.wait(0.5)
-game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
-task.wait(0.5)
-game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
-task.wait(0.5)
-game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
-task.wait(0.5)
-game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 51, "ground_slash")
+	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
+	task.wait(0.5)
+	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
+	task.wait(0.5)
+	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
+	task.wait(0.5)
+	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
+	task.wait(0.5)
+	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 26, "ground_slash")
+	task.wait(0.5)
+	game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(method, client, client.Character, client.Character.HumanoidRootPart, client.Character.Humanoid, 51, "ground_slash")
 end
 local attackMethods = {
 	["Combat"] = 'fist_combat',
@@ -689,11 +689,11 @@ spawn(function()
 	while wait() do
 		pcall(function()
 			SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AllBosses and NearestMobs)
-			if FarmMethod == "Above" then
+			if getgenv().FarmMethod == "Above" then
 				FarmModes = CFrame.new(0,getgenv().Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
-			elseif FarmMethod == "Below" then
+			elseif getgenv().FarmMethod == "Below" then
 				FarmModes = CFrame.new(0,-getgenv().Distance,0) * CFrame.Angles(math.rad(90),0,0)
-			elseif FarmMethod == "Behind" then
+			elseif getgenv().FarmMethod == "Behind" then
 				FarmModes = CFrame.new(0,0,getgenv().Distance)
 			end
 			for i,v in pairs(LP.PlayerGui.MainGuis.Items.Scroll:GetChildren()) do
