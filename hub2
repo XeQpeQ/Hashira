@@ -214,7 +214,7 @@ getgenv().Method = "Combat"
 		--Method = Option
 	--end,
 --})
-getgenv().FarmMethod = "Above"
+getgenv().FarmMethod = "Behind"
 --local Dropdown = MainTab:CreateDropdown({
 	--Name = "AutoFarm Method(In process)",
 	--Options = {"Above","Below","Behind"},
@@ -236,7 +236,7 @@ getgenv().FarmMethod = "Above"
 		--getgenv().tweenspeed = self
 	--end,
 --})
-getgenv().Distance = 10
+getgenv().Distance = 5
 --local Slider = MainTab:CreateSlider({
 	--Name = "AutoFarm Distance ",
 	--Range = {0, 20},
