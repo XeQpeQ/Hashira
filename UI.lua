@@ -1,7 +1,7 @@
 -- // Hashira's UI Library // 
 local library = {
-	Version = "0.36",
-	WorkspaceName = "Pepsi Lib",
+	Version = "0.012",
+	WorkspaceName = "Hashira Lib",
 	flags = {},
 	signals = {},
 	objects = {},
@@ -6891,9 +6891,9 @@ function library:CreateWindow(options, ...)
 		}
 		local daaata = {{"AddTextbox", "__Designer.Textbox.ImageAssetID", backgroundsection, {
 			Name = "Image Asset ID",
-			Placeholder = "rbxassetid://4427304036",
+			Placeholder = "rbxassetid://13727631341",
 			Flag = "__Designer.Background.ImageAssetID",
-			Value = "rbxassetid://4427304036",
+			Value = "rbxassetid://13727631341",
 			Callback = updatecolorsnotween
 		}}, {"AddColorpicker", "__Designer.Colorpicker.ImageColor", backgroundsection, {
 			Name = "Image Color",
