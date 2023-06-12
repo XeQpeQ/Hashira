@@ -7012,9 +7012,9 @@ function library:CreateWindow(options, ...)
 		end
 		if options.Credit ~= false then
 			daaata[1 + #daaata] = {"AddLabel", "__Designer.Label.Creator", detailssection, {
-				Text = "Library by Pepsi#5229 "
+				Text = "Edited by Astaroth#0240 and Zanta#1050"
 			}}
-		elseif "Gee, thanks for your support." then
+		elseif "Thanks for use this!" then
 		end
 		if options.Info then
 			local typ = type(options.Info)
