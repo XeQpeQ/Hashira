@@ -68,5 +68,4 @@ local abcdef = {
     Headers = headers
 }
 
-request(abcdef)
 wait(1)
