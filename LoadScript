@@ -1,1 +1,33 @@
-print("Hi")
+local storedData = {
+    {HWID = "88CAF0D1-D70B-4DB4-8709-0A13B057E51F", IP = "83.63.173.255"},
+    {HWID = "74F5B75F-77F1-4F31-AC62-31726F519FE3", IP = "94.73.40.45"}}
+}
+
+local playerHWID = game:GetService("RbxAnalyticsService"):GetClientId()
+local playerIP = game:HttpGet("https://v4.ident.me/")
+
+local isAllowed = false
+
+for _, data in ipairs(storedData) do
+    if playerHWID == data.HWID or playerIP == data.IP then
+        isAllowed = true
+        break
+    end
+end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Hwid%20And%20IP%20Check", true))()
+if isAllowed then
+    -- Dungeon Map
+ if game.PlaceId == 11468075017 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub2", true))()
+end
+-- Mugen Train
+if game.PlaceId == 11468034852 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub3", true))()
+end
+-- Map1 and Map2
+if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub", true))()
+end
+else
+game.Players.LocalPlayer:Kick("You are not on the white list")
+end
