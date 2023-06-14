@@ -14,7 +14,7 @@ for _, data in ipairs(storedData) do
         break
     end
 end
- 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Hwid%20And%20IP%20Check", true))()
 if isAllowed then
     -- Dungeon Map
  if game.PlaceId == 11468075017 then
@@ -28,7 +28,6 @@ end
 if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub", true))()
 end
-loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Hwid%20And%20IP%20Check", true))()
 else
 game.Players.LocalPlayer:Kick("You are not on the white list")
 end
