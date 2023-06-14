@@ -20,10 +20,7 @@ if isAllowed then
  if game.PlaceId == 11468075017 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub2", true))()
 end
--- Mugen Train
-if game.PlaceId == 11468034852 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub3", true))()
-end
+
 -- Map1 and Map2
 if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub", true))()
