@@ -24,7 +24,7 @@ end
 
 -- Map1 and Map2
 if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub", true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1", true))()
 end
 else
 game.Players.LocalPlayer:Kick("You are not on the white list")
