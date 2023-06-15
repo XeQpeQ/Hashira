@@ -478,4 +478,3 @@ FarmingSection:AddToggle({
 local FarmingSettingSection = MainTab:CreateSection({
 	Name = "Farming Settings"
 })
-ddd
