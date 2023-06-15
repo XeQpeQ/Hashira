@@ -118,6 +118,8 @@ task.spawn(function()
 				FarmModes = CFrame.new(0,-Distance,0) * CFrame.Angles(math.rad(90),0,0)
 			elseif FarmMethod == "Behind" then
 				FarmModes = CFrame.new(0,0,Distance)
+			elseif FarmMethod == "Ahead" then
+				FarmModes = CFrame.new(0,0,-Distance)
 			end
 			for i,v in pairs(LP.PlayerGui.MainGuis.Items.Scroll:GetChildren()) do
 				Insert = true
@@ -139,7 +141,7 @@ task.spawn(function()
 					antifall3.Velocity = Vector3.new(0, 0, 0)
 					antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
 				elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-					for i, v in pairs(game:GetService("Workspace").Mobs.AllBosses:GetDescendants()) do
+					for i, v in pairs(game:GetService("Workspace").Mobs:GetDescendants()) do
 						if v:IsA("Model") and v:FindFirstChild("Humanoid") then
 							if v.Humanoid.Health > 0 then
 								local distance = GetDistance(v:GetModelCFrame() * FarmModes)
@@ -295,51 +297,58 @@ end)
 
 spawn(function()
 	while task.wait() do
-		pcall(function()
 		if getgenv().AutoCollectOrb then
 			for i,v in pairs(workspace.Debree:GetDescendants()) do
 				if v.Name:match("Pick_up_soul") then
 					fireproximityprompt(v)
 				end
 			end
-			if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-				antifall4 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
-				antifall4.Velocity = Vector3.new(0, 0, 0)
-				antifall4.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-			elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-				for i, v in pairs(game:GetService("Workspace").Mobs.Civils:GetDescendants()) do
-					if v:IsA("Model") and v:FindFirstChild("Humanoid") then
-						if v.Humanoid.Health > 0 then
-							local distance = GetDistance(v:GetModelCFrame() * FarmModes)
-							repeat
-								task.wait()
-								if distance < 25 and distance < 150 then
-									if TweenFa then
-										TweenFa:Cancel()
-										wait(.1)
+		end
+	end
+end)
+
+spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoCollectOrb then
+				if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+					antifall4 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+					antifall4.Velocity = Vector3.new(0, 0, 0)
+					antifall4.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+				elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+					for i, v in pairs(game:GetService("Workspace").Mobs.Civils:GetDescendants()) do
+						if v:IsA("Model") and v:FindFirstChild("Humanoid") then
+							if v.Humanoid.Health > 0 then
+								local distance = GetDistance(v:GetModelCFrame() * FarmModes)
+								repeat
+									task.wait()
+									if distance < 25 and distance < 150 then
+										if TweenFa then
+											TweenFa:Cancel()
+											wait(.1)
+										end
+										LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame() * FarmModes
+									else
+										TweenFa = Tween(v:GetModelCFrame() * FarmModes)
 									end
-									LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame() * FarmModes
-								else
-									TweenFa = Tween(v:GetModelCFrame() * FarmModes)
-								end
-								if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
-									NearestMobs = true
-								elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
-									NearestMobs = false
-								end
-							until not getgenv().AutoCollectOrb or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
-							NearestMobs = false
+									if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
+										NearestMobs = true
+									elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
+										NearestMobs = false
+									end
+								until not getgenv().AutoCollectOrb or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
+								NearestMobs = false
+							end
 						end
 					end
 				end
+			else
+				if antifall4 then
+					antifall4:Destroy()
+				end
 			end
-		else
-			if antifall4 then
-				antifall4:Destroy()
-			end
-		end
-		if getgenv().AutoCollectOrb == false then
-			TweenFa:Cancel()
+			if getgenv().AutoCollectOrb == false then
+				TweenFa:Cancel()
 			end
 		end)
 	end
@@ -469,22 +478,3 @@ FarmingSection:AddToggle({
 local FarmingSettingSection = MainTab:CreateSection({
 	Name = "Farming Settings"
 })
-
-
-for _,v in pairs(workspace:GetDescendants()) do
-	if v.ClassName == "Part"
-		or v.ClassName == "SpawnLocation"
-		or v.ClassName == "WedgePart"
-		or v.ClassName == "Terrain"
-		or v.ClassName == "MeshPart" then
-		v.BrickColor = BrickColor.new(155, 155, 155)
-		v.Material = "Plastic"
-	end
-end
-
-for _,v in pairs(workspace:GetDescendants()) do
-	if v.ClassName == "Decal"
-		or v.ClassName == "Texture" then
-		v:Destroy()
-	end
-end
