@@ -19,7 +19,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/H
 if isAllowed then
     -- Dungeon Map
  if game.PlaceId == 11468075017 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/hub2", true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Dungeon", true))()
 end
 
 -- Map1 and Map2
