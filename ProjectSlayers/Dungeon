@@ -76,7 +76,7 @@ end)
 local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
 local FarmMethod = "Behind"
-local Method = "Scythe"
+local Method = "Fans"
 local tweenspeed = 400
 local Distance = 3
 local function GetDistance(Endpoint)
@@ -215,6 +215,7 @@ local attackMethods = {
 	["Sword"] = 'Sword_Combat_Slash',
 	["Scythe"] = 'Scythe_Combat_Slash',
 	["Claw"] = 'claw_Combat_Slash'
+        ["Fans"] = 'fans_Combat_Slash'
 }
 -- // Kill Aura \\ -- 
 task.spawn(function()
