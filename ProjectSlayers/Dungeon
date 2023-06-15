@@ -214,8 +214,8 @@ local attackMethods = {
 	["Combat"] = 'fist_combat',
 	["Sword"] = 'Sword_Combat_Slash',
 	["Scythe"] = 'Scythe_Combat_Slash',
-	["Claw"] = 'claw_Combat_Slash'
-        ["Fans"] = 'fans_Combat_Slash'
+	["Claw"] = 'claw_Combat_Slash',
+        ["Fans"] = 'fans_Combat_Slash',
 }
 -- // Kill Aura \\ -- 
 task.spawn(function()
