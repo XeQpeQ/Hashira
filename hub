@@ -197,6 +197,14 @@ local Toggle = MainTab:CreateToggle({
 		getgenv().NoCdMoves = Value
 	end,
 })
+local Toggle = MainTab:CreateToggle({
+	Name = "AutoClash",
+	CurrentValue = false,
+	Flag = "AutoClashToggle", 
+	Callback = function(t)
+		getgenv().AutoClash = t
+	end,
+})
 local AutofarmSettingSection = MainTab:CreateSection("Farming Settings")
 getgenv().Method = "Combat"
 local Dropdown = MainTab:CreateDropdown({
