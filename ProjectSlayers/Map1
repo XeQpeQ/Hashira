@@ -1,3 +1,4 @@
+
 LPH_JIT_MAX = function(...) return(...) end;
 getrenv()._G.handle_irregular = nil
 getrenv()._G.cuasdamsndasdasd = nil
@@ -471,7 +472,7 @@ FarmingSection:AddToggle({
 	Name = "Auto Collect Orb",
 	Flag = "AutoCollectOrbToggle",
 	Callback = function(Value)
-		getgenv().AutoCollectOrbD = Value
+		getgenv().D = Value
 	end
 })
 
