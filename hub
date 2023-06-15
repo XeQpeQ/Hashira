@@ -593,7 +593,15 @@ spawn(function()
 	end
 end)
 
-
+local VirtualInputService = game:GetService("VirtualInputManager")
+spawn(function()
+	while task.wait() do
+		if getgenv().AutoClash and game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Enabled == true then
+			VirtualInputService:SendKeyEvent(true,game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Holder.Front.Text,false,game)
+			VirtualInputService:SendKeyEvent(false,game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Holder.Front.Text,false,game)
+		end
+	end
+end)
 
 --No Cooldown Moves
 oldindex = hookmetamethod(game, "__index", function(index, value)
