@@ -1,1 +1,464 @@
+LPH_JIT_MAX = function(...) return(...) end;
+getrenv()._G.handle_irregular = nil
+getrenv()._G.cuasdamsndasdasd = nil
 
+_G.cuasdamsndasdasd = function()
+	return
+end
+
+getrenv().tick = function()
+	return 2000
+end
+
+_G.handle_irregular = function()
+	return false
+end
+
+repeat wait() until game:IsLoaded()
+local skill_module = require(game:GetService("ReplicatedStorage").Modules.Server["Skills_Modules_Handler"])
+
+hookfunction(skill_module.Kick, function()
+	return nil
+end);
+
+local anti_cheat1 = game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["Client_Global_utility"]
+local anti_cheat2 = game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["client_global_delete_script"]
+
+hookfunction(anti_cheat1.GetPropertyChangedSignal, function()
+	return
+end)
+
+hookfunction(anti_cheat2.GetPropertyChangedSignal, function()
+	return
+end)
+
+anti_cheat1.Disabled = true
+anti_cheat2.Disabled = true
+
+local Namecall
+Namecall = hookmetamethod(game, '__namecall', function(self, ...)
+	local Args = {...}
+	local method = getnamecallmethod()
+
+	if method == 'FireServer' and string.find(self.Name, 'mod') then 
+		return 
+	end
+
+	if method == 'InvokeServer' and self.Name == 'reporthackerasdasd' then 
+		return 
+	end
+
+	if method == 'FireServer' and self.Name == 'To_Server_commends' then 
+		return
+	end
+
+	if method == 'InvokeServer' and self.Name == 'getclientping' then 
+		return
+	end
+
+	if method:lower() == 'kick' then 
+		return 
+	end
+
+	return Namecall(self, ...)
+end)
+
+local hook
+hook = hookmetamethod(game, "__namecall", function(self, ...)
+	args = {...}
+
+	if getnamecallmethod() == "FireServer" and #args == 2 and type(args[1]) == "boolean" then
+		return task.wait(9e9)
+	end
+
+	return hook(self, ...)
+end)
+local LP = game.Players.LocalPlayer
+local client = game.Players.LocalPlayer
+local FarmMethod = "Behind"
+local Method = "Scythe"
+local tweenspeed = 400
+local Distance = 3
+local function GetDistance(Endpoint)
+	if typeof(Endpoint) == "Instance" then
+		Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+	elseif typeof(Endpoint) == "CFrame" then
+		Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+	end
+	local Magnitude = (Endpoint - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+	return Magnitude
+end
+function Tween(Endpoint)
+	if typeof(Endpoint) == "Instance" then
+		Endpoint = Endpoint.CFrame
+	end
+	local TweenFunc = {}
+	local Distance = GetDistance(Endpoint)
+	local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
+	TweenInfo:Play()
+	function TweenFunc:Cancel()
+		TweenInfo:Cancel()
+		return false
+	end
+	if Distance <= 100 then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Endpoint
+		TweenInfo:Cancel()
+		return false
+	end
+	return TweenFunc
+end
+-- Auto Farm Method
+task.spawn(function()
+	while wait() do
+		pcall(function()
+			SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AllBosses and NearestMobs)
+			if FarmMethod == "Above" then
+				FarmModes = CFrame.new(0,Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
+			elseif FarmMethod == "Below" then
+				FarmModes = CFrame.new(0,-Distance,0) * CFrame.Angles(math.rad(90),0,0)
+			elseif FarmMethod == "Behind" then
+				FarmModes = CFrame.new(0,0,Distance)
+			elseif FarmMethod == "Ahead" then
+				FarmModes = CFrame.new(0,0,-Distance)
+			end
+			for i,v in pairs(LP.PlayerGui.MainGuis.Items.Scroll:GetChildren()) do
+				Insert = true
+				if v.ClassName == "Frame" and v.Name ~= "Health Elixir" and v.Name ~= "Health Regen Elixir" and v.Name ~= "Stamina Elixir" and v.Name ~= "Bandage" then
+					for i,v2 in pairs(invTable) do if v2 == v.Name then Insert = false end end
+					if Insert == true then table.insert(invTable, v.Name) end
+				end
+			end
+		end)
+	end
+end)
+
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AllBosses then
+				if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+					antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+					antifall3.Velocity = Vector3.new(0, 0, 0)
+					antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+				elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+					for i, v in pairs(game:GetService("Workspace").Mobs:GetDescendants()) do
+						if v:IsA("Model") and v:FindFirstChild("Humanoid") then
+							if v.Humanoid.Health > 0 then
+								local distance = GetDistance(v:GetModelCFrame() * FarmModes)
+								repeat
+									task.wait()
+									if distance < 25 and distance < 150 then
+										if TweenFa then
+											TweenFa:Cancel()
+											wait(.1)
+										end
+										LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame() * FarmModes
+									else
+										TweenFa = Tween(v:GetModelCFrame() * FarmModes)
+									end
+									if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
+										NearestMobs = true
+									elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
+										NearestMobs = false
+									end
+								until not getgenv().AllBosses or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
+								NearestMobs = false
+							end
+						end
+					end
+				end
+			else
+				if antifall3 then
+					antifall3:Destroy()
+				end
+			end
+			if getgenv().AllBosses == false and TweenFa then
+				TweenFa:Cancel()
+			end
+		end)
+	end
+end)
+local function attack(method)
+	local replicatedStorage = game:GetService("ReplicatedStorage")
+	local remotes = replicatedStorage.Remotes
+	local toServer = remotes.To_Server
+	local handleInitiateS = toServer.Handle_Initiate_S
+	local character = client.Character
+	local humanoidRootPart = character.HumanoidRootPart
+	local humanoid = character.Humanoid
+
+	for i=1,8 do
+		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		task.wait(2)
+	end
+end
+
+local function attack2(method)
+	local replicatedStorage = game:GetService("ReplicatedStorage")
+	local remotes = replicatedStorage.Remotes
+	local toServer = remotes.To_Server
+	local handleInitiateS = toServer.Handle_Initiate_S
+	local character = client.Character
+	local humanoidRootPart = character.HumanoidRootPart
+	local humanoid = character.Humanoid
+
+	for i = 1, 7 do
+		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, i, "ground_slash")
+		task.wait(.2)
+	end
+
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+end
+local attackMethods = {
+	["Combat"] = 'fist_combat',
+	["Sword"] = 'Sword_Combat_Slash',
+	["Scythe"] = 'Scythe_Combat_Slash',
+	["Claw"] = 'claw_Combat_Slash'
+}
+-- // Kill Aura \\ -- 
+task.spawn(function()
+	while wait() do
+		pcall(function()
+			if killaura then
+				attack2(attackMethods[Method])
+				task.wait(2)
+			end
+			if killaura2 then
+				attack(attackMethods[Method])
+				task.wait(2)
+			end
+		end)
+	end
+end)
+
+spawn(function()
+	while wait() do
+		if getgenv().AllBosses or getgenv().AutoCollectOrb then
+			for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+				if v:IsA("BasePart") then
+					v.CanCollide = false 
+				end
+				if v:IsA("Humanoid") then
+					v:ChangeState(11)
+				end
+			end
+		end
+	end
+end)
+
+-- Auto Collect Chest
+
+spawn(function()
+	while task.wait() do
+		if getgenv().AutoCollectChest then
+			do for _, v in pairs(game:GetService("Workspace").Debree:GetChildren()) do if v.Name == "Loot_Chest" then for _, c in pairs(v:FindFirstChild("Drops"):GetChildren()) do if game:GetService("ReplicatedStorage")["Player_Data"][game.Players.LocalPlayer.Name].Inventory.Items:FindFirstChild(c.Name) then if game:GetService("ReplicatedStorage")["Player_Data"][game.Players.LocalPlayer.Name].Inventory.Items:FindFirstChild(c.Name):FindFirstChild("CanHaveMoreThenOne").Value == true then local args = { [1] = c.Name, } v["Add_To_Inventory"]:InvokeServer(unpack(args)) delay(0.5, function() c:Destroy() end) end else local args = { [1] = c.Name, } v["Add_To_Inventory"]:InvokeServer(unpack(args)) delay(0.5, function() c:Destroy() end) end end end end 
+			end
+		end
+	end
+end)
+
+--Auto Block
+spawn(function()
+	while task.wait() do
+		if getgenv().AB then
+			local args = {[1] = "add_blocking",[3] = 11565.6265117,[4] = game:GetService("ReplicatedStorage").PlayerValues[game.Players.LocalPlayer.Name],[5] = math.huge}game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(unpack(args))
+		else
+			local args = {[1] = "remove_blocking",[2] = game:GetService("ReplicatedStorage"):WaitForChild("PlayerValues"):WaitForChild("GamerSuperpro_YT3")}game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("To_Server"):WaitForChild("Handle_Initiate_S_"):InvokeServer(unpack(args))
+		end
+	end
+end)
+
+oldindex = hookmetamethod(game, "__index", function(index, value)
+	if tostring(index) == "LastUsed" and getgenv().NoCdMoves then
+		return 0
+	end
+	return oldindex(index, value)
+end)
+
+-- God Mode 2
+spawn(function()
+	while task.wait() do
+		if getgenv().GodMode2 then
+			local args = {[1] = "skil_ting_asd",[2] = game:GetService("Players").LocalPlayer,[3] = "akaza_bda_compass_needle",[4] = 1}game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(unpack(args))
+		end
+	end
+end)
+local VirtualInputService = game:GetService("VirtualInputManager")
+
+spawn(function()
+	while task.wait() do
+		if getgenv().AutoClash and game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Enabled == true then
+			VirtualInputService:SendKeyEvent(true,game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Holder.Front.Text,false,game)
+			VirtualInputService:SendKeyEvent(false,game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Holder.Front.Text,false,game)
+		end
+	end
+end)
+
+spawn(function()
+	while task.wait() do
+		if getgenv().AutoCollectOrb then
+			for i,v in pairs(workspace.Debree:GetDescendants()) do
+				if v.Name:match("Pick_up_soul") then
+					fireproximityprompt(v)
+				end
+			end
+		end
+	end
+end)
+
+spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoCollectOrb then
+				if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+					antifall4 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+					antifall4.Velocity = Vector3.new(0, 0, 0)
+					antifall4.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+				elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+					for i, v in pairs(game:GetService("Workspace").Mobs.Civils:GetDescendants()) do
+						if v:IsA("Model") and v:FindFirstChild("Humanoid") then
+							if v.Humanoid.Health > 0 then
+								local distance = GetDistance(v:GetModelCFrame() * FarmModes)
+								repeat
+									task.wait()
+									if distance < 25 and distance < 150 then
+										if TweenFa then
+											TweenFa:Cancel()
+											wait(.1)
+										end
+										LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame() * FarmModes
+									else
+										TweenFa = Tween(v:GetModelCFrame() * FarmModes)
+									end
+									if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
+										NearestMobs = true
+									elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
+										NearestMobs = false
+									end
+								until not getgenv().AutoCollectOrb or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
+								NearestMobs = false
+							end
+						end
+					end
+				end
+			else
+				if antifall4 then
+					antifall4:Destroy()
+				end
+			end
+			if getgenv().AutoCollectOrb == false then
+				TweenFa:Cancel()
+			end
+		end)
+	end
+end)
+
+task.spawn(function()
+	while task.wait() do
+		if getgenv().AutoCollectOrbD then
+			for i, v in pairs(workspace.Map:GetChildren()) do
+				if (v.Name:match("HealthRegen") or v.Name:match("StaminaRegen") or v.Name:match("DoublePoints") or v.Name:match("InstaKill") or v.Name:match("WisteriaPoisoning") or v.Name:match("BloodMoney")) then
+					firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,v:FindFirstChildWhichIsA("MeshPart"),0)
+				end
+			end
+
+		end
+	end
+end)
+
+local HashiraUI = loadstring(game:HttpGet('https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI.lua'))()
+local Wait = HashiraUI.subs.Wait
+local HashiraHub = HashiraUI:CreateWindow({
+	Name = "Hashira Hub",
+	Themeable = {
+		Info = "Project Slayers"
+	}
+})
+local MainTab = HashiraHub:CreateTab({
+	Name = "Main"
+})
+local FarmingSection = MainTab:CreateSection({
+	Name = "Farming"
+})
+
+FarmingSection:AddToggle({
+	Name = "Auto Farm All Bosses",
+	Flag = "AFAB",
+	Callback = function(Value)
+		getgenv().AllBosses = Value
+	end
+})
+
+FarmingSection:AddToggle({
+	Name = "Auto Collest Chest",
+	Flag = "ACC",
+	Callback = function(Value)
+		getgenv().AutoCollestChest = Value
+	end
+})
+
+FarmingSection:AddToggle({
+	Name = "Kill Aura",
+	Flag = "KA",
+	Callback = function(Value)
+		getgenv().killaura = Value
+	end
+})
+
+FarmingSection:AddToggle({
+	Name = "Insta Kill Aura",
+	Flag = "IKA",
+	Callback = function(Value)
+		getgenv().killaura2 = Value
+	end
+})
+
+FarmingSection:AddToggle({
+	Name = "Auto Block",
+	Flag = "AB",
+	Callback = function(Value)
+		getgenv().AB = Value
+	end
+})
+
+FarmingSection:AddToggle({
+	Name = "No Cooldown Moves(Can kick)",
+	Flag = "NoCooldownMoveToggle",
+	Callback = function(Value)
+		getgenv().NoCdMoves = Value
+	end
+})
+
+FarmingSection:AddToggle({
+	Name = "God Mode(Only Kamado)",
+	Flag = "GodMode",
+	Callback = function(Value)
+		if Value then
+			game:GetService("ReplicatedStorage").Remotes.heal_tang123asd:FireServer(true)
+		else
+			game:GetService("ReplicatedStorage").Remotes.heal_tang123asd:FireServer(false)
+
+		end
+	end
+})
+
+FarmingSection:AddToggle({
+	Name = "God Mode 2(Only Akaza)",
+	Flag = "GodMode2",
+	Callback = function(Value)
+		getgenv().GodMode2 = Value
+	end
+})
+
+FarmingSection:AddToggle({
+	Name = "Auto Collect Orb",
+	Flag = "AutoCollectOrbToggle",
+	Callback = function(Value)
+		getgenv().AutoCollectOrbD = Value
+	end
+})
+
+local FarmingSettingSection = MainTab:CreateSection({
+	Name = "Farming Settings"
+})
