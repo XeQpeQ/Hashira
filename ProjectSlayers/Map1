@@ -76,7 +76,7 @@ hook = hookmetamethod(game, "__namecall", function(self, ...)
 end)
 local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
-local FarmMethod = "Ahead"
+local FarmMethod = "Behind"
 local Method = "Scythe"
 local tweenspeed = 400
 local Distance = 3
