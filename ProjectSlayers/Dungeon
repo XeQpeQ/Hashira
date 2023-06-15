@@ -394,7 +394,7 @@ FarmingSection:AddToggle({
 	Name = "Auto Collest Chest",
 	Flag = "ACC",
 	Callback = function(Value)
-		getgenv().AutoCollestChest = Value
+		getgenv().AutoCollectChest = Value
 	end
 })
 
