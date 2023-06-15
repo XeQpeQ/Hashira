@@ -202,14 +202,7 @@ local Toggle = MainTab:CreateToggle({
 		getgenv().GodMode2 = t
 	end,
 })
-local Toggle = MainTab:CreateToggle({
-	Name = "AutoClash",
-	CurrentValue = false,
-	Flag = "AutoClashToggle", 
-	Callback = function(t)
-		getgenv().AutoClash = t
-	end,
-})
+
 local AutofarmSettingSection = MainTab:CreateSection("Farming Settings")
 getgenv().Method = "Combat"
 --local Dropdown = MainTab:CreateDropdown({
@@ -554,15 +547,6 @@ spawn(function()
 			local args = {[1] = "add_blocking",[3] = 11565.6265117,[4] = game:GetService("ReplicatedStorage").PlayerValues[game.Players.LocalPlayer.Name],[5] = math.huge}game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(unpack(args))
 		else
 			local args = {[1] = "remove_blocking",[2] = game:GetService("ReplicatedStorage"):WaitForChild("PlayerValues"):WaitForChild("GamerSuperpro_YT3")}game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("To_Server"):WaitForChild("Handle_Initiate_S_"):InvokeServer(unpack(args))
-		end
-	end
-end)
-local VirtualInputService = game:GetService("VirtualInputManager")
-spawn(function()
-	while task.wait() do
-		if getgenv().AutoClash and game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Enabled == true then
-			VirtualInputService:SendKeyEvent(true,game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Holder.Front.Text,false,game)
-			VirtualInputService:SendKeyEvent(false,game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Holder.Front.Text,false,game)
 		end
 	end
 end)
