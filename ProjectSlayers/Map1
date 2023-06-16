@@ -120,7 +120,9 @@ task.spawn(function()
 			elseif FarmMethod == "Behind" then
 				FarmModes = CFrame.new(0,0,Distance)
 			elseif FarmMethod == "Ahead" then
-				FarmModes = CFrame.new(0,0,-Distance)
+				FarmModes = CFrame.new(0, 0, -Distance)
+                                local rotation = CFrame.Angles(0, math.rad(180), 0)
+                                FarmModes = FarmModes * rotation
 			end
 			for i,v in pairs(LP.PlayerGui.MainGuis.Items.Scroll:GetChildren()) do
 				Insert = true
@@ -190,8 +192,9 @@ local function attack(method)
 
 	for i=1,8 do
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+                task.wait(.2)
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-		task.wait(2)
+		task.wait(.2)
 	end
 end
 
@@ -209,6 +212,7 @@ local function attack2(method)
 		task.wait(.2)
 	end
 
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 end
 local attackMethods = {
