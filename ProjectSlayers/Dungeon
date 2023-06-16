@@ -189,7 +189,7 @@ local function attack(method)
 	local humanoidRootPart = character.HumanoidRootPart
 	local humanoid = character.Humanoid
 
-	for i=1,16 do
+	for i=1,8 do
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
 		task.wait(.2)
