@@ -192,7 +192,7 @@ local function attack(method)
 	for i=1,8 do
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-		task.wait(2)
+		task.wait(.2)
 	end
 end
 
@@ -207,11 +207,10 @@ local function attack2(method)
 
 	for i = 1, 14 do
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, i, "ground_slash")
-task.wait(.3)
-                handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, i, "ground_slash")
 		task.wait(.2)
 	end
 
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 end
 local attackMethods = {
