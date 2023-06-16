@@ -119,7 +119,9 @@ task.spawn(function()
 			elseif FarmMethod == "Behind" then
 				FarmModes = CFrame.new(0,0,Distance)
 			elseif FarmMethod == "Ahead" then
-				FarmModes = CFrame.new(0,0,-Distance)
+				FarmModes = CFrame.new(0, 0, -Distance)
+                                local rotation = CFrame.Angles(0, math.rad(180), 0)
+                                FarmModes = FarmModes * rotation
 			end
 			for i,v in pairs(LP.PlayerGui.MainGuis.Items.Scroll:GetChildren()) do
 				Insert = true
