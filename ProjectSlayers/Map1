@@ -294,8 +294,7 @@ local VirtualInputService = game:GetService("VirtualInputManager")
 spawn(function()
 	while task.wait() do
 		if getgenv().AutoClash and game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Enabled == true then
-			VirtualInputService:SendKeyEvent(true,game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Holder.Front.Text,false,game)
-			VirtualInputService:SendKeyEvent(false,game:GetService("Players").LocalPlayer.PlayerGui.universal_client_scripts.Clashing2.Clash_Ui2.Holder.Front.Text,false,game)
+			game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("To_Server"):WaitForChild("Handle_Initiate_S"):FireServer("Change_Value", workspace:WaitForChild("Debree"):WaitForChild("clash_folder"):WaitForChild(game.Players.LocalPlayer.Name.."vsEnmu"):WaitForChild(game.Players.LocalPlayer.Name), 100)
 		end
 	end
 end)
