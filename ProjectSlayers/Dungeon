@@ -191,6 +191,7 @@ local function attack(method)
 
 	for i=1,8 do
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+                task.wait(.2)
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
 		task.wait(.2)
 	end
