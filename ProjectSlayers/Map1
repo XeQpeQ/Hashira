@@ -476,7 +476,7 @@ FarmingSection:AddToggle({
 	Name = "Auto Collect Orb",
 	Flag = "AutoCollectOrbToggle",
 	Callback = function(Value)
-		getgenv().D = Value
+		getgenv().AutoCollectOrbD = Value
 	end
 })
 
