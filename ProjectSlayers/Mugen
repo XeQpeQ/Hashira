@@ -231,7 +231,7 @@ task.spawn(function()
 			end
 			if killaura2 then
 				attack(attackMethods[Method])
-				task.wait(1.45)
+				task.wait(1.25)
 			end
 		end)
 	end
