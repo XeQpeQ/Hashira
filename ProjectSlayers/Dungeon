@@ -77,7 +77,7 @@ local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
 local FarmMethod = "Above"
 local Method = "Fans"
-local tweenspeed = 400
+local tweenspeed = 450
 local Distance = 3
 local function GetDistance(Endpoint)
 	if typeof(Endpoint) == "Instance" then
@@ -210,6 +210,7 @@ local function attack2(method)
 
 	for i=1,8 do
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+                task.wait(.2)
 		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
 		task.wait(.2)
 	end
@@ -232,7 +233,7 @@ task.spawn(function()
 			end
 			if killaura2 then
 				attack2(attackMethods[Method])
-				task.wait(1.35)
+				task.wait(1)
 			end
 		end)
 	end
