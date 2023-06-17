@@ -207,29 +207,13 @@ local function attack2(method)
 	local character = client.Character
 	local humanoidRootPart = character.HumanoidRootPart
 	local humanoid = character.Humanoid
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-task.wait(.2)
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-task.wait(.2)
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-task.wait(.2)
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-task.wait(.2)
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-task.wait(.2)
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-task.wait(.2)
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-task.wait(.2)
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+
+	for i=1,8 do
+		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+                task.wait(.2)
+		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		task.wait(.2)
+	end
 end
 
 local attackMethods = {
