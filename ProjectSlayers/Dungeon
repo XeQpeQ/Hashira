@@ -180,23 +180,8 @@ task.spawn(function()
 		end)
 	end
 end)
+
 local function attack(method)
-	local replicatedStorage = game:GetService("ReplicatedStorage")
-	local remotes = replicatedStorage.Remotes
-	local toServer = remotes.To_Server
-	local handleInitiateS = toServer.Handle_Initiate_S
-	local character = client.Character
-	local humanoidRootPart = character.HumanoidRootPart
-	local humanoid = character.Humanoid
-
-	for i=1,8 do
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-		task.wait(.2)
-	end
-end
-
-local function attack2(method)
 	local replicatedStorage = game:GetService("ReplicatedStorage")
 	local remotes = replicatedStorage.Remotes
 	local toServer = remotes.To_Server
@@ -213,6 +198,23 @@ local function attack2(method)
 	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 end
+
+local function attack2(method)
+	local replicatedStorage = game:GetService("ReplicatedStorage")
+	local remotes = replicatedStorage.Remotes
+	local toServer = remotes.To_Server
+	local handleInitiateS = toServer.Handle_Initiate_S
+	local character = client.Character
+	local humanoidRootPart = character.HumanoidRootPart
+	local humanoid = character.Humanoid
+
+	for i=1,8 do
+		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		task.wait(.2)
+	end
+end
+
 local attackMethods = {
 	["Combat"] = 'fist_combat',
 	["Sword"] = 'Sword_Combat_Slash',
@@ -225,12 +227,12 @@ task.spawn(function()
 	while wait() do
 		pcall(function()
 			if killaura then
-				attack2(attackMethods[Method])
-				task.wait(1.45)
-			end
-			if killaura2 then
 				attack(attackMethods[Method])
 				task.wait(2)
+			end
+			if killaura2 then
+				attack2(attackMethods[Method])
+				task.wait(1.35)
 			end
 		end)
 	end
