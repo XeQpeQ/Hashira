@@ -75,10 +75,10 @@ hook = hookmetamethod(game, "__namecall", function(self, ...)
 end)
 local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
-local FarmMethod = "Ahead"
+local FarmMethod = "Above"
 local Method = "Fans"
 local tweenspeed = 400
-local Distance = 3
+local Distance = 10
 local function GetDistance(Endpoint)
 	if typeof(Endpoint) == "Instance" then
 		Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
