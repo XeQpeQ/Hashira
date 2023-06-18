@@ -188,22 +188,22 @@ local function attack(method)
 	local character = client.Character
 	local humanoidRootPart = character.HumanoidRootPart
 	local humanoid = character.Humanoid
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
 end
 
 local function attack2(method)
@@ -240,7 +240,7 @@ task.spawn(function()
 			end
 			if killaura2 then
 				attack(attackMethods[Method])
-				task.wait(1.25)
+				task.wait(1.55)
 			end
 		end)
 	end
