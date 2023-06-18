@@ -181,20 +181,13 @@ task.spawn(function()
 	end
 end)
 local function attack(method)
-	local replicatedStorage = game:GetService("ReplicatedStorage")
-	local remotes = replicatedStorage.Remotes
-	local toServer = remotes.To_Server
-	local handleInitiateS = toServer.Handle_Initiate_S
-	local character = client.Character
-	local humanoidRootPart = character.HumanoidRootPart
-	local humanoid = character.Humanoid
-
-	for i=1,8 do
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-		task.wait(.1)
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-		task.wait(.2)
-	end
+local Handle_Initiate_S = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S
+Handle_Initiate_S:FireServer("skil_ting_asd", game.Players.LocalPlayer, "arrow_knock_back", 5)
+for i,v in next, workspace:GetDescendants() do 
+    if v.Name:find("Civilian") and v:IsA("Model") then 
+        Handle_Initiate_S:FireServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame, v, 0/0, 0/0)
+    end 
+end 
 end
 
 local function attack2(method)
@@ -231,7 +224,6 @@ task.spawn(function()
 			end
 			if killaura2 then
 				attack(attackMethods[Method])
-				task.wait(1.55)
 			end
 		end)
 	end
