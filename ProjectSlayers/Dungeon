@@ -120,8 +120,8 @@ task.spawn(function()
 				FarmModes = CFrame.new(0,0,Distance)
 			elseif FarmMethod == "Ahead" then
 				FarmModes = CFrame.new(0, 0, -Distance)
-                                local rotation = CFrame.Angles(0, math.rad(180), 0)
-                                FarmModes = FarmModes * rotation
+				local rotation = CFrame.Angles(0, math.rad(180), 0)
+				FarmModes = FarmModes * rotation
 			end
 			for i,v in pairs(LP.PlayerGui.MainGuis.Items.Scroll:GetChildren()) do
 				Insert = true
@@ -207,13 +207,22 @@ local function attack2(method)
 	local character = client.Character
 	local humanoidRootPart = character.HumanoidRootPart
 	local humanoid = character.Humanoid
-
-	for i=1,16 do
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-                task.wait(.2)
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-		task.wait(.2)
-	end
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
 end
 
 local attackMethods = {
@@ -221,7 +230,7 @@ local attackMethods = {
 	["Sword"] = 'Sword_Combat_Slash',
 	["Scythe"] = 'Scythe_Combat_Slash',
 	["Claw"] = 'claw_Combat_Slash',
-        ["Fans"] = 'fans_combat_slash',
+	["Fans"] = 'fans_combat_slash',
 }
 -- // Kill Aura \\ -- 
 task.spawn(function()
@@ -233,7 +242,7 @@ task.spawn(function()
 			end
 			if killaura2 then
 				attack2(attackMethods[Method])
-				task.wait(1.25)
+				task.wait(1.45)
 			end
 		end)
 	end
