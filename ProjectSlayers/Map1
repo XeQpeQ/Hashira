@@ -76,7 +76,7 @@ end)
 local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
 local FarmMethod = "Above"
-local Method = "Fans"
+local Method = "Combat"
 local tweenspeed = 400
 local Distance = 10
 local function GetDistance(Endpoint)
@@ -227,7 +227,7 @@ task.spawn(function()
 		pcall(function()
 			if killaura then
 		    attack2(attackMethods[Method])
-				task.wait(1.45)
+				task.wait(2)
 			end
 			if killaura2 then
 				attack(attackMethods[Method])
