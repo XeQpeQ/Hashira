@@ -375,10 +375,11 @@ task.spawn(function()
 		if getgenv().AutoCollectOrbD then
 			for i, v in pairs(workspace.Map:GetChildren()) do
 				if v.Name:match("DoublePoints") then
-					firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,v:FindFirstChildWhichIsA("MeshPart"),0)
+					v:FindFirstChildWhichIsA("MeshPart").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+                                elseif v.Name:match("InstaKill") then
+				v:FindFirstChildWhichIsA("MeshPart"):Destroy()
 				end
 			end
-
 		end
 	end
 end)
