@@ -374,7 +374,7 @@ task.spawn(function()
 	while task.wait() do
 		if getgenv().AutoCollectOrbD then
 			for i, v in pairs(workspace.Map:GetChildren()) do
-				if v.Name:match("DoublePoints") or v.Name:match("InstaKill") then
+				if v.Name:match("DoublePoints") then
 					firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,v:FindFirstChildWhichIsA("MeshPart"),0)
 				end
 			end
