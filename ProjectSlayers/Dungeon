@@ -1,4 +1,5 @@
 local UIs = game:GetService("UserInputService")
+local RunService = game.RunService
 UIs.WindowFocused:Connect(function()
         RunService:Set3dRenderingEnabled(true)
         setfpscap(360)
@@ -44,49 +45,56 @@ end)
 anti_cheat1.Disabled = true
 anti_cheat2.Disabled = true
 
-local Namecall
-Namecall = hookmetamethod(game, '__namecall', function(self, ...)
-	local Args = {...}
-	local method = getnamecallmethod()
-
-	if method == 'FireServer' and string.find(self.Name, 'mod') then 
-		return 
-	end
-
-	if method == 'InvokeServer' and self.Name == 'reporthackerasdasd' then 
-		return 
-	end
-
-	if method == 'FireServer' and self.Name == 'To_Server_commends' then 
-		return
-	end
-
-	if method == 'InvokeServer' and self.Name == 'getclientping' then 
-		return
-	end
-
-	if method:lower() == 'kick' then 
-		return 
-	end
-
-	return Namecall(self, ...)
-end)
-
-local hook
-hook = hookmetamethod(game, "__namecall", function(self, ...)
-	args = {...}
-
-	if getnamecallmethod() == "FireServer" and #args == 2 and type(args[1]) == "boolean" then
-		return task.wait(9e9)
-	end
-
-	return hook(self, ...)
-end)
+ local oldnamecall;
+       local oldindex;
+       oldnamecall = hookmetamethod(game, "__namecall", function(self, ...)
+           local args = { ... }
+           local method = getnamecallmethod()
+           local isFireServer = (string.lower(method) == "fireserver") == true
+           local isKick = (string.lower(method) == "kick") == true
+           if isFireServer and self.Name == "moddelteasdasd123" then
+               return
+           end
+           if isFireServer and self.Name == "To_Server_commends" and args[1] == "set_platform_stand" then
+               return
+           end
+           if not checkcaller() and self.Name == "Handle_Initiate_S" and args[1] == "ground_slash" or args[2] == "fist_combat" and getgenv().killaura then
+               return
+           elseif not checkcaller() and self.Name == "Handle_Initiate_S" and args[1] == "ground_slash" and args[2] == "fist_combat" and getgenv().killaura2 then
+               return
+           end
+           if isFireServer and #args == 2 and type(args[1]) == "boolean" then
+               return
+           end
+           if isFireServer and #args == 1 and args[1] == "yes" and self.Name == "check_clanasd123123" then
+               return
+           end
+           if isKick and not checkcaller() then
+               return
+           end
+           return oldnamecall(self, unpack(args))
+       end)
+       oldindex = hookmetamethod(game, "__index", function(index, value)
+           if tostring(index) == "LastUsed" and _G.Options.NoCdMoves then
+               return 0
+           end
+           if not checkcaller() and tostring(value) == "WalkSpeed" then
+               return 16
+           end
+           if not checkcaller() and tostring(value) == "JumpPower" then
+               return 50
+           end
+           return oldindex(index, value)
+       end)
+ oldindex = hookmetamethod(game, "__index", function(index, value)
+           if tostring(index) == "LastUsed" and getgenv().NoCdMoves then
+               return 0
+           end
 local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
 local FarmMethod = "Above"
-local Method = "Fans"
-local tweenspeed = 450
+local Method = "Combat"
+local tweenspeed = 500
 local Distance = 3
 local function GetDistance(Endpoint)
 	if typeof(Endpoint) == "Instance" then
@@ -214,13 +222,16 @@ local function attack2(method)
 	local character = client.Character
 	local humanoidRootPart = character.HumanoidRootPart
 	local humanoid = character.Humanoid
-
-	for i=1,8 do
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-                task.wait(.2)
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
-		task.wait(.2)
-	end
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 1, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 2, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 3, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 4, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 5, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 6, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 7, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 8, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+        repeat task.wait(0.1) until LocalPlayer:WaitForChild("combotangasd123").Value <= 0
 end
 
 local attackMethods = {
@@ -239,7 +250,6 @@ task.spawn(function()
 			end
 			if killaura2 then
 				attack2(attackMethods[Method])
-				task.wait(1.55)
 			end
 		end)
 	end
@@ -280,13 +290,6 @@ spawn(function()
 			local args = {[1] = "remove_blocking",[2] = game:GetService("ReplicatedStorage"):WaitForChild("PlayerValues"):WaitForChild("GamerSuperpro_YT3")}game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("To_Server"):WaitForChild("Handle_Initiate_S_"):InvokeServer(unpack(args))
 		end
 	end
-end)
-
-oldindex = hookmetamethod(game, "__index", function(index, value)
-	if tostring(index) == "LastUsed" and getgenv().NoCdMoves then
-		return 0
-	end
-	return oldindex(index, value)
 end)
 
 -- God Mode 2
@@ -403,7 +406,9 @@ local MainTab = HashiraHub:CreateTab({
 local FarmingSection = MainTab:CreateSection({
 	Name = "Farming"
 })
-
+local MiscSection = MainTab:CreateSection({
+	Name = "Misc"
+})
 FarmingSection:AddToggle({
 	Name = "Auto Farm All Bosses",
 	Flag = "AFAB",
@@ -453,7 +458,15 @@ FarmingSection:AddToggle({
 })
 
 FarmingSection:AddToggle({
-	Name = "God Mode(Only Kamado)",
+	Name = "Auto Collect Orb",
+	Flag = "AutoCollectOrbToggle",
+	Callback = function(Value)
+		getgenv().AutoCollectOrbD = Value
+	end
+})
+
+MiscSection:AddToggle({
+	Name = "Kamado God Mode",
 	Flag = "GodMode",
 	Callback = function(Value)
 		if Value then
@@ -465,28 +478,36 @@ FarmingSection:AddToggle({
 	end
 })
 
-FarmingSection:AddToggle({
-	Name = "God Mode 2(Only Akaza)",
+MiscSection:AddToggle({
+	Name = "Akaza God Mode",
 	Flag = "GodMode2",
 	Callback = function(Value)
 		getgenv().GodMode2 = Value
 	end
 })
-FarmingSection:AddToggle({
+MiscSection:AddToggle({
 	Name = "Scythe God Mode",
 	Flag = "GodMode3",
 	Callback = function(Value)
 		getgenv().GodMode3 = Value
 	end
 })
-FarmingSection:AddToggle({
-	Name = "Auto Collect Orb",
-	Flag = "AutoCollectOrbToggle",
+MiscSection:AddToggle({
+	Name = "No Sun Dmg",
+	Flag = "NoSunDmg",
 	Callback = function(Value)
-		getgenv().AutoCollectOrbD = Value
+	getgenv().NoSunDmg = Value
+       game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"].Gameplay["Sun_Damage"].Disabled = getgenv().NoSunDmg
 	end
 })
-
+MiscSection:AddToggle({
+	Name = "No Sun Dmg",
+	Flag = "NoSunDmg",
+	Callback = function(Value)
+	getgenv().NoSunDmg = Value
+       game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"].Gameplay["Sun_Damage"].Disabled = getgenv().NoSunDmg
+	end
+})
 local FarmingSettingSection = MainTab:CreateSection({
 	Name = "Farming Settings"
 })
