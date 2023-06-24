@@ -1,3 +1,12 @@
+local UIs = game:GetService("UserInputService")
+UIs.WindowFocused:Connect(function()
+        RunService:Set3dRenderingEnabled(true)
+        setfpscap(360)
+    end)
+    UIs.WindowFocusReleased:Connect(function()
+        RunService:Set3dRenderingEnabled(false)
+        setfpscap(360)
+    end)
 LPH_JIT_MAX = function(...) return(...) end;
 getrenv()._G.handle_irregular = nil
 getrenv()._G.cuasdamsndasdasd = nil
@@ -189,14 +198,12 @@ local function attack(method)
 	local character = client.Character
 	local humanoidRootPart = character.HumanoidRootPart
 	local humanoid = character.Humanoid
-
-	for i = 1, 14 do
-		handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, i, "ground_slash")
-		task.wait(.2)
-	end
-
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
-	handleInitiateS:FireServer(method, client, character, humanoidRootPart, humanoid, 919, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 1, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 2, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 3, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 4, "ground_slash")
+        handleInitiateS:FireServer("fist_combat", LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+        repeat task.wait(0.1) until LocalPlayer:WaitForChild("combotangasd123").Value <= 0
 end
 
 local function attack2(method)
@@ -229,7 +236,6 @@ task.spawn(function()
 		pcall(function()
 			if killaura then
 				attack(attackMethods[Method])
-				task.wait(2)
 			end
 			if killaura2 then
 				attack2(attackMethods[Method])
