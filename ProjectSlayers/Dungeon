@@ -22,9 +22,9 @@ oldnamecall = hookmetamethod(game, "__namecall", function(self, ...)
 	if isFireServer and self.Name == "To_Server_commends" and args[1] == "set_platform_stand" then
 		return
 	end
-	if not checkcaller() and self.Name == "Handle_Initiate_S" and args[1] == "ground_slash" or args[2] == "fist_combat" and getgenv().killaura then
+	if not checkcaller() and self.Name == "Handle_Initiate_S" and args[1] == "fist_combat" or args[7] == "ground_slash" and getgenv().killaura then
 		return
-	elseif not checkcaller() and self.Name == "Handle_Initiate_S" and args[1] == "ground_slash" or args[2] == "fist_combat" and getgenv().killaura2 then
+	elseif not checkcaller() and self.Name == "Handle_Initiate_S" and args[1] == "fist_combat" or args[7] == "ground_slash" and getgenv().killaura2 then
 		return
 	end
 	if isFireServer and #args == 2 and type(args[1]) == "boolean" then
