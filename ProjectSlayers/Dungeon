@@ -9,58 +9,72 @@ UIs.WindowFocusReleased:Connect(function()
 	setfpscap(360)
 end)
 
-local oldnamecall;
-local oldindex;
+local oldnamecall
+local oldindex
+
 oldnamecall = hookmetamethod(game, "__namecall", function(self, ...)
 	local args = { ... }
 	local method = getnamecallmethod()
-	local isFireServer = (string.lower(method) == "fireserver") == true
-	local isKick = (string.lower(method) == "kick") == true
+	local isFireServer = string.lower(method) == "fireserver"
+	local isKick = string.lower(method) == "kick"
+
 	if isFireServer and self.Name == "moddelteasdasd123" then
 		return
 	end
+
 	if isFireServer and self.Name == "To_Server_commends" and args[1] == "set_platform_stand" then
 		return
 	end
-	if not checkcaller() and self.Name == "Handle_Initiate_S" and args[1] == "fist_combat" or args[7] == "ground_slash" and getgenv().killaura then
-		return
-	elseif not checkcaller() and self.Name == "Handle_Initiate_S" and args[1] == "fist_combat" or args[7] == "ground_slash" and getgenv().killaura2 then
+
+	if not checkcaller() and self.Name == "Handle_Initiate_S" and (args[1] == "fist_combat" and getgenv().killaura or getgenv().killaura2) then
 		return
 	end
+
 	if isFireServer and #args == 2 and type(args[1]) == "boolean" then
 		return
 	end
+
 	if isFireServer and #args == 1 and args[1] == "yes" and self.Name == "check_clanasd123123" then
 		return
 	end
+
 	if isKick and not checkcaller() then
 		return
 	end
+
 	return oldnamecall(self, unpack(args))
 end)
+
 oldindex = hookmetamethod(game, "__index", function(index, value)
 	if tostring(index) == "LastUsed" and getgenv().NoCdMoves then
 		return 0
 	end
+
 	if not checkcaller() and tostring(value) == "WalkSpeed" then
 		return 16
 	end
+
 	if not checkcaller() and tostring(value) == "JumpPower" then
 		return 50
 	end
+
 	return oldindex(index, value)
 end)
+
 local mod = require(game:GetService("ReplicatedStorage").Modules.Server["Skills_Modules_Handler"])
 getrenv()._G.handle_irregular = nil
 getrenv()._G.cuasdamsndasdasd = nil
 mod.Kick = function()
 	return
 end
-game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["Client_Global_utility"].Disabled = true
-game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["client_global_delete_script"].Disabled = true
-game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["Client_Global_utility"]:GetPropertyChangedSignal("Disabled"):Connect(function()
-	game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["Client_Global_utility"].Disabled = true
-	game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["client_global_delete_script"].Disabled = true
+
+local smallScripts = game:GetService("Players").LocalPlayer.PlayerScripts.Small_Scripts
+smallScripts.Client_Global_utility.Disabled = true
+smallScripts.client_global_delete_script.Disabled = true
+
+smallScripts.Client_Global_utility:GetPropertyChangedSignal("Disabled"):Connect(function()
+	smallScripts.Client_Global_utility.Disabled = true
+	smallScripts.client_global_delete_script.Disabled = true
 end)
 	local LP = game.Players.LocalPlayer
 	local client = game.Players.LocalPlayer
