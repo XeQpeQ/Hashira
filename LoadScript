@@ -30,6 +30,10 @@ end
 if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1", true))()
 end
+-- Trade Hub
+if game.PlaceId == 13489082242 then
+loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub", true))()
+end
 else
 game.Players.LocalPlayer:Kick("You are not on the white list")
 end
