@@ -1,0 +1,48 @@
+game:GetService("Players").LocalPlayer.PlayerGui.Npc_Dialogue.LocalScript.Tables_Library.Sell_Tang.Frame.Holder.LocalScript.Enabled = true
+game:GetService("Workspace").Ouw0ppnpc.UpperTorso.ProximityPrompt:Destroy()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+	Name = "Hashira Hub",
+	LoadingTitle = "Project Slayers",
+	LoadingSubtitle = "Loading...",
+})
+
+
+local MainTab = Window:CreateTab("Main", 4483362458) 
+local BuySection = MainTab:CreateSection("Buy Section")
+local Button = MainTab:CreateButton({
+	Name = "Buy Bandages",
+	Callback = function(v)
+		local args = {[1] = "buysomething",[2] = game:GetService("Players").LocalPlayer,[3] = "Bandage",[4] = game:GetService("ReplicatedStorage"):WaitForChild("Player_Data"):WaitForChild("GamerSuperpro_YT3"):WaitForChild("Yen"),[5] = game:GetService("ReplicatedStorage"):WaitForChild("Player_Data"):WaitForChild("GamerSuperpro_YT3"):WaitForChild("Inventory"),[6] = getgenv().BB}game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("To_Server"):WaitForChild("Handle_Initiate_S"):FireServer(unpack(args))
+	end,
+})
+local Input = MainTab:CreateInput({
+	Name = "Bandages",
+	PlaceholderText = "Input Quantity",
+	RemoveTextAfterFocusLost = false,
+	Callback = function(Text)
+		getgenv().BB = Text
+	end,
+})
+local SellSection = MainTab:CreateSection("Sell Section")
+local Button = MainTab:CreateButton({
+	Name = "Sell Bandages",
+	Callback = function(Value)
+		for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Npc_Dialogue.LocalScript.Tables_Library.Sell_Tang.Frame.Holder.Ac_Holder:GetDescendants()) do
+			if v.Name:match("Img_Holder") and v.Img.Image == "http://www.roblox.com/asset/?id=7675451723" then
+				local lastThreeDigits = v.Parent.Name:match("(%d%d%d)$")
+				if lastThreeDigits then
+					local args = {[1] = {[lastThreeDigits] = getgenv().SB},[2] = 0,[3] = 0} game:GetService("ReplicatedStorage"):WaitForChild("Sell_Items_tang"):InvokeServer(unpack(args))
+				end
+			end
+		end
+	end
+})
+local Input = MainTab:CreateInput({
+	Name = "Bandages",
+	PlaceholderText = "Input Quantity",
+	RemoveTextAfterFocusLost = false,
+	Callback = function(Text)
+		getgenv().SB = Text
+	end,
+})
