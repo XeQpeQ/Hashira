@@ -26,10 +26,6 @@ oldnamecall = hookmetamethod(game, "__namecall", function(self, ...)
 		return
 	end
 
-	if not checkcaller() and self.Name == "Handle_Initiate_S" and (args[1] == "fist_combat" and getgenv().killaura or getgenv().killaura2) then
-		return
-	end
-
 	if isFireServer and #args == 2 and type(args[1]) == "boolean" then
 		return
 	end
@@ -192,12 +188,17 @@ end)
 		local character = client.Character
 		local humanoidRootPart = character.HumanoidRootPart
 		local humanoid = character.Humanoid
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 1, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 2, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 3, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 4, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
-		repeat task.wait(0.1) until game.Players.LocalPlayer:WaitForChild("combotangasd123").Value <= 0
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 1, "ground_slash")
+                task.wait(.2)
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 2, "ground_slash")
+                task.wait(.2)
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 3, "ground_slash")
+                task.wait(.2)
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 4, "ground_slash")
+                task.wait(.2)
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 5, "ground_slash")
+                task.wait(.2)
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
 	end
 
 	local function attack2(method)
@@ -208,16 +209,22 @@ end)
 		local character = client.Character
 		local humanoidRootPart = character.HumanoidRootPart
 		local humanoid = character.Humanoid
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 1, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 2, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 3, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 4, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 5, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 6, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 7, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 8, "ground_slash")
-		handleInitiateS:FireServer("fist_combat", game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
-		repeat task.wait(0.1) until game.Players.LocalPlayer:WaitForChild("combotangasd123").Value <= 0
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, math.huge, "ground_slash")
+		handleInitiateS:FireServer(method, game.Players.LocalPlayer, character, humanoidRootPart, humanoid, 919, "ground_slash")
 	end
 
 	local attackMethods = {
@@ -232,10 +239,12 @@ end)
 		while wait() do
 			pcall(function()
 				if killaura then
-					attack(attackMethods[Method])
+			attack(attackMethods[Method])
+                                task.wait(1.7)
 				end
 				if killaura2 then
 					attack2(attackMethods[Method])
+                                        task.wait(1.55)
 				end
 			end)
 		end
