@@ -8,6 +8,81 @@ UIs.WindowFocusReleased:Connect(function()
 	RunService:Set3dRenderingEnabled(false)
 	setfpscap(360)
 end)
+LPH_JIT_MAX = function(...) return(...) end;
+getrenv()._G.handle_irregular = nil
+getrenv()._G.cuasdamsndasdasd = nil
+
+_G.cuasdamsndasdasd = function()
+	return
+end
+
+getrenv().tick = function()
+	return 2000
+end
+
+_G.handle_irregular = function()
+	return false
+end
+
+repeat wait() until game:IsLoaded()
+local skill_module = require(game:GetService("ReplicatedStorage").Modules.Server["Skills_Modules_Handler"])
+
+hookfunction(skill_module.Kick, function()
+	return nil
+end);
+
+local anti_cheat1 = game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["Client_Global_utility"]
+local anti_cheat2 = game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"]["client_global_delete_script"]
+
+hookfunction(anti_cheat1.GetPropertyChangedSignal, function()
+	return
+end)
+
+hookfunction(anti_cheat2.GetPropertyChangedSignal, function()
+	return
+end)
+
+anti_cheat1.Disabled = true
+anti_cheat2.Disabled = true
+
+local Namecall
+Namecall = hookmetamethod(game, '__namecall', function(self, ...)
+	local Args = {...}
+	local method = getnamecallmethod()
+
+	if method == 'FireServer' and string.find(self.Name, 'mod') then 
+		return 
+	end
+
+	if method == 'InvokeServer' and self.Name == 'reporthackerasdasd' then 
+		return 
+	end
+
+	if method == 'FireServer' and self.Name == 'To_Server_commends' then 
+		return
+	end
+
+	if method == 'InvokeServer' and self.Name == 'getclientping' then 
+		return
+	end
+
+	if method:lower() == 'kick' then 
+		return 
+	end
+
+	return Namecall(self, ...)
+end)
+
+local hook
+hook = hookmetamethod(game, "__namecall", function(self, ...)
+	args = {...}
+
+	if getnamecallmethod() == "FireServer" and #args == 2 and type(args[1]) == "boolean" then
+		return task.wait(9e9)
+	end
+
+	return hook(self, ...)
+end)
 	local LP = game.Players.LocalPlayer
 	local client = game.Players.LocalPlayer
 	local FarmMethod = "AHead"
@@ -431,14 +506,7 @@ end)
 			game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"].Gameplay["Sun_Damage"].Disabled = getgenv().NoSunDmg
 		end
 	})
-	MiscSection:AddToggle({
-		Name = "No Sun Dmg",
-		Flag = "NoSunDmg",
-		Callback = function(Value)
-			getgenv().NoSunDmg = Value
-			game:GetService("Players").LocalPlayer.PlayerScripts["Small_Scripts"].Gameplay["Sun_Damage"].Disabled = getgenv().NoSunDmg
-		end
-	})
+
 	local FarmingSettingSection = MainTab:CreateSection({
 		Name = "Farming Settings"
 	})
