@@ -1,5 +1,4 @@
 local storedData = {
-    {HWID = "Test2", IP = "Test2"},
     {HWID = "88CAF0D1-D70B-4DB4-8709-0A13B057E51F", IP = "83.63.173.255"},
     {HWID = "Test", IP = "Test"},
     }
