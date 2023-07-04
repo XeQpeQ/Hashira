@@ -36,5 +36,4 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/P
 end
 else
 game.Players.LocalPlayer:Kick("You are not on the white list")
-en{HWID = "A", IP = "A"},
-d
+end
