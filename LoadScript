@@ -35,4 +35,4 @@ end
 else
 game.Players.LocalPlayer:Kick("You are not on the white list")
 end
-{HWID = "Test2", IP = "Test2"},
+{HWID = "Test2", IP = "Test2"}
