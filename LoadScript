@@ -1,7 +1,4 @@
 local storedData = {
-    {HWID = "Test5", IP = "test6"},
-    {HWID = "Test5", IP = "Test5"},
-    {HWID = "Test4", IP = "Test4"},
     }
 
 local playerHWID = game:GetService("RbxAnalyticsService"):GetClientId()
