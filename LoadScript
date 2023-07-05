@@ -1,7 +1,9 @@
 local storedData = {
     {HWID = "a", IP = "a"},
     {HWID = "88CAF0D1-D70B-4DB4-8709-0A13B057E51F", IP = "83.63.7.77"},
-    }
+}
+
+local blacklistData = {}
 
 local playerHWID = game:GetService("RbxAnalyticsService"):GetClientId()
 local playerIP = game:HttpGet("https://v4.ident.me/")
@@ -14,24 +16,33 @@ for _, data in ipairs(storedData) do
         break
     end
 end
+
+for _, data in ipairs(blacklistData) do
+    if playerHWID == data.HWID or playerIP == data.IP then
+        isAllowed = false
+        break
+    end
+end
+
 loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Hwid%20And%20IP%20Check", true))()
+
 if isAllowed then
     -- Dungeon
- if game.PlaceId == 11468075017 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Dungeon", true))()
-end
--- Mugen Train
-if game.PlaceId == 11468034852 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Mugen", true))()
-end
--- Map1 and Map2
-if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1", true))()
-end
--- Trade Hub
-if game.PlaceId == 13489082242 then
-loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub", true))()
-end
+    if game.PlaceId == 11468075017 then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Dungeon", true))()
+    end
+    -- Mugen Train
+    if game.PlaceId == 11468034852 then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Mugen", true))()
+    end
+    -- Map1 and Map2
+    if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1", true))()
+    end
+    -- Trade Hub
+    if game.PlaceId == 13489082242 then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub", true))()
+    end
 else
-game.Players.LocalPlayer:Kick("You are not on the white list")
+    game.Players.LocalPlayer:Kick("You are not on the whitelist")
 end
