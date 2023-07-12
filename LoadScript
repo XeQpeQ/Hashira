@@ -1,5 +1,6 @@
 local storedData = {
     {HWID = "y", IP = "y"},
+    {HWID = "y", IP = "y"},
 }
 
 local blacklistData = {
