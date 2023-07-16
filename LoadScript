@@ -1,11 +1,8 @@
 local storedData = {
-    {HWID = "y", IP = "y"},
-    {HWID = "y", IP = "y"},
+    {HWID = "88CAF0D1-D70B-4DB4-8709-0A13B057E51F", IP = "83.63.7.77"},
 }
 
 local blacklistData = {
-    {HWID = "Test", IP = "Test"},
-    {HWID = "88CAF0D1-D70B-4DB4-8709-0A13B057E51F", IP = "83.63.7.77"},
 }
 
 local playerHWID = game:GetService("RbxAnalyticsService"):GetClientId()
