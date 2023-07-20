@@ -41,10 +41,10 @@ task.spawn(function()
 	while task.wait() do
 		pcall(function()
 			if getgenv().AutoMaxOpenEggs then
-                if Test.Text == "MAX" then
+			   if Test.Text == "MAX" then
                for i,v in pairs(Signals) do
                 firesignal(Button[v])
-end
+                      end
                  end
 			end
 		end)
