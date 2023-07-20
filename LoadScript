@@ -1,5 +1,6 @@
 local storedData = {
     {HWID = "88CAF0D1-D70B-4DB4-8709-0A13B057E51F", IP = "83.63.7.77"},
+    {HWID = "a224ab9a-7434-444d-84d7-528ef422868d", IP = "91.164.12.90"},
 }
 
 local blacklistData = {
