@@ -50,10 +50,21 @@ task.spawn(function()
 		end)
 	end
 end)
-task.spawn(function()
 
-if getgenv().AutoDupe then
-      game.ReplicatedStorage.Remote.SetSettings:FireServer({
+FarmSection:AddToggle({
+	Name = "Auto MaxOpen Eggs(AFK)",
+	Flag = "aoe",
+	Callback = function(Value)
+		getgenv().AutoMaxOpenEggs = Value
+	end
+})
+
+FarmSection:AddToggle({
+	Name = "Auto Dupe",
+	Flag = "ad",
+	Callback = function(Value)
+		if Value then
+game.ReplicatedStorage.Remote.SetSettings:FireServer({
 ["AutoSell"] = {
        ["Epic"] = false,
        ["Common"] = true,
@@ -105,22 +116,8 @@ if getgenv().AutoDupe then
 
 wait(.5)
 
-game.Players.LocalPlayer:Kick()      
+game.Players.LocalPlayer:Kick()
 end
-end)
-FarmSection:AddToggle({
-	Name = "Auto MaxOpen Eggs(AFK)",
-	Flag = "aoe",
-	Callback = function(Value)
-		getgenv().AutoMaxOpenEggs = Value
-	end
-})
-
-FarmSection:AddToggle({
-	Name = "Auto Dupe",
-	Flag = "ad",
-	Callback = function(Value)
-		getgenv().AutoDupe = Value
 	end
 })
 
