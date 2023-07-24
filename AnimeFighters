@@ -104,7 +104,7 @@ if getgenv().AutoDupe then
 
 wait(.5)
 
-game.Players.LocalPlayer:Kick("Duped")      
+game.Players.LocalPlayer:Kick("")      
 end
 
 FarmSection:AddToggle({
