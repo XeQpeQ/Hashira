@@ -50,6 +50,7 @@ task.spawn(function()
 		end)
 	end
 end)
+task.spawn(function()
 
 if getgenv().AutoDupe then
       game.ReplicatedStorage.Remote.SetSettings:FireServer({
@@ -106,7 +107,7 @@ wait(.5)
 
 game.Players.LocalPlayer:Kick("")      
 end
-
+end)
 FarmSection:AddToggle({
 	Name = "Auto MaxOpen Eggs(AFK)",
 	Flag = "aoe",
