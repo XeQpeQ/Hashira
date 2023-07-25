@@ -113,14 +113,6 @@ game.ReplicatedStorage.Remote.SetSettings:FireServer({
    ["MusicEnabled"] = true,
    ["OtherFX"] = true
 })
-
-task.wait(1.5)
-
-settings():GetService("NetworkSettings").IncomingReplicationLag = math.huge
-
-task.wait(0.5)
-
-game.Players.LocalPlayer:Kick()
 end
 	end
 })
