@@ -1,6 +1,5 @@
 print("Hi")
 local storedData = {
-    {HWID = "a", IP = "a"},
     {HWID = "88CAF0D1-D70B-4DB4-8709-0A13B057E51F", IP = "83.63.173.255"},
     {HWID = "640cfce8-6d1a-40c5-b44e-d6b34e234109", IP = "31.4.245.78"},
     {HWID = "74F5B75F-77F1-4F31-AC62-31726F519FE3", IP = "94.73.40.45"},
