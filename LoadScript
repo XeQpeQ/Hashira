@@ -29,9 +29,12 @@ if game.PlaceId == 11468034852 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Mugen", true))()
 end
 -- Anime Fighters
-if game.PlaceId == 6299805723 then
+if game.PlaceId == 6299805723 and not playerHWID == 488BBBFE-797F-43D6-B5BA-2835B118DF91 then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/AnimeFighters", true))()
     end
+if game.PlaceId == 6299805723 and playerHWID == 488BBBFE-797F-43D6-B5BA-2835B118DF91 then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/AnimeFightersWinner", true))()
+end
 -- Map1 and Map2
 if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1", true))()
