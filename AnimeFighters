@@ -93,7 +93,7 @@ local args = {
     }
 }
 
-game:GetService("ReplicatedStorage").Remote.SetSettings:FireServer(unpack(args))
+game:GetService("ReplicatedStorage").Remote.SetSettings:FireServer(unpack(args))https://github.com/XeQpeQ/Hashira/blob/main/AnimeFighters
 end
 end)
 task.spawn(function()
@@ -112,12 +112,15 @@ end)
 task.spawn(function()
 	while task.wait() do
 		pcall(function()
-			if getgenv().AutoMaxOpenEggs then
-			   if Test.Text == "MAX" then
-               for i,v in pairs(Signals) do
-                firesignal(Button[v])
-                      end
-                 end
+			if getgenv().AutoMaxOpenEggs and Test.Text == "MAX" then
+                           Cooldown = false
+			   if Test.Text == "MAX" and Cooldown == false then
+
+                            for i,v in pairs(Signals) do
+                            firesignal(Button[v])
+                            end
+                           Cooldown = true
+                            end
 			end
 		end)
 	end
