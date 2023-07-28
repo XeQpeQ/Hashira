@@ -92,7 +92,7 @@ local args = {
     }
 }
 
-game:GetService("ReplicatedStorage").Remote.SetSettings:FireServer(unpack(args))https://github.com/XeQpeQ/Hashira/blob/main/AnimeFighters
+game:GetService("ReplicatedStorage").Remote.SetSettings:FireServer(unpack(args))
 end)
 task.spawn(function()
 	while task.wait() do
