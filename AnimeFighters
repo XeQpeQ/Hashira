@@ -110,17 +110,19 @@ task.spawn(function()
 	end
 end)
 task.spawn(function()
+	local prevText = nil
+
 	while task.wait() do
 		pcall(function()
-			if getgenv().AutoMaxOpenEggs and Test.Text == "MAX" then
-                           Cooldown = false
-			   if Test.Text == "MAX" and Cooldown == false then
+			if getgenv().AutoMaxOpenEggs then
+				if Test.Text == "MAX" and prevText ~= "MAX" then
+					for i,v in pairs(Signals) do
+						firesignal(Button[v])
+					end
+				end
 
-                            for i,v in pairs(Signals) do
-                            firesignal(Button[v])
-                            end
-                           Cooldown = true
-                            end
+				-- Actualiza el valor prevText para el próximo ciclo
+				prevText = Test.Text
 			end
 		end)
 	end
