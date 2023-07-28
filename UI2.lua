@@ -21,15 +21,12 @@ local HTTPService = game:GetService("HttpService")
 
 local Library = {}
 
-function Library:Create(table)
+ function Library:Create(table)
     local windowName = table.Name
-
-    local dark_UI = Instance.new("ScreenGui")
-    dark_UI.Name = windowName
 
     local main = Instance.new("Frame")
     main.Name = "main"
-    main.BackgroundColor3 = Color3.fromRGB(255, 223, 0) -- Gold color (RGB: 255, 223, 0)
+    main.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
     main.Position = UDim2.fromScale(0.244, 0.292)
     main.Size = UDim2.fromOffset(488, 299)
 
@@ -39,8 +36,8 @@ function Library:Create(table)
     title.Text = windowName
     title.TextColor3 = Color3.fromRGB(168, 168, 168)
     title.TextSize = 20
-    title.BackgroundColor3 = Color3.fromRGB(255, 223, 0) -- Gold color (RGB: 255, 223, 0)
-    title.BackgroundTransparency = 0.5 -- You can adjust this value for transparency
+    title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    title.BackgroundTransparency = 1
     title.Position = UDim2.fromScale(0.41, 0.0543)
     title.Size = UDim2.fromOffset(83, 28)
     title.Parent = main
@@ -76,11 +73,11 @@ function Library:Create(table)
     local shadow = Instance.new("ImageLabel")
     shadow.Name = "shadow"
     shadow.Image = "rbxassetid://297774371"
-    shadow.ImageColor3 = Color3.fromRGB(255, 223, 0) -- Gold color (RGB: 255, 223, 0)
+    shadow.ImageColor3 = Color3.fromRGB(15, 15, 15)
     shadow.ImageTransparency = 0.3
     shadow.SliceCenter = Rect.new(20, 20, 280, 280)
-    shadow.BackgroundColor3 = Color3.fromRGB(255, 223, 0) -- Gold color (RGB: 255, 223, 0)
-    shadow.BackgroundTransparency = 0.5 -- You can adjust this value for transparency
+    shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    shadow.BackgroundTransparency = 1
     shadow.Position = UDim2.fromScale(0.224, 0.272)
     shadow.Selectable = true
     shadow.Size = UDim2.fromOffset(529, 331)
