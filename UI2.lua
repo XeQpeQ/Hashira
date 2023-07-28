@@ -19,8 +19,13 @@ local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HTTPService = game:GetService("HttpService")
 
+local Library = {}
+
 function Library:Create(table)
     local windowName = table.Name
+
+    local dark_UI = Instance.new("ScreenGui")
+    dark_UI.Name = windowName
 
     local main = Instance.new("Frame")
     main.Name = "main"
@@ -80,7 +85,7 @@ function Library:Create(table)
     shadow.Selectable = true
     shadow.Size = UDim2.fromOffset(529, 331)
     shadow.ZIndex = -1
-    shadow.Parent = main
+    shadow.Parent = dark_UI
 
     tabContainer.Parent = main
     main.Parent = dark_UI
@@ -95,6 +100,10 @@ function Library:Create(table)
     function tabHandler:Exit()
         dark_UI:Destroy()
     end
+
+    return tabHandler
+end
+
 
     function tabHandler:Tab(name)
         --// Creating the yttab
