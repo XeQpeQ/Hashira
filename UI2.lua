@@ -26,7 +26,7 @@ local Library = {}
 
     local main = Instance.new("Frame")
     main.Name = "main"
-    main.BackgroundColor3 = Color3.fromRGB(255, 223, 0)
+    main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     main.Position = UDim2.fromScale(0.244, 0.292)
     main.Size = UDim2.fromOffset(488, 299)
 
@@ -76,8 +76,8 @@ local Library = {}
     shadow.ImageColor3 = Color3.fromRGB(255, 223, 0)
     shadow.ImageTransparency = 0.3
     shadow.SliceCenter = Rect.new(20, 20, 280, 280)
-    shadow.BackgroundColor3 = Color3.fromRGB(255, 223, 0)
-    shadow.BackgroundTransparency = 1
+    shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    shadow.BackgroundTransparency = 0.5
     shadow.Position = UDim2.fromScale(0.224, 0.272)
     shadow.Selectable = true
     shadow.Size = UDim2.fromOffset(529, 331)
