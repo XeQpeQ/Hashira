@@ -101,9 +101,6 @@ function Library:Create(table)
         dark_UI:Destroy()
     end
 
-    return tabHandler
-end
-
 
     function tabHandler:Tab(name)
         --// Creating the yttab
