@@ -9,61 +9,28 @@ game:service('Players').LocalPlayer.Idled:connect(function()
     wait(2)
     ab.Text = "Estado: Activo"
 end)
-local HashiraUI = loadstring(game:HttpGet('https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI.lua'))()
-local Wait = HashiraUI.subs.Wait
-local HashiraHub = HashiraUI:CreateWindow({
-	Name = "Hashira Hub",
-	Themeable = {
-		Info = "Project Slayers"
-	}
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = BlekLib:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
 })
-local MainTab = HashiraHub:CreateTab({
-	Name = "Main"
-})
-local FarmSection = MainTab:CreateSection({
-	Name = "Farm Section"
-})
-
-task.spawn(function()
-	while task.wait() do
-		pcall(function()
-			if getgenv().AutoFarmCoins then
-			for i,v in pairs(game:GetService("Workspace").Effects:GetDescendants()) do 
-            if v.Name == "Base" then 
-             v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0,0,0) 
-                    end 
-                end 
-			end
-		end)
-	end
+local maintab = win:Tab('Main')
+local uitab = win:Tab('UI')
+uitab:Button('Destroy GUI', function()
+    win:Exit()
 end)
-task.spawn(function()
-	while task.wait() do
-		pcall(function()
-			if getgenv().AutoMaxOpenEggs then
-			   if Test.Text == "MAX" then
-               for i,v in pairs(Signals) do
-                firesignal(Button[v])
-                      end
-                 end
-			end
-		end)
-	end
+maintab:Toggle('Auto Farm MaxOpen Eggs(AFK)', function(v)
+    getgenv().AutoMaxOpenEggs = v
 end)
-
-FarmSection:AddToggle({
-	Name = "Auto MaxOpen Eggs(AFK)",
-	Flag = "aoe",
-	Callback = function(Value)
-		getgenv().AutoMaxOpenEggs = Value
-	end
-})
-
-FarmSection:AddToggle({
-	Name = "Auto Dupe",
-	Flag = "ad",
-	Callback = function(Value)
-		if Value then
+maintab:Toggle('Auto Collect Coins', function(v)
+    getgenv().AutoFarmCoins = v
+end)
+maintab:Button('Auto Dupe(One Click)', function(Value)
+    if Value then
 local args = {
     [1] = {
         ["AutoSell"] = {
@@ -128,13 +95,30 @@ local args = {
 
 game:GetService("ReplicatedStorage").Remote.SetSettings:FireServer(unpack(args))
 end
+end)
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoFarmCoins then
+			for i,v in pairs(game:GetService("Workspace").Effects:GetDescendants()) do 
+            if v.Name == "Base" then 
+             v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0,0,0) 
+                    end 
+                end 
+			end
+		end)
 	end
-})
-
-FarmSection:AddToggle({
-	Name = "Auto Farm Coins",
-	Flag = "afc",
-	Callback = function(Value)
-		getgenv().AutoFarmCoins = Value
+end)
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoMaxOpenEggs then
+			   if Test.Text == "MAX" then
+               for i,v in pairs(Signals) do
+                firesignal(Button[v])
+                      end
+                 end
+			end
+		end)
 	end
-})
+end)
