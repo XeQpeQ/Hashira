@@ -10,7 +10,7 @@ game:service('Players').LocalPlayer.Idled:connect(function()
     ab.Text = "Estado: Activo"
 end)
 local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
-local win = Hashira:Create({
+local win = HashiraUI:Create({
     Name = "Hashira Hub",
     StartupSound = {
         Toggle = false,
