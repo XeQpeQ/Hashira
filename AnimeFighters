@@ -26,13 +26,15 @@ uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 maintab:Toggle('Auto Farm MaxOpen Eggs(AFK)', function(v)
-for i,v in pairs(Signals) do
-firesignal(Test2[v])
+if v then
+for i,va in pairs(Signals) do
+firesignal(Test2[va])
 end
-for i,v in pairs(Signals) do
-firesignal(Button2[v])
+for i,va in pairs(Signals) do
+firesignal(Button2[va])
 end
 task.wait(1)
+end
 getgenv().AutoMaxOpenEggs = v
 end)
 maintab:Toggle('Auto Collect Coins', function(v)
