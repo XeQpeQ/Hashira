@@ -1,8 +1,6 @@
 local Signals = {'MouseButton1Down', 'MouseButton1Click', 'Activated'}
 local Test = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Hatch.Buttons.Multi.Price
-local Test2 = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Hatch.Buttons.Multi
 local Button = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.MultiHatch.Main.Yes
-local Button2 = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.MultiHatch.Main.No
 local bb = game:service('VirtualUser')
 game:service('Players').LocalPlayer.Idled:connect(function()
     bb:CaptureController()
