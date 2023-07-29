@@ -33,7 +33,6 @@ end
 for i,va in pairs(Signals) do
 firesignal(Button2[va])
 end
-task.wait(1)
 end
 getgenv().AutoMaxOpenEggs = v
 end)
