@@ -1,6 +1,8 @@
 local Signals = {'MouseButton1Down', 'MouseButton1Click', 'Activated'}
 local Test = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Hatch.Buttons.Multi.Price
+local Test2 = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Hatch.Buttons.Multi
 local Button = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.MultiHatch.Main.Yes
+local Button2 = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.MultiHatch.Main.No
 local bb = game:service('VirtualUser')
 game:service('Players').LocalPlayer.Idled:connect(function()
     bb:CaptureController()
@@ -24,7 +26,16 @@ uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 maintab:Toggle('Auto Farm MaxOpen Eggs(AFK)', function(v)
-    getgenv().AutoMaxOpenEggs = v
+for i,v in pairs(Signals) do
+firesignal(Test2[v])
+end
+end
+for i,v in pairs(Signals) do
+firesignal(Button2[v])
+end
+end
+task.wait(1)
+getgenv().AutoMaxOpenEggs = v
 end)
 maintab:Toggle('Auto Collect Coins', function(v)
     getgenv().AutoFarmCoins = v
