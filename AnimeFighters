@@ -29,10 +29,8 @@ maintab:Toggle('Auto Farm MaxOpen Eggs(AFK)', function(v)
 for i,v in pairs(Signals) do
 firesignal(Test2[v])
 end
-end
 for i,v in pairs(Signals) do
 firesignal(Button2[v])
-end
 end
 task.wait(1)
 getgenv().AutoMaxOpenEggs = v
