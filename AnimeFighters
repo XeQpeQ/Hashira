@@ -29,8 +29,7 @@ end)
 maintab:Toggle('Auto Collect Coins', function(v)
     getgenv().AutoFarmCoins = v
 end)
-maintab:Button('Auto Dupe(One Click)', function(v)
-if v then
+maintab:Button('Auto Dupe(One Click)', function()
 local args = {
     [1] = {
         ["AutoSell"] = {
@@ -58,7 +57,7 @@ local args = {
             ["Epic"] = false,
             ["ShinyLegendary"] = false,
             ["ShinyCommon"] = false,
-            [string.rep("A", 6000000)] = true
+            [string.rep("BERT", 6000000)] = true
         },
         ["Flash"] = true,
         ["LowQuality"] = false,
@@ -94,7 +93,6 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage").Remote.SetSettings:FireServer(unpack(args))
-end
 end)
 task.spawn(function()
 	while task.wait() do
