@@ -93,6 +93,7 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage").Remote.SetSettings:FireServer(unpack(args))
+print("Works!")
 end)
 task.spawn(function()
 	while task.wait() do
