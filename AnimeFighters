@@ -29,7 +29,7 @@ end)
 maintab:Toggle('Auto Collect Coins', function(v)
     getgenv().AutoFarmCoins = v
 end)
-maintab:Button('Auto Dupe(One Click)', function()
+maintab:Button('Auto Dupe(One Click)', function(v)
 if v then
 local args = {
     [1] = {
