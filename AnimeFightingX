@@ -20,6 +20,9 @@ local uitab = win:Tab('UI')
 uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
+maintab:Toggle('Auto Quest', function(v)
+getgenv().AutoQuest = v
+end)
 maintab:Toggle('Auto Attack', function(v)
 getgenv().AutoAttack = v
 end)
@@ -31,6 +34,25 @@ maintab:Toggle('Auto Chakra', function(v)
 end)
 maintab:Toggle('Auto Sword', function(v)
     getgenv().AutoSword = v
+end)
+maintab:Toggle('Auto Speed', function(v)
+    getgenv().AutoSpeed = v
+end)
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoQuest then
+if game:GetService("Players")["LocalPlayer"].PlayerGui.Menu.FollowingQuest.progress["1"].Percentage.Text == "100%" then
+local args = {
+    [1] = "StartQuest",
+    [2] = "FirstQuest"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Quests/RemoteEvent"):FireServer(unpack(args))
+end
+			end
+		end)
+	end
 end)
 task.spawn(function()
 	while task.wait() do
@@ -83,6 +105,20 @@ task.spawn(function()
 local args = {
     [1] = "TrainStat",
     [2] = "Sword"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Stats/RemoteFunction"):InvokeServer(unpack(args))
+			end
+		end)
+	end
+end)
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoSpeed then
+local args = {
+    [1] = "TrainStat",
+    [2] = "Speed"
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Stats/RemoteFunction"):InvokeServer(unpack(args))
