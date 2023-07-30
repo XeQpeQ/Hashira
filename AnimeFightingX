@@ -1,0 +1,95 @@
+local Signals = {'MouseButton1Down', 'MouseButton1Click', 'Activated'}
+local Test = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Hatch.Buttons.Multi.Price
+local Button = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.MultiHatch.Main.Yes
+local bb = game:service('VirtualUser')
+game:service('Players').LocalPlayer.Idled:connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    wait(2)
+    ab.Text = "Estado: Activo"
+end)
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+local maintab = win:Tab('Main')
+local uitab = win:Tab('UI')
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
+maintab:Toggle('Auto Attack', function(v)
+getgenv().AutoAttack = v
+end)
+maintab:Toggle('Auto Defense', function(v)
+getgenv().AutoDefense = v
+end)
+maintab:Toggle('Auto Chakra', function(v)
+    getgenv().AutoChakra = v
+end)
+maintab:Toggle('Auto Sword', function(v)
+    getgenv().AutoSword = v
+end)
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoAttack then
+local args = {
+    [1] = "TrainStat",
+    [2] = "Strength"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Stats/RemoteFunction"):InvokeServer(unpack(args))
+			end
+		end)
+	end
+end)
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoDefense then
+local args = {
+    [1] = "TrainStat",
+    [2] = "Durability"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Stats/RemoteFunction"):InvokeServer(unpack(args))
+
+			end
+		end)
+	end
+end)
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoChakra then
+local args = {
+    [1] = "TrainStat",
+    [2] = "Chakra"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Stats/RemoteFunction"):InvokeServer(unpack(args))
+
+			end
+		end)
+	end
+end)
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoSword then
+local args = {
+    [1] = "TrainStat",
+    [2] = "Sword"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Stats/RemoteFunction"):InvokeServer(unpack(args))
+			end
+		end)
+	end
+end)
