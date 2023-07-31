@@ -32,11 +32,6 @@ maintab:Toggle('Auto Collect Coins', function(v)
     getgenv().AutoFarmCoins = v
 end)
 maintab:Button('Auto Dupe(One Click)', function()
-local A = 1
-for i,v in pairs(Signals) do
-firesignal(Button2[v])
-end
-task.wait(.5)
 for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Pets.Main.Scroll:GetDescendants()) do
 if v.Name == "UID" then
 local args = {
@@ -47,12 +42,6 @@ local args = {
     [3] = 3
 }
 game:GetService("ReplicatedStorage").Remote.SaveTeam:FireServer(unpack(args))
-A = 2
-end
-end
-if A == 2 then
-for i,v in pairs(Signals) do
-firesignal(CloseButton2[v])
 end
 end
 end)
