@@ -30,70 +30,21 @@ maintab:Toggle('Auto Collect Coins', function(v)
     getgenv().AutoFarmCoins = v
 end)
 maintab:Button('Auto Dupe(One Click)', function()
+game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Pets.Visible = true
+for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Pets.Main.Scroll:GetDescendants()) do
+if v.Name == "UID" then
 local args = {
     [1] = {
-        ["AutoSell"] = {
-            ["ShinyMythical"] = false,
-            ["Mythical"] = false,
-            ["ShinySecret"] = false,
-            ["Rare"] = false,
-            ["Common"] = false,
-            ["ShinyRare"] = false,
-            ["Secret"] = false,
-            ["ShinyEpic"] = false,
-            ["Epic"] = false,
-            ["ShinyLegendary"] = false,
-            ["ShinyCommon"] = false,
-            ["Legendary"] = false
-        },
-        ["CriticalHits"] = true,
-        ["ChatAnnouncements"] = {
-            ["ShinyMythical"] = true,
-            ["Common"] = false,
-            ["Rare"] = false,
-            ["ShinyRare"] = false,
-            ["ShinyEpic"] = false,
-            ["Mythical"] = true,
-            ["Epic"] = false,
-            ["ShinyLegendary"] = false,
-            ["ShinyCommon"] = false,
-            [string.rep("BERT", 6000000)] = true
-        },
-        ["Flash"] = true,
-        ["LowQuality"] = false,
-        ["AllPets"] = false,
-        ["Performance"] = false,
-        ["AutoLock"] = {
-            ["ShinyMythical"] = true,
-            ["Mythical"] = true,
-            ["ShinySecret"] = true,
-            ["Rare"] = false,
-            ["Common"] = false,
-            ["ShinyRare"] = false,
-            ["Secret"] = true,
-            ["ShinyEpic"] = true,
-            ["Epic"] = false,
-            ["ShinyLegendary"] = true,
-            ["ShinyCommon"] = false,
-            ["Legendary"] = true
-        },
-        ["AutoSellPassives"] = {},
-        ["SoundsEnabled"] = true,
-        ["AutoClicker"] = true,
-        ["AutoSprint"] = false,
-        ["InstantPassive"] = false,
-        ["TradesEnabled"] = true,
-        ["OwnFX"] = true,
-        ["MagnetPass"] = true,
-        ["BoostPaused"] = false,
-        ["AutoAttack"] = false,
-        ["MusicEnabled"] = true,
-        ["OtherFX"] = true
-    }
+        [string.rep("B", 4200000)] = v.Value
+    },
+    [2] = "AFS_Is_Dogshit",
+    [3] = 3
 }
 
-game:GetService("ReplicatedStorage").Remote.SetSettings:FireServer(unpack(args))
-print("Works!")
+game:GetService("ReplicatedStorage").Remote.SaveTeam:FireServer(unpack(args))
+end
+end
+game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Pets.Visible = false
 end)
 task.spawn(function()
 	while task.wait() do
