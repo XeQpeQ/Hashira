@@ -34,7 +34,7 @@ end)
 maintab:Button('Auto Dupe(One Click)', function()
 for i,v in pairs(Signals) do
 firesignal(Button2[v])
-end
+task.wait(.5)
 for i,v2 in pairs(game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Pets.Main.Scroll:GetDescendants()) do
 if v2.Name == "UID" then
 local args = {
@@ -48,8 +48,8 @@ local args = {
 game:GetService("ReplicatedStorage").Remote.SaveTeam:FireServer(unpack(args))
 end
 end
-for i,v3 in pairs(Signals) do
-firesignal(CloseButton2[v3])
+task.wait(.5)
+firesignal(CloseButton2[v])
 end
 end)
 task.spawn(function()
