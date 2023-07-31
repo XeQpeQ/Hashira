@@ -31,7 +31,7 @@ end)
 maintab:Toggle('Auto Collect Coins', function(v)
     getgenv().AutoFarmCoins = v
 end)
-maintab:Button('Auto Dupe(One Click)', function(v)
+maintab:Button('Auto Dupe(One Click)', function()
 for i,v in pairs(Signals) do
 firesignal(Button2[v])
 end
@@ -48,9 +48,8 @@ local args = {
 game:GetService("ReplicatedStorage").Remote.SaveTeam:FireServer(unpack(args))
 end
 end
-task.wait(.5)
-for i,v in pairs(Signals) do
-firesignal(CloseButton2[v])
+for i,v3 in pairs(Signals) do
+firesignal(CloseButton2[v3])
 end
 end)
 task.spawn(function()
