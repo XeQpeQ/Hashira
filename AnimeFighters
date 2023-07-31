@@ -29,10 +29,12 @@ end)
 maintab:Toggle('Auto Collect Coins', function(v)
     getgenv().AutoFarmCoins = v
 end)
-maintab:Button('Auto Dupe(One Click)', function()
-game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Pets.Visible = true
-for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Pets.Main.Scroll:GetDescendants()) do
-if v.Name == "UID" then
+maintab:Button('Auto Dupe(One Click)', function(v)
+if v then
+if game.Players.LocalPlayer.MainGui.Pets.Visible == false then
+game.Players.LocalPlayer.MainGui.Pets.Visible = true
+for i,v2 in pairs(game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Pets.Main.Scroll:GetDescendants()) do
+if v2.Name == "UID" then
 local args = {
     [1] = {
         [string.rep("B", 4200000)] = v.Value
@@ -44,8 +46,10 @@ local args = {
 game:GetService("ReplicatedStorage").Remote.SaveTeam:FireServer(unpack(args))
 end
 end
-task.wait(1)
-game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Pets.Visible = false
+task.wait(0.5)
+game.Players.LocalPlayer.MainGui.Pets.Visible = false
+end
+end
 end)
 task.spawn(function()
 	while task.wait() do
