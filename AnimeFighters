@@ -1,4 +1,4 @@
-Haz en este codigo que se guarde la configuracion de cuando habilito algun valor como toggle local Signals = {'MouseButton1Down', 'MouseButton1Click', 'Activated'}
+local Signals = {'MouseButton1Down', 'MouseButton1Click', 'Activated'}
 local Test = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Hatch.Buttons.Multi.Price
 local Button = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.MultiHatch.Main.Yes
 local Button2 = game:GetService("Players")["LocalPlayer"].PlayerGui.MainGui.Menu.Tabs.Pets
