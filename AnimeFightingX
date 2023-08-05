@@ -1,3 +1,16 @@
+local player = game.Players.LocalPlayer
+local workspace = game:GetService("Workspace")
+
+local crateFolder = workspace.Scriptable.Locations.Crates
+local crateParts = crateFolder:GetChildren()
+local index = 1
+while index <= #crateParts do
+    local cratePart = crateParts[index]
+    if cratePart:IsA("BasePart") then
+        player.Character:SetPrimaryPartCFrame(cratePart.CFrame)
+    end
+    index = index + 1
+end
 local bb = game:service('VirtualUser')
 game:service('Players').LocalPlayer.Idled:connect(function()
     bb:CaptureController()
@@ -19,6 +32,9 @@ local maintab = win:Tab('Main')
 local uitab = win:Tab('UI')
 uitab:Button('Destroy GUI', function()
     win:Exit()
+end)
+maintab:Toggle('Auto Chest', function(v)
+getgenv().AutoChest = v
 end)
 maintab:Toggle('Auto Quest', function(v)
 getgenv().AutoQuest = v
@@ -122,6 +138,25 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Stats/RemoteFunction"):InvokeServer(unpack(args))
+			end
+		end)
+	end
+end)
+task.spawn(function()
+	while task.wait(1) do
+		pcall(function()
+			if getgenv().AutoChest then
+local crates = game:GetService("Workspace").Scriptable.Crates
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    for _, crate in ipairs(crates:GetDescendants()) do
+        if crate:IsA("BasePart") then
+            humanoidRootPart.CFrame = crate.CFrame
+        end
+    end
+    local N2 = game:GetService("VirtualInputManager")
+    N2:SendKeyEvent(true, Enum.KeyCode.E, false, game)
 			end
 		end)
 	end
