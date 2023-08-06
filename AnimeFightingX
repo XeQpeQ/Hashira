@@ -1,16 +1,23 @@
-local player = game.Players.LocalPlayer
-local workspace = game:GetService("Workspace")
+local cratesLocation = game:GetService("Workspace").Scriptable.Locations.Crates
+local fruitsLocation = game:GetService("Workspace").Scriptable.Locations.Fruits
 
-local crateFolder = workspace.Scriptable.Locations.Crates
-local crateParts = crateFolder:GetChildren()
-local index = 1
-while index <= #crateParts do
-    local cratePart = crateParts[index]
-    if cratePart:IsA("BasePart") then
-        player.Character:SetPrimaryPartCFrame(cratePart.CFrame)
+local function teleportTo(location)
+    local character = game.Players.LocalPlayer.Character
+    if character then
+        character:SetPrimaryPartCFrame(location.CFrame)
     end
-    index = index + 1
 end
+
+for _, part in ipairs(cratesLocation:GetChildren()) do
+    teleportTo(part)
+    task.wait(0.5)
+end
+
+for _, part in ipairs(fruitsLocation:GetChildren()) do
+    teleportTo(part)
+task.wait(0.5)
+end
+task.wait(5)
 local bb = game:service('VirtualUser')
 game:service('Players').LocalPlayer.Idled:connect(function()
     bb:CaptureController()
