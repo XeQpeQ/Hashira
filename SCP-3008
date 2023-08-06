@@ -1,0 +1,39 @@
+local bb = game:service('VirtualUser')
+game:service('Players').LocalPlayer.Idled:connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    wait(2)
+    ab.Text = "Estado: Activo"
+end)
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+local maintab = win:Tab('Main')
+local uitab = win:Tab('UI')
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
+
+maintab:Button('Teleport Player Name', function(v)
+if getgenv().TeleportPlayer then
+print("Hi")
+end
+end)
+maintab:Textbox('FOV', function(v)
+    getgenv().TeleportPlayer = "A"
+end)
+task.spawn(function()
+	while task.wait(1) do
+		pcall(function()
+			if getgenv().AutoChest then
+			end
+		end)
+	end
+end)
