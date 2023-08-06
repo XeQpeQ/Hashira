@@ -17,23 +17,58 @@ local win = HashiraUI:Create({
 })
 local maintab = win:Tab('Main')
 local uitab = win:Tab('UI')
+local Text
+local Text2
 uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
-maintab:Button('Teleport Player Name', function(v)
-if getgenv().TeleportPlayer then
-print("Hi")
+maintab:Button('Teleport to Item', function()
+local player = game.Players.LocalPlayer
+local Character = player.Character
+
+if not Character then
+    return
+end
+
+local targetPositions = {}
+
+for i, v in ipairs(game:GetService("Workspace"):GetDescendants()) do
+    if v:IsA("Model") and v.Name:match(Text) and not v:IsDescendantOf(game:GetService("Workspace").GameObjects.Physical.Items) then
+        table.insert(targetPositions, v:GetModelCFrame().Position)
+    end
+end
+
+if #targetPositions > 0 then
+    local targetPosition = targetPositions[math.random(#targetPositions)]
+    Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+end
+
+end)
+maintab:Textbox('Name of Item', function(v)
+Text = v
+end)
+maintab:Button('Teleport To Player', function()
+local player = game.Players.LocalPlayer
+local Character = player.Character
+
+if not Character then
+    return
+end
+
+local targetPositions = {}
+
+for i, v in ipairs(game:GetService("Workspace").GameObjects.Physical.Players:GetChildren()) do
+    if v:IsA("Model") and v.Name:match(Text2) then
+        table.insert(targetPositions, v:GetModelCFrame().Position)
+    end
+end
+
+if #targetPositions > 0 then
+    local targetPosition = targetPositions[math.random(#targetPositions)]
+    Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
 end
 end)
-maintab:Textbox('FOV', function(v)
-    getgenv().TeleportPlayer = "A"
-end)
-task.spawn(function()
-	while task.wait(1) do
-		pcall(function()
-			if getgenv().AutoChest then
-			end
-		end)
-	end
+maintab:Textbox('Username', function(v2)
+Text2 = v2
 end)
