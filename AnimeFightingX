@@ -1,3 +1,4 @@
+
 local cratesLocation = game:GetService("Workspace").Scriptable.Locations.Crates
 local fruitsLocation = game:GetService("Workspace").Scriptable.Locations.Fruits
 
@@ -18,6 +19,19 @@ for _, part in ipairs(fruitsLocation:GetChildren()) do
 task.wait(0.5)
 end
 task.wait(5)
+local function getCrate()
+    local dist, thing = math.huge
+    for _,v in pairs(game:GetService("Workspace").Scriptable.Crates:GetChildren()) do
+        if v.Name == "legendary" or v.Name == "epic" or v.Name == "rare" or v.Name == "common" then
+            local mag = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:IsA("BasePart").Position).magnitude
+            if mag < dist then
+                dist = mag
+                thing = v
+            end
+        end
+    end
+    return thing
+end
 local bb = game:service('VirtualUser')
 game:service('Players').LocalPlayer.Idled:connect(function()
     bb:CaptureController()
@@ -153,15 +167,7 @@ task.spawn(function()
 	while task.wait(1) do
 		pcall(function()
 			if getgenv().AutoChest then
-local crates = game:GetService("Workspace").Scriptable.Crates
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    for _, crate in ipairs(crates:GetDescendants()) do
-        if crate:IsA("BasePart") then
-            humanoidRootPart.CFrame = crate.CFrame
-        end
-    end
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = getCrate():FindFirstChildWhichIsA("BasePart").CFrame
     local N2 = game:GetService("VirtualInputManager")
     N2:SendKeyEvent(true, Enum.KeyCode.E, false, game)
 			end
