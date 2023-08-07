@@ -37,7 +37,7 @@ if game.PlaceId == 11545598432 then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/AnimeFightingX", true))()
     end
 if game.PlaceId == 2768379856 then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/SCP-3008, true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/SCP-3008", true))()
 end
 -- Map1 and Map2
 if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
