@@ -32,18 +32,28 @@ if not Character then
 end
 
 local targetPositions = {}
+local closestDistance = math.huge
+local closestPosition = nil
 
 for i, v in ipairs(game:GetService("Workspace"):GetDescendants()) do
     if v:IsA("Model") and v.Name:match(Text) and not v:IsDescendantOf(game:GetService("Workspace").GameObjects.Physical.Items) then
-        table.insert(targetPositions, v:GetModelCFrame().Position)
+        local targetPosition = v:GetModelCFrame().Position
+        table.insert(targetPositions, targetPosition)
+        local distance = (Character.PrimaryPart.Position - targetPosition).magnitude
+        if distance < closestDistance then
+            closestDistance = distance
+            closestPosition = targetPosition
+        end
     end
 end
 
-if #targetPositions > 0 then
+if closestPosition then
+    Character:SetPrimaryPartCFrame(CFrame.new(closestPosition))
+elseif #targetPositions > 0 then
     local targetPosition = targetPositions[math.random(#targetPositions)]
     Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
 end
-
+end)
 end)
 maintab:Textbox('Name of Item', function(v)
 Text = v
