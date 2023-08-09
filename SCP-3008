@@ -2,6 +2,27 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
+local gui, mainFrame, originalSize, isExpanded
+
+-- Function to toggle GUI visibility
+local function toggleGUIVisibility(visible)
+    if gui then
+        gui.Enabled = visible
+    end
+end
+
+-- Function to toggle GUI size
+local function toggleGUISize(expand)
+    if mainFrame and originalSize then
+        if expand then
+            mainFrame.Size = originalSize
+        else
+            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modify the size as needed
+        end
+        isExpanded = expand
+    end
+end
+
 -- PC Script
 if not UserInputService.TouchEnabled then
     local bb = game:GetService('VirtualUser')
@@ -85,16 +106,17 @@ end
 
 -- Mobile GUI
 if UserInputService.TouchEnabled and player then
-    local gui = Instance.new("ScreenGui")
-    gui.IgnoreGuiInset = true
-    gui.Parent = player.PlayerGui
-
     local screenWidth, screenHeight = workspace.CurrentCamera.ViewportSize.X, workspace.CurrentCamera.ViewportSize.Y
     local guiWidth = math.min(screenWidth * 0.8, 300)
     local guiHeight = math.min(screenHeight * 0.4, 200)
+    originalSize = UDim2.new(0, guiWidth, 0, guiHeight)
 
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Size = UDim2.new(0, guiWidth, 0, guiHeight)
+    gui = Instance.new("ScreenGui")
+    gui.IgnoreGuiInset = true
+    gui.Parent = player.PlayerGui
+
+    mainFrame = Instance.new("Frame")
+    mainFrame.Size = originalSize
     mainFrame.Position = UDim2.new(0.5, -guiWidth / 2, 0.5, -guiHeight / 2)
     mainFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
     mainFrame.BorderSizePixel = 0
@@ -109,6 +131,13 @@ if UserInputService.TouchEnabled and player then
     title.TextColor3 = Color3.new(1, 1, 1)
     title.Font = Enum.Font.SourceSansBold
     title.Parent = mainFrame
+
+    local toggleSizeButton = Instance.new("TextButton")
+    toggleSizeButton.Size = UDim2.new(0, 60, 0, 20)
+    toggleSizeButton.Position = UDim2.new(0.5, -30, 1, -20)
+    toggleSizeButton.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5)
+    toggleSizeButton.Text = "Toggle Size"
+    toggleSizeButton.Parent = mainFrame
 
     local teleportButton = Instance.new("TextButton")
     teleportButton.Size = UDim2.new(0.8, 0, 0.15, 0)
@@ -144,5 +173,17 @@ if UserInputService.TouchEnabled and player then
             local targetPosition = targetPositions[math.random(#targetPositions)]
             Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
         end
+    end)
+
+    toggleSizeButton.MouseButton1Click:Connect(function()
+        toggleGUISize(not isExpanded)
+    end)
+
+    player.CharacterAdded:Connect(function(character)
+        toggleGUIVisibility(true)
+    end)
+
+    player.CharacterRemoving:Connect(function()
+        toggleGUIVisibility(false)
     end)
 end
