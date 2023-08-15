@@ -25,6 +25,14 @@ if isAllowed then
  if game.PlaceId == 11468075017 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Dungeon", true))()
 end
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+LocalPlayer.Chatted:Connect(function(message)
+    if message == "/e Anim" then
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Animation%20Stealer", true))()
+    end
+end)
 -- Mugen Train
 if game.PlaceId == 11468034852 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Mugen", true))()
