@@ -72,7 +72,7 @@ end
 dragify(HashiraUI)
 
 HashiraGui.Name = "HashiraGui"
-HashiraGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+HashiraGui.Parent = game.CoreGui
 
 HashiraUI.Name = "HashiraUI"
 HashiraUI.Parent = HashiraGui
@@ -282,7 +282,7 @@ Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.Position = UDim2.new(0, 0, 0.0847457871, 0)
 Frame.Size = UDim2.new(1, 0, 0, 0)
 end
-local function createToggle(Name,tabName,SectionName,callback)
+function Handler:createToggle(Name,tabName,SectionName,callback)
 	local Value = false
 	callback = callback or function() end
 	local Toggle = Instance.new("Frame")
