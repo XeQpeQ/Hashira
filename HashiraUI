@@ -1,0 +1,346 @@
+local HashiraGui = Instance.new("ScreenGui")
+local HashiraUI = Instance.new("ImageLabel")
+local TextLabel = Instance.new("TextLabel")
+local Border = Instance.new("Frame")
+local menuList = Instance.new("ImageButton")
+local Tabs = Instance.new("ImageLabel")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+local TextLabel_2 = Instance.new("TextLabel")
+local Border_2 = Instance.new("Frame")
+local close = Instance.new("ImageButton")
+local TextLabel_3 = Instance.new("TextLabel")
+local TabsFrame = Instance.new("Folder")
+local Frame = Instance.new("Frame")
+local Toggle = Instance.new("Frame")
+local Frame_2 = Instance.new("ImageLabel")
+local ToggleButton = Instance.new("ImageButton")
+local TextLabel_4 = Instance.new("TextLabel")
+local Toggle_2 = Instance.new("Frame")
+local Frame_3 = Instance.new("ImageLabel")
+local ToggleButton_2 = Instance.new("ImageButton")
+local TextLabel_5 = Instance.new("TextLabel")
+local Toggle_3 = Instance.new("Frame")
+local Frame_4 = Instance.new("ImageLabel")
+local ToggleButton_3 = Instance.new("ImageButton")
+local TextLabel_6 = Instance.new("TextLabel")
+local Toggle_4 = Instance.new("Frame")
+local Frame_5 = Instance.new("ImageLabel")
+local ToggleButton_4 = Instance.new("ImageButton")
+local TextLabel_7 = Instance.new("TextLabel")
+local Toggle_5 = Instance.new("Frame")
+local Frame_6 = Instance.new("ImageLabel")
+local ToggleButton_5 = Instance.new("ImageButton")
+local TextLabel_8 = Instance.new("TextLabel")
+local Toggle_6 = Instance.new("Frame")
+local Frame_7 = Instance.new("ImageLabel")
+local ToggleButton_6 = Instance.new("ImageButton")
+local TextLabel_9 = Instance.new("TextLabel")
+local UIS = game:GetService("UserInputService")
+
+local function dragify(Frame,boool)
+	local frametomove = Frame
+	local dragToggle,dragInput,dragStart,startPos
+	local dragSpeed = 0
+	local function updateInput(input)
+		local Delta = input.Position - dragStart
+		frametomove.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
+	end
+	Frame.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and UIS:GetFocusedTextBox() == nil then
+			dragToggle = true
+			dragStart = input.Position
+			startPos = frametomove.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragToggle = false
+				end
+			end)	
+		end
+	end)
+	Frame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	UIS.InputChanged:Connect(function(input)
+		if input == dragInput and dragToggle then
+			updateInput(input)
+		end
+	end)
+end
+dragify(HashiraUI)
+
+HashiraGui.Name = "HashiraGui"
+HashiraGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+HashiraUI.Name = "HashiraUI"
+HashiraUI.Parent = HashiraGui
+HashiraUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+HashiraUI.BackgroundTransparency = 1.000
+HashiraUI.Position = UDim2.new(0.343539506, 0, 0.307095349, 0)
+HashiraUI.Size = UDim2.new(0.386476934, 0, 0.433915198, 0)
+HashiraUI.Image = "rbxassetid://3570695787"
+HashiraUI.ImageColor3 = Color3.fromRGB(71, 71, 71)
+HashiraUI.ScaleType = Enum.ScaleType.Slice
+HashiraUI.SliceCenter = Rect.new(100, 100, 100, 100)
+HashiraUI.SliceScale = 0.120
+
+TextLabel.Parent = HashiraUI
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Size = UDim2.new(1, 0, 0.132183909, 0)
+TextLabel.Font = Enum.Font.Creepster
+TextLabel.Text = "Hashira "
+TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14.000
+TextLabel.TextWrapped = true
+
+Border.Name = "Border"
+Border.Parent = HashiraUI
+Border.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Border.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Border.BorderSizePixel = 0
+Border.Position = UDim2.new(-0.00158449274, 0, 0.132183909, 0)
+Border.Size = UDim2.new(0.999814868, 0, -0.00574712642, 0)
+
+menuList.Name = "menuList"
+menuList.Parent = HashiraUI
+menuList.BackgroundTransparency = 1.000
+menuList.Position = UDim2.new(0.0119759561, 0, 0.0287356321, 0)
+menuList.Size = UDim2.new(0.048939459, 0, 0.0718390793, 0)
+menuList.ZIndex = 2
+menuList.Image = "rbxassetid://6764432408"
+menuList.ImageRectOffset = Vector2.new(150, 0)
+menuList.ImageRectSize = Vector2.new(50, 50)
+
+Tabs.Name = "Tabs"
+Tabs.Parent = HashiraUI
+Tabs.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Tabs.BackgroundTransparency = 1.000
+Tabs.Size = UDim2.new(0.529863656, 0, 1, 0)
+Tabs.Visible = false
+Tabs.ZIndex = 2
+Tabs.Image = "rbxassetid://3570695787"
+Tabs.ImageColor3 = Color3.fromRGB(99, 99, 99)
+Tabs.ScaleType = Enum.ScaleType.Slice
+Tabs.SliceCenter = Rect.new(100, 100, 100, 100)
+Tabs.SliceScale = 0.120
+
+ScrollingFrame.Parent = Tabs
+ScrollingFrame.Active = true
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ScrollingFrame.BackgroundTransparency = 1.000
+ScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ScrollingFrame.BorderSizePixel = 0
+ScrollingFrame.Position = UDim2.new(0, 0, 0.163793102, 0)
+ScrollingFrame.Size = UDim2.new(1, 0, 0.836206973, 0)
+ScrollingFrame.ZIndex = 2
+ScrollingFrame.ScrollBarThickness = 1
+
+UIListLayout.Parent = ScrollingFrame
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 10)
+
+TextLabel_2.Parent = Tabs
+TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.BackgroundTransparency = 1.000
+TextLabel_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel_2.BorderSizePixel = 0
+TextLabel_2.Position = UDim2.new(0.00950871594, 0, 0, 0)
+TextLabel_2.Size = UDim2.new(0.954545438, 0, 0.143678159, 0)
+TextLabel_2.ZIndex = 2
+TextLabel_2.Font = Enum.Font.Creepster
+TextLabel_2.Text = "Tabs"
+TextLabel_2.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel_2.TextScaled = true
+TextLabel_2.TextSize = 14.000
+TextLabel_2.TextWrapped = true
+
+Border_2.Name = "Border"
+Border_2.Parent = Tabs
+Border_2.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Border_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Border_2.BorderSizePixel = 0
+Border_2.Position = UDim2.new(0, 0, 0.143678159, 0)
+Border_2.Size = UDim2.new(0.99878633, 0, -0.014367816, 0)
+Border_2.ZIndex = 2
+
+close.Name = "close"
+close.Parent = Tabs
+close.BackgroundTransparency = 1.000
+close.Position = UDim2.new(0.921643376, 0, 0, 0)
+close.Size = UDim2.new(0.0747594535, 0, 0.0718390793, 0)
+close.ZIndex = 2
+close.Image = "rbxassetid://3926305904"
+close.ImageColor3 = Color3.fromRGB(255, 0, 0)
+close.ImageRectOffset = Vector2.new(284, 4)
+close.ImageRectSize = Vector2.new(24, 24)
+
+TextLabel_3.Parent = HashiraUI
+TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_3.BackgroundTransparency = 1.000
+TextLabel_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel_3.BorderSizePixel = 0
+TextLabel_3.Position = UDim2.new(-0.00158449274, 0, 0.149425283, 0)
+TextLabel_3.Size = UDim2.new(0.998230398, 0, 0.0775862038, 0)
+TextLabel_3.Font = Enum.Font.FredokaOne
+TextLabel_3.Text = "CurrentTab: None"
+TextLabel_3.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel_3.TextScaled = true
+TextLabel_3.TextSize = 14.000
+TextLabel_3.TextWrapped = true
+
+TabsFrame.Name = "TabsFrame"
+TabsFrame.Parent = HashiraUI
+
+local function createTab(Name)
+local Tab = Instance.new("ScrollingFrame")
+Tab.Name = Name
+Tab.Parent = TabsFrame
+Tab.Active = true
+Tab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Tab.BackgroundTransparency = 1.000
+Tab.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Tab.BorderSizePixel = 0
+Tab.Position = UDim2.new(0, 0, 0.244252875, 0)
+Tab.Size = UDim2.new(0.994576156, 0, 0.755747139, 0)
+Tab.ScrollBarThickness = 5 
+local TextButton_2 = Instance.new("TextButton")
+TextButton_2.Parent = ScrollingFrame
+TextButton_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton_2.BackgroundTransparency = 1.000
+TextButton_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton_2.BorderSizePixel = 0
+TextButton_2.Size = UDim2.new(0.962901831, 0, 0.0481099598, 0)
+TextButton_2.ZIndex = 3
+TextButton_2.Font = Enum.Font.FredokaOne
+TextButton_2.Text = Name
+TextButton_2.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextButton_2.TextScaled = true
+TextButton_2.TextSize = 14.000
+TextButton_2.TextWrapped = true
+local TextButton_Roundify_12px_2 = Instance.new("ImageLabel")
+TextButton_Roundify_12px_2.Name = "TextButton_Roundify_12px"
+TextButton_Roundify_12px_2.Parent = TextButton_2
+TextButton_Roundify_12px_2.Active = true
+TextButton_Roundify_12px_2.AnchorPoint = Vector2.new(0.5, 0.5)
+TextButton_Roundify_12px_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton_Roundify_12px_2.BackgroundTransparency = 1.000
+TextButton_Roundify_12px_2.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextButton_Roundify_12px_2.Selectable = true
+TextButton_Roundify_12px_2.Size = UDim2.new(1, 0, 1, 0)
+TextButton_Roundify_12px_2.ZIndex = 2
+TextButton_Roundify_12px_2.Image = "rbxassetid://3570695787"
+TextButton_Roundify_12px_2.ImageColor3 = Color3.fromRGB(68, 68, 68)
+TextButton_Roundify_12px_2.ScaleType = Enum.ScaleType.Slice
+TextButton_Roundify_12px_2.SliceCenter = Rect.new(100, 100, 100, 100)
+TextButton_Roundify_12px_2.SliceScale = 0.120
+local UIGridLayout = Instance.new("UIGridLayout")
+UIGridLayout.Parent = Tab
+UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIGridLayout.CellSize = UDim2.new(0, 200, 0.180000007, 100)
+end
+local function createSection(Name,TabName)
+local Section = Instance.new("Frame")
+Section.Name = Name
+Section.Parent = TabsFrame[TabName]
+Section.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+Section.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Section.BorderSizePixel = 2
+Section.Position = UDim2.new(0.63809526, 0, 0.120304242, 0)
+Section.Size = UDim2.new(0.211111113, 0, 0.570342183, 0)
+Section.Visible = true
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint.Parent = Section
+local UIListLayout_2 = Instance.new("UIListLayout")
+UIListLayout_2.Parent = Section
+UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+local TitleSection = Instance.new("TextLabel")
+TitleSection.Name = "TitleSection"
+TitleSection.Parent = Section
+TitleSection.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TitleSection.BackgroundTransparency = 1.000
+TitleSection.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TitleSection.BorderSizePixel = 0
+TitleSection.Position = UDim2.new(-0.0549999997, 0, -0.0680763274, 0)
+TitleSection.Size = UDim2.new(1, 0, 0.0847457722, 0)
+TitleSection.Font = Enum.Font.FredokaOne
+TitleSection.Text = Name
+TitleSection.TextColor3 = Color3.fromRGB(0, 0, 0)
+TitleSection.TextScaled = true
+TitleSection.TextSize = 14.000
+TitleSection.TextWrapped = true
+local Frame = Instance.new("Frame")
+Frame.Parent = Section
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.Position = UDim2.new(0, 0, 0.0847457871, 0)
+Frame.Size = UDim2.new(1, 0, 0, 0)
+end
+local function createToggle(Name,tabName,SectionName,callback)
+	local Value = false
+	callback = callback or function() end
+	local Toggle = Instance.new("Frame")
+	Toggle.Name = "Toggle"
+	Toggle.Parent = TabsFrame[tabName][SectionName]
+	Toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Toggle.BackgroundTransparency = 1.000
+	Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Toggle.BorderSizePixel = 0
+	Toggle.Position = UDim2.new(0.126984134, 0, 0.0948512033, 0)
+	Toggle.Size = UDim2.new(0.730158746, 0, 0.139487311, 0)
+	
+	local Frame_2 = Instance.new("ImageLabel")
+	Frame_2.Name = "Frame"
+	Frame_2.Parent = Toggle
+	Frame_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Frame_2.BackgroundTransparency = 1.000
+	Frame_2.Position = UDim2.new(0.944999933, 0, 0.462314427, 0)
+	Frame_2.Size = UDim2.new(0.214890435, 0, 0.562499106, 0)
+	Frame_2.Image = "rbxassetid://3570695787"
+	Frame_2.ImageColor3 = Color3.fromRGB(66, 65, 65)
+	Frame_2.ScaleType = Enum.ScaleType.Slice
+	Frame_2.SliceCenter = Rect.new(100, 100, 100, 100)
+	Frame_2.SliceScale = 0.120
+	
+	local ToggleButton = Instance.new("ImageButton")
+	ToggleButton.Name = "ToggleButton"
+	ToggleButton.Parent = Frame_2
+	ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ToggleButton.BackgroundTransparency = 1.000
+	ToggleButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ToggleButton.BorderSizePixel = 0
+	ToggleButton.Position = UDim2.new(-0.00699999183, 0, 0, 0)
+	ToggleButton.Size = UDim2.new(0.473999977, 0, 0.953999877, 0)
+	ToggleButton.Image = "rbxassetid://3570695787"
+	ToggleButton.MouseButton1Click:Connect(function()
+		Value = not Value
+		callback(Value)
+		if Value then
+			ToggleButton.Position = UDim2.new(0.503, 0, 0, 0)
+			Frame_2.ImageColor3 = Color3.fromRGB(14, 207, 0)
+		else
+			ToggleButton.Position = UDim2.new(-0.00699999183, 0, 0, 0)
+			Frame_2.ImageColor3 = Color3.fromRGB(66, 65, 65)
+		end
+	end)
+	local TextLabel_4 = Instance.new("TextLabel")
+	TextLabel_4.Parent = Frame_2
+	TextLabel_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel_4.BackgroundTransparency = 1.000
+	TextLabel_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TextLabel_4.BorderSizePixel = 0
+	TextLabel_4.Position = UDim2.new(-3.47346044, 0, -0.255746126, 0)
+	TextLabel_4.Size = UDim2.new(3.11215377, 0, 1.45273948, 0)
+	TextLabel_4.Font = Enum.Font.FredokaOne
+	TextLabel_4.Text = Name
+	TextLabel_4.TextColor3 = Color3.fromRGB(0, 0, 0)
+	TextLabel_4.TextScaled = true
+	TextLabel_4.TextSize = 14.000
+	TextLabel_4.TextWrapped = true
+end
