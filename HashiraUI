@@ -70,11 +70,6 @@ local function dragify(Frame,boool)
 end
 dragify(HashiraUI)
 
-for _,v in pairs(game.CoreGui:GetChildren()) do
-    if v.Name == "HashiraGui" then
-        v:Destroy()
-    end
-end
 local HashiraGui = Instance.new("ScreenGui")
 HashiraGui.Name = "HashiraGui"
 HashiraGui.Parent = game.CoreGui
