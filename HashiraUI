@@ -72,7 +72,7 @@ end
 dragify(HashiraUI)
 
 HashiraGui.Name = "HashiraGui"
-HashiraGui.Parent = game.CoreGui
+HashiraGui.Parent = game.Players.LocalPlayer.PlayerGui
 
 HashiraUI.Name = "HashiraUI"
 HashiraUI.Parent = HashiraGui
