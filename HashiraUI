@@ -196,8 +196,8 @@ TextLabel_3.TextWrapped = true
 
 TabsFrame.Name = "TabsFrame"
 TabsFrame.Parent = HashiraUI
-
-local function createTab(Name)
+local Handler = {}
+function Handler:createTab(Name)
 local Tab = Instance.new("ScrollingFrame")
 Tab.Name = Name
 Tab.Parent = TabsFrame
@@ -245,7 +245,7 @@ UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIGridLayout.CellSize = UDim2.new(0, 200, 0.180000007, 100)
 end
-local function createSection(Name,TabName)
+function Handler:createSection(Name,TabName)
 local Section = Instance.new("Frame")
 Section.Name = Name
 Section.Parent = TabsFrame[TabName]
@@ -344,3 +344,4 @@ local function createToggle(Name,tabName,SectionName,callback)
 	TextLabel_4.TextSize = 14.000
 	TextLabel_4.TextWrapped = true
 end
+return Handler
