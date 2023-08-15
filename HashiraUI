@@ -376,7 +376,7 @@ my_location.ImageRectOffset = Vector2.new(404, 764)
 my_location.ImageRectSize = Vector2.new(36, 36)
 my_location.MouseButton1Click:Connect(function()
 callback(Value)
-end
+end)
 TextLabel_5.Parent = Button
 TextLabel_5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel_5.BackgroundTransparency = 1.000
