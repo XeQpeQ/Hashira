@@ -1,4 +1,3 @@
-local HashiraGui = Instance.new("ScreenGui")
 local HashiraUI = Instance.new("ImageLabel")
 local TextLabel = Instance.new("TextLabel")
 local Border = Instance.new("Frame")
@@ -71,8 +70,14 @@ local function dragify(Frame,boool)
 end
 dragify(HashiraUI)
 
+for _,v in pairs(game.CoreGui:GetChildren()) do
+    if v.Name == "HashiraGui" then
+        v:Destroy()
+    end
+end
+local HashiraGui = Instance.new("ScreenGui")
 HashiraGui.Name = "HashiraGui"
-HashiraGui.Parent = game.Players.LocalPlayer.PlayerGui
+HashiraGui.Parent = game.CoreGui
 
 HashiraUI.Name = "HashiraUI"
 HashiraUI.Parent = HashiraGui
@@ -116,7 +121,10 @@ menuList.ZIndex = 2
 menuList.Image = "rbxassetid://6764432408"
 menuList.ImageRectOffset = Vector2.new(150, 0)
 menuList.ImageRectSize = Vector2.new(50, 50)
-
+menuList.MouseButton1Click:Connect(function(v)
+Tabs.Visible = true
+menulist.Visible = false
+end)
 Tabs.Name = "Tabs"
 Tabs.Parent = HashiraUI
 Tabs.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -343,5 +351,44 @@ function Handler:createToggle(Name,tabName,SectionName,callback)
 	TextLabel_4.TextScaled = true
 	TextLabel_4.TextSize = 14.000
 	TextLabel_4.TextWrapped = true
+end
+function Handler:createButton(Name,tabName,SectionName)
+local Value = false
+callback = callback or function() end
+Button.Name = "Button"
+Button.Parent = TabsFrame[tabName][SectionName]
+Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Button.BackgroundTransparency = 1.000
+Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Button.BorderSizePixel = 0
+Button.Position = UDim2.new(0, 0, 0.494233102, 0)
+Button.Size = UDim2.new(0.730158746, 0, 0.139487311, 0)
+
+my_location.Name = "my_location"
+my_location.Parent = Button
+my_location.BackgroundTransparency = 1.000
+my_location.LayoutOrder = 8
+my_location.Position = UDim2.new(0.779270768, 0, 0.38996917, 0)
+my_location.Size = UDim2.new(0, 27, 0, 25)
+my_location.ZIndex = 2
+my_location.Image = "rbxassetid://3926305904"
+my_location.ImageRectOffset = Vector2.new(404, 764)
+my_location.ImageRectSize = Vector2.new(36, 36)
+my_location.MouseButton1Click:Connect(function()
+callback(Value)
+end
+TextLabel_5.Parent = Button
+TextLabel_5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_5.BackgroundTransparency = 1.000
+TextLabel_5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel_5.BorderSizePixel = 0
+TextLabel_5.Position = UDim2.new(0, 0, 0.38996917, 0)
+TextLabel_5.Size = UDim2.new(0.746412873, 0, 0.824447453, 0)
+TextLabel_5.Font = Enum.Font.FredokaOne
+TextLabel_5.Text = Name
+TextLabel_5.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel_5.TextScaled = true
+TextLabel_5.TextSize = 14.000
+TextLabel_5.TextWrapped = true
 end
 return Handler
