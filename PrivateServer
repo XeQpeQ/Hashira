@@ -1,0 +1,29 @@
+local module = {}
+local TeleportService = game:GetService("TeleportService")
+local DataStoreService = game:GetService("DataStoreService")
+local DataStore = DataStoreService:GetDataStore("Servers")
+
+function module(placeId, player, teleportData)
+	if game.PrivateServerId == "" then
+		TeleportService:Teleport(placeId,player,teleportData)
+	else
+		local Success, Message = pcall(function()
+		
+		local AccessCode =  DataStore:GetAsync(game.PrivateServerId)
+		if not AccessCode then
+			AccessCode = TeleportService:ReserveServer(placeId)
+			DataStore:SetAsync(game.PrivateServerId,AccessCode)
+		end
+		
+			TeleportService:TeleportToPrivateServer(placeId,AccessCode,{player})
+		end)
+
+		if not Success then
+			TeleportService:Teleport(placeId,player,teleportData)
+			warn("An error occuried the player was teleported into another server.")
+			warn("Error:")
+			warn(Message)
+		end
+	end
+end
+return module
