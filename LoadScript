@@ -33,6 +33,13 @@ LocalPlayer.Chatted:Connect(function(message)
        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Animation%20Stealer", true))()
     end
 end)
+
+LocalPlayer.Chatted:Connect(function(message)
+    if message == "/e Aimbot" then
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UniversalAimbot", true))()
+    end
+end)
+
 -- Mugen Train
 if game.PlaceId == 11468034852 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Mugen", true))()
