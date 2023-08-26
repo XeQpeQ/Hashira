@@ -182,10 +182,9 @@ function ESP()
 				local Highlight = Instance.new("Highlight")
 				Highlight.Parent = v.Character
 			end
-		end
-	        if v.Team == game.Players.LocalPlayer.Team then
+			elseif game.Players.LocalPlayer.Team ~= v.Team then
 	        v.Character:FindFirstChild("Highlight"):Destroy()
-            end
+		end
 	end
 end
 
