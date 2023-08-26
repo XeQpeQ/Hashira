@@ -37,7 +37,7 @@ end)
 local UserInputService = game:GetService("UserInputService")
 
 UserInputService.InputBegan:Connect(function(input)
-    if input.KeyCode == Enum.KeyCode.K then
+    if input.KeyCode == Enum.KeyCode.Z then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UniversalAimbot", true))()
     end
 end)
