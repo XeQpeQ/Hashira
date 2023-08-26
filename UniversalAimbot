@@ -184,7 +184,7 @@ function ESP()
 			end
 		end
 	        if v.Team == game.Players.LocalPlayer.Team then
-	        v:Destroy()
+	        v.Character:FindFirstChild("Highlight"):Destroy()
             end
 	end
 end
