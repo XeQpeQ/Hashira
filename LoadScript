@@ -34,9 +34,11 @@ LocalPlayer.Chatted:Connect(function(message)
     end
 end)
 
-LocalPlayer.Chatted:Connect(function(message)
-    if message == "/e Aimbot" then
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UniversalAimbot", true))()
+local UserInputService = game:GetService("UserInputService")
+
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.K then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UniversalAimbot", true))()
     end
 end)
 
