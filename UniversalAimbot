@@ -178,13 +178,12 @@ end
 function ESP()
 	for _, v in ipairs(Players:GetPlayers()) do
 		if v.Team ~= Players.LocalPlayer.Team then
-                      repeat task.wait() until v.Character
-			if v.Character:FindFirstChild("Highlight") == nil then
+			if not v.Character:FindFirstChild("Highlight") then
 				local Highlight = Instance.new("Highlight")
 				Highlight.Parent = v.Character
 			end
 			elseif game.Players.LocalPlayer.Team ~= v.Team then
-	        v.Character:FindFirstChild("Highlight"):Destroy()
+	               v.Character:FindFirstChild("Highlight"):Destroy()
 		end
 	end
 end
