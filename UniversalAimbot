@@ -178,12 +178,13 @@ end
 function ESP()
 	for _, v in ipairs(Players:GetPlayers()) do
 		if v.Team ~= Players.LocalPlayer.Team then
-			if not v.Character:FindFirstChild("Highlight") then
+			if not v.Character:FindFirstChild("HumanoidRootPart").Highlight then
 				local Highlight = Instance.new("Highlight")
-				Highlight.Parent = v.Character
+                                Highlight.Adornee = v.Character.HumanoidRootPart
+				Highlight.Parent = v.Character.HumanoidRootPart
 			end
 			elseif game.Players.LocalPlayer.Team ~= v.Team then
-	        v.Character:FindFirstChild("Highlight"):Destroy()
+	             v.Character:FindFirstChild("HumanoidRootPart").Highlight:Destroy()
 		end
 	end
 end
@@ -234,12 +235,6 @@ UserInputService.InputEnded:Connect(function(input)
 	end
 end)
 
-game.Players.LocalPlayer.CharacterAdded:connect(function()
-while wait() do
-ESP()
-end
-end)
-
 game:GetService("RunService").RenderStepped:Connect(function()
 	if Holding == "LEGIT" then
 		local closestPlayer = GetClosest()
@@ -261,4 +256,5 @@ game:GetService("RunService").RenderStepped:Connect(function()
 			tween:Play()
 		end
 	end
+      ESP()
 end)
