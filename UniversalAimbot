@@ -239,7 +239,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 		local closestPlayer = GetClosest()
 		if closestPlayer then
 			local targetPosition = closestPlayer.Character.UpperTorso.Position
-			local tweenInfo = TweenInfo.new(0.10, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+			local tweenInfo = TweenInfo.new(0, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 			local newCameraCFrame = CFrame.new(Camera.CFrame.Position, targetPosition)
 			tween = TweenService:Create(Camera, tweenInfo, { CFrame = newCameraCFrame })
 			tween:Play()
