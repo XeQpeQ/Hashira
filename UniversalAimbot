@@ -176,17 +176,17 @@ function GetClosest()
 end
 
 function ESP()
-	for _, v in ipairs(Players:GetPlayers()) do
-		if v.Team ~= Players.LocalPlayer.Team then
-			if not v.Character:FindFirstChild("HumanoidRootPart").Highlight then
-				local Highlight = Instance.new("Highlight")
-                                Highlight.Adornee = v.Character.HumanoidRootPart
-				Highlight.Parent = v.Character.HumanoidRootPart
-			end
-			elseif game.Players.LocalPlayer.Team ~= v.Team then
-	             v.Character:FindFirstChild("HumanoidRootPart").Highlight:Destroy()
-		end
-	end
+    for _, v in ipairs(Players:GetPlayers()) do
+        if v.Team ~= Players.LocalPlayer.Team then
+            if not v.Character:FindFirstChild("HumanoidRootPart").Highlight then
+                local Highlight = Instance.new("Highlight")
+                Highlight.Adornee = v.Character.HumanoidRootPart
+                Highlight.Parent = v.Character.HumanoidRootPart
+            end
+        elseif game.Players.LocalPlayer.Team ~= v.Team then
+            v.Character:FindFirstChild("HumanoidRootPart").Highlight:Destroy()
+        end
+    end
 end
 
 local previousHolding
@@ -240,7 +240,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 		local closestPlayer = GetClosest()
 		if closestPlayer then
 			local targetPosition = closestPlayer.Character.UpperTorso.Position
-			local tweenInfo = TweenInfo.new(0.05, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+			local tweenInfo = TweenInfo.new(0.10, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 			local newCameraCFrame = CFrame.new(Camera.CFrame.Position, targetPosition)
 			tween = TweenService:Create(Camera, tweenInfo, { CFrame = newCameraCFrame })
 			tween:Play()
