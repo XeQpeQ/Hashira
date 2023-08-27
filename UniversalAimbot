@@ -234,12 +234,18 @@ UserInputService.InputEnded:Connect(function(input)
 	end
 end)
 
+game.Players.LocalPlayer.CharacterAdded:connect(function()
+while wait() do
+ESP()
+end
+end)
+
 game:GetService("RunService").RenderStepped:Connect(function()
 	if Holding == "LEGIT" then
 		local closestPlayer = GetClosest()
 		if closestPlayer then
 			local targetPosition = closestPlayer.Character.UpperTorso.Position
-			local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+			local tweenInfo = TweenInfo.new(0.05, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 			local newCameraCFrame = CFrame.new(Camera.CFrame.Position, targetPosition)
 			tween = TweenService:Create(Camera, tweenInfo, { CFrame = newCameraCFrame })
 			tween:Play()
@@ -255,5 +261,4 @@ game:GetService("RunService").RenderStepped:Connect(function()
 			tween:Play()
 		end
 	end
-	ESP()
 end)
