@@ -1,0 +1,202 @@
+const Discord = require('discord.js');
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const fetch = require('node-fetch');
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+
+let db = new sqlite3.Database('./verificationMessages.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+  console.log('Connected to the verificationMessages database.');
+});
+
+db.run(`CREATE TABLE IF NOT EXISTS verificationMessages(messageId text PRIMARY KEY, roleName text NOT NULL)`);
+db.run(`CREATE TABLE IF NOT EXISTS authorizedUserIds(userId TEXT)`, function(err) {
+  if (err) {
+    return console.error(err.message);
+  }
+});
+
+let authorizedUserIds = [];
+
+db.each('SELECT userId FROM authorizedUserIds', function(err, row) {
+  if (err) {
+    return console.error(err.message);
+  }
+  authorizedUserIds.push(row.userId);
+});
+
+const app = express();
+app.get("/", (req, res) => {
+  res.send("El bot está activo.");
+});
+app.listen(3000, () => {
+  console.log("El servidor está listo.");
+});
+
+client.on('message', async message => {
+if (message.author.bot) return;
+const urlRegex = /(https?:\/\/[^\s]+)/g;
+const urls = message.content.match(urlRegex);
+
+if (urls) {
+  message.delete();
+
+  for (let url of urls) {
+    try {
+      const response = await fetch(`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=`, {
+        method: 'POST',
+        body: JSON.stringify({
+          client: {
+            clientId: 'yourclientid',
+            clientVersion: '1.5.2'
+          },
+          threatInfo: {
+            threatTypes: ['MALWARE', 'SOCIAL_ENGINEERING'],
+            platformTypes: ['ANY_PLATFORM'],
+            threatEntryTypes: ['URL'],
+            threatEntries: [{url: url}]
+          }
+        }),
+        headers: {'Content-Type': 'application/json'}
+      });
+
+      const data = await response.json();
+      if (!data.matches) {
+        message.channel.send(`El enlace ${url} ha sido verificado y es seguro.`);
+      } else {
+        message.channel.send(`⚠️ El enlace ${url} parece sospechoso. No se ha podido verificar su seguridad.`);
+      }
+    } catch (error) {
+      console.error(`Error al verificar el enlace ${url}: ${error}`);
+    }
+  }
+}
+});
+const authorizedCommandUser = '417350486069346304';
+
+client.on('message', async message => {
+  if (message.content.startsWith('!AñadirId')) {
+    if (message.author.id === authorizedCommandUser) {
+      let idToAdd = message.content.split(' ')[1];
+      if (!authorizedUserIds.includes(idToAdd)) {
+        db.run(`INSERT INTO authorizedUserIds(userId) VALUES(?)`, idToAdd, function(err) {
+          if (err) {
+            return console.error(err.message);
+          }
+          authorizedUserIds.push(idToAdd);
+          return message.channel.send(`ID de usuario ${idToAdd} añadido a la lista.`);
+        });
+      } else {
+        return message.channel.send(`ID de usuario ${idToAdd} ya está en la lista.`);
+      }
+    } else {
+      return message.channel.send('No tienes permisos para usar este comando.');
+    }
+  }
+
+  if (message.content.startsWith('!RemoverId')) {
+    if (message.author.id === authorizedCommandUser) {
+      let idToRemove = message.content.split(' ')[1];
+      const index = authorizedUserIds.indexOf(idToRemove);
+      if (index > -1) {
+        db.run(`DELETE FROM authorizedUserIds WHERE userId = ?`, idToRemove, function(err) {
+          if (err) {
+            return console.error(err.message);
+          }
+          authorizedUserIds.splice(index, 1);
+          return message.channel.send(`ID de usuario ${idToRemove} removido de la lista.`);
+        });
+      } else {
+        return message.channel.send(`ID de usuario ${idToRemove} no se encuentra en la lista.`);
+      }
+    } else {
+      return message.channel.send('No tienes permisos para usar este comando.');
+    }
+  }
+  
+  if (message.content.startsWith('!CrearVerificacion')) {
+    if (!authorizedUserIds.includes(message.author.id)) {
+      return message.channel.send('No tienes permisos para usar el bot.');
+    }
+    message.delete();
+    let roleName = message.content.split(' ')[1];
+    let role = message.guild.roles.cache.find(r => r.name === roleName);
+    if (!role) return message.channel.send(`No se encontró el rol: ${roleName}`);
+
+    let embed = new Discord.MessageEmbed()
+      .setTitle('Verificación')
+      .setDescription(`Reacciona para verificarte`);
+
+    let msgEmbed = await message.channel.send(embed);
+    msgEmbed.react('✅');
+
+    db.run(`INSERT INTO verificationMessages(messageId, roleName) VALUES(?, ?)`, [msgEmbed.id, roleName], function(err) {
+      if (err) {
+        return console.log(err.message);
+      }
+      console.log(`A row has been inserted with rowid ${this.lastID}`);
+    });
+  }
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+  if (reaction.message.partial) await reaction.message.fetch();
+  if (reaction.partial) await reaction.fetch();
+  if (user.bot) return;
+  if (!reaction.message.guild) return;
+
+  db.get(`SELECT roleName FROM verificationMessages WHERE messageId = ?`, [reaction.message.id], (err, row) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    if(row){
+      let roleName = row.roleName;
+      let role = reaction.message.guild.roles.cache.find(r => r.name === roleName);
+      if (!role) return;
+
+      let member = reaction.message.guild.members.cache.find(member => member.id === user.id);
+      if (member.roles.cache.has(role.id)) {
+        member.roles.remove(role.id);
+      } else {
+        member.roles.add(role.id);
+      }
+    }
+  });
+});
+client.on('messageReactionRemove', async (reaction, user) => {
+  if (reaction.message.partial) await reaction.message.fetch();
+  if (reaction.partial) await reaction.fetch();
+  if (user.bot) return;
+  if (!reaction.message.guild) return;
+
+  db.get(`SELECT roleName FROM verificationMessages WHERE messageId = ?`, [reaction.message.id], (err, row) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    if(row){
+      let roleName = row.roleName;
+      let role = reaction.message.guild.roles.cache.find(r => r.name === roleName);
+      if (!role) return;
+
+      let member = reaction.message.guild.members.cache.find(member => member.id === user.id);
+      if (member.roles.cache.has(role.id)) {
+        member.roles.remove(role.id);
+      }
+    }
+  });
+});
+
+client.on('messageDelete', async message => {
+  if (message.author.bot) {
+    db.run(`DELETE FROM verificationMessages WHERE messageId = ?`, message.id, (err) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log(`Row(s) deleted ${this.changes}`);
+    });
+  }
+});
+
+  client.login('MTE2NjA4MDEyMTM5Mjg3NzY1OA.GrHrok.Pcznlxf-_Jo2d3Q0SUHiAa7BnFpT8AlDQTfccE');
