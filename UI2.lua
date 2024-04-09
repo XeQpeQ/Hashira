@@ -26,7 +26,8 @@ function Library:Create(table)
     main.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
     main.Position = UDim2.fromScale(0.244, 0.292)
     main.Size = UDim2.fromOffset(488, 299)
-
+    main.Draggable = true
+    
     local title = Instance.new("TextLabel")
     title.Name = "title"
     title.Font = Enum.Font.Gotham
