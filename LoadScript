@@ -1,17 +1,12 @@
--- Dungeon
- if game.PlaceId == 11468075017 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Dungeon", true))()
-end
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
 
 LocalPlayer.Chatted:Connect(function(message)
     if message == "/e Anim" then
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Animation%20Stealer", true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/Animation%20Stealer", true))()
     end
 end)
-
-local UserInputService = game:GetService("UserInputService")
 
 UserInputService.InputBegan:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.Z then
@@ -19,30 +14,26 @@ UserInputService.InputBegan:Connect(function(input)
     end
 end)
 
--- Mugen Train
-if game.PlaceId == 11468034852 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Mugen", true))()
-end
--- Anime Fighters
-if game.PlaceId == 6299805723 then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/AnimeFighters", true))()
+-- Tabla de PlaceIds y URLs correspondientes
+local scripts = {
+    [11468075017] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Dungeon",
+    [11468034852] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Mugen",
+    [6299805723] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/AnimeFighters",
+    [11545598432] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/AnimeFightingX",
+    [9240295147] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/SCP-3008",
+    [71315343] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/DBR",
+    [6152116144] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1",
+    [11468159863] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1",
+    [13489082242] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub"
+}
+
+-- Función para cargar scripts según el PlaceId
+local function loadScript(placeId)
+    local scriptUrl = scripts[placeId]
+    if scriptUrl then
+        loadstring(game:HttpGet(scriptUrl, true))()
     end
--- Anime Fighting
-if game.PlaceId == 11545598432 then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/AnimeFightingX", true))()
-    end
-if game.PlaceId == 9240295147 then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/SCP-3008", true))()
 end
--- DBR
-if game.PlaceId == 71315343 then
-loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/DBR", true))()
-end
--- Map1 and Map2
-if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1", true))()
-end
--- Trade Hub
-if game.PlaceId == 13489082242 then
-loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub", true))()
-end
+
+-- Cargar el script correspondiente al PlaceId actual
+loadScript(game.PlaceId)
