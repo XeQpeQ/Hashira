@@ -59,6 +59,10 @@ if game.PlaceId == 11545598432 then
 if game.PlaceId == 9240295147 then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/SCP-3008", true))()
 end
+-- DBR
+if game.PlaceId == 71315343 then
+loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/DBR", true))()
+end
 -- Map1 and Map2
 if game.PlaceId == 6152116144 or game.PlaceId == 11468159863 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1", true))()
