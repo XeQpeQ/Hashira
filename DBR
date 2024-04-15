@@ -45,6 +45,7 @@ end
         }
     })
     local maintab = win:Tab('Main')
+    local AutoFarm = win:Tab('AutoFarm')
     local uitab = win:Tab('UI')
 
     uitab:Button('Destroy GUI', function()
@@ -57,7 +58,7 @@ end)
 maintab:Toggle('Auto Train Q', function(v)
 getgenv().AutoEnergy = v
 end)
-maintab:Toggle('Auto Saibamen', function(v)
+AutoFarm:Toggle('Auto Saibamen', function(v)
 getgenv().AutoSaibamen = v
 end)
 
@@ -116,52 +117,72 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoSaibamen then
+                if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                    antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+                    antifall3.Velocity = Vector3.new(0, 0, 0)
+                    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                    for i, v in pairs(game:GetService("Workspace").Map.NPCs:GetChildren()) do
+                        if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Saibamen") then
+                            if v.Humanoid.Health > 0 then
+                                local distance = GetDistance(v:GetModelCFrame() * FarmModes)
+                                repeat
+                                    task.wait()
+                                    if distance < 25 and distance < 150 then
+                                        if TweenFa then
+                                            TweenFa:Cancel()
+                                            wait(.1)
+                                        end
+                                        LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame()
+                                    else
+                                        TweenFa = Tween(v:GetModelCFrame() * FarmModes)
+                                    end
+                                    if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
+                                        NearestMobs = true
+                                    elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
+                                        NearestMobs = false
+                                    end
+                                until not getgenv().AutoSaibamen or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
+                                NearestMobs = false
+                            end
+                        end
+                    end
+                end
+            end
+            if getgenv().AutoSaibamen == false and TweenFa then
+                TweenFa:Cancel()
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
 	while task.wait() do
 		pcall(function()
 			if getgenv().AutoSaibamen then
-				if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-					antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
-					antifall3.Velocity = Vector3.new(0, 0, 0)
-					antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-				elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-					for i, v in pairs(game:GetService("Workspace").Map.NPCs:GetChildren()) do
-						if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Saibamen") then
-							if v.Humanoid.Health > 0 then
-								local distance = GetDistance(v:GetModelCFrame() * FarmModes)
-								repeat
-									task.wait()
-									if distance < 25 and distance < 150 then
-										if TweenFa then
-											TweenFa:Cancel()
-											wait(.1)
-										end
-										LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame()
-									else
-										TweenFa = Tween(v:GetModelCFrame() * FarmModes)
-									end
-									if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
-										NearestMobs = true
-									elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
-										NearestMobs = false
-									end
-								until not getgenv().AutoSaibamen or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
-								NearestMobs = false
-							end
-						end
-					end
-				end
-			else
-				if antifall3 then
-					antifall3:Destroy()
-				end
-			end
-			if getgenv().AutoSaibamen == false and TweenFa then
-				TweenFa:Cancel()
+local energy = workspace[LP.Name].State.Energy.Value
+local maxEnergy = workspace[LP.Name].State.MaxEnergy.Value
+
+if energy <= 50 then
+    VirtualInputManager:SendKeyEvent(true, "C", false, game)
+    autoC = true
+elseif energy >= maxEnergy then
+    VirtualInputManager:SendKeyEvent(false, "C", false, game)
+    autoC = false
+end
+
+if not autoC then
+    VirtualInputManager:SendKeyEvent(true, "Q", false, game)
+else
+    VirtualInputManager:SendKeyEvent(false, "Q", false, game)
+end
 			end
 		end)
 	end
 end)
-
 task.spawn(function()
 	while task.wait() do
 		pcall(function()
