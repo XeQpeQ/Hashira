@@ -162,30 +162,6 @@ end)
 task.spawn(function()
 	while task.wait() do
 		pcall(function()
-			if getgenv().AutoSaibamen then
-local energy = workspace[LP.Name].State.Energy.Value
-local maxEnergy = workspace[LP.Name].State.MaxEnergy.Value
-
-if energy <= 50 then
-    VirtualInputManager:SendKeyEvent(true, "C", false, game)
-    autoC = true
-elseif energy >= maxEnergy then
-    VirtualInputManager:SendKeyEvent(false, "C", false, game)
-    autoC = false
-end
-
-if not autoC then
-    VirtualInputManager:SendKeyEvent(true, "Q", false, game)
-else
-    VirtualInputManager:SendKeyEvent(false, "Q", false, game)
-end
-			end
-		end)
-	end
-end)
-task.spawn(function()
-	while task.wait() do
-		pcall(function()
 			if getgenv().AutoAttack then
 			VirtualInputManager:SendKeyEvent(true,"E",false,game) 
 			end
