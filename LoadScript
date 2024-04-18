@@ -23,7 +23,7 @@ local scripts = {
     [71315343] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/DBR",
     [6152116144] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1",
     [11468159863] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1",
-    [13489082242] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub"
+    [13489082242] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub",
     [1962086868]  = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/tof"
 }
 
