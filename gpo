@@ -1,6 +1,5 @@
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
-local player = Players.LocalPlayer
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local gui, mainFrame, originalSize, isExpanded
 
@@ -15,95 +14,98 @@ local function toggleGUISize(expand)
         if expand then
             mainFrame.Size = originalSize
         else
-            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modify the size as needed
+            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modifica el tamaño según sea necesario
         end
         isExpanded = expand
     end
 end
 
-    local bb = game:GetService('VirtualUser')
+local bb = game:GetService('VirtualUser')
 
-    game:GetService('Players').LocalPlayer.Idled:connect(function()
-        bb:CaptureController()
-        bb:ClickButton2(Vector2.new())
-        ab.Text = "Roblox intentó expulsarte, pero lo evité"
-        wait(2)
-        ab.Text = "Estado: Activo"
-    end)
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    wait(2)
+    ab.Text = "Estado: Activo"
+end)
 
-    local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
-    local win = HashiraUI:Create({
-        Name = "Hashira Hub",
-        StartupSound = {
-            Toggle = false,
-            SoundID = "rbxassetid://6958727243",
-            TimePosition = 1
-        }
-    })
-    local AutoFarm = win:Tab('AutoFarm')
-    local uitab = win:Tab('UI')
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+local AutoFarm = win:Tab('AutoFarm')
+local uitab = win:Tab('UI')
 
-    uitab:Button('Destroy GUI', function()
-        win:Exit()
-    end)
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
 
 AutoFarm:Toggle('Auto Bandit', function(v)
-getgenv().AutoBandit = v
+    getgenv().AutoBandit = v
 end)
 
 local LP = game.Players.LocalPlayer
-local client = game.Players.LocalPlayer
 local FarmMethod = "Behind"
 local tweenspeed = 400
-local Distance = 10
+local Distance = 3
 
 local function GetDistance(Endpoint)
-	if typeof(Endpoint) == "Instance" then
-		Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
-	elseif typeof(Endpoint) == "CFrame" then
-		Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
-	end
-	local Magnitude = (Endpoint - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-	return Magnitude
+    if typeof(Endpoint) == "Instance" then
+        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+    elseif typeof(Endpoint) == "CFrame" then
+        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+    end
+    local Magnitude = (Endpoint - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    return Magnitude
 end
+
 function Tween(Endpoint)
-	if typeof(Endpoint) == "Instance" then
-		Endpoint = Endpoint.CFrame
-	end
-	local TweenFunc = {}
-	local Distance = GetDistance(Endpoint)
-	local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
-	TweenInfo:Play()
-	function TweenFunc:Cancel()
-		TweenInfo:Cancel()
-		return false
-	end
-	if Distance <= 100 then
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Endpoint
-		TweenInfo:Cancel()
-		return false
-	end
-	return TweenFunc
+    if typeof(Endpoint) == "Instance" then
+        Endpoint = Endpoint.CFrame
+    end
+    local TweenFunc = {}
+    local Distance = GetDistance(Endpoint)
+    local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
+    TweenInfo:Play()
+    function TweenFunc:Cancel()
+        TweenInfo:Cancel()
+        return false
+    end
+    if Distance <= 100 then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Endpoint
+        TweenInfo:Cancel()
+        return false
+    end
+    return TweenFunc
 end
+
 -- Auto Farm Method
 task.spawn(function()
-	while wait() do
-		pcall(function()
-			SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AutoSaibamen and NearestMobs)
-			if FarmMethod == "Above" then
-				FarmModes = CFrame.new(0,Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
-			elseif FarmMethod == "Below" then
-				FarmModes = CFrame.new(0,-Distance,0) * CFrame.Angles(math.rad(90),0,0)
-			elseif FarmMethod == "Behind" then
-				FarmModes = CFrame.new(0,0,Distance)
-			elseif FarmMethod == "Ahead" then
-				FarmModes = CFrame.new(0, 0, -Distance)
-        local rotation = CFrame.Angles(0, math.rad(180), 0)
-        FarmModes = FarmModes * rotation
-			end
-		end)
-	end
+    while wait() do
+        pcall(function()
+            SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AutoBandit and NearestMobs)
+            if FarmMethod == "Above" then
+                FarmModes = CFrame.new(0,Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
+            elseif FarmMethod == "Below" then
+                FarmModes = CFrame.new(0,-Distance,0) * CFrame.Angles(math.rad(90),0,0)
+            elseif FarmMethod == "Behind" then
+                FarmModes = CFrame.new(0,0,Distance)
+            elseif FarmMethod == "Ahead" then
+                FarmModes = CFrame.new(0, 0, -Distance)
+                local rotation = CFrame.Angles(0, math.rad(180), 0)
+                FarmModes = FarmModes * rotation
+            end
+        end)
+    end
 end)
+
+local TweenFa 
 
 task.spawn(function()
     while task.wait() do
@@ -143,6 +145,16 @@ task.spawn(function()
             end
             if getgenv().AutoBandit == false and TweenFa then
                 TweenFa:Cancel()
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoBandit then
+                mouse1click()
             end
         end)
     end
