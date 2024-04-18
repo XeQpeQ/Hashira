@@ -14,7 +14,6 @@ UserInputService.InputBegan:Connect(function(input)
     end
 end)
 
--- Tabla de PlaceIds y URLs correspondientes
 local scripts = {
     [11468075017] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Dungeon",
     [11468034852] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Mugen",
@@ -27,7 +26,6 @@ local scripts = {
     [13489082242] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub"
 }
 
--- Función para cargar scripts según el PlaceId
 local function loadScript(placeId)
     local scriptUrl = scripts[placeId]
     if scriptUrl then
@@ -35,7 +33,6 @@ local function loadScript(placeId)
     end
 end
 
--- Conexión del evento PlayerAdded para cargar el script correspondiente al PlaceId del juego actual
 game.Players.PlayerAdded:Connect(function(player)
     local placeId = game.PlaceId
     loadScript(placeId)
