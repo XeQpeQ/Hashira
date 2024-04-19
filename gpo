@@ -52,8 +52,8 @@ end)
 
 local LP = game.Players.LocalPlayer
 local FarmMethod = "Behind"
-local tweenspeed = 50
-local Distance = -3
+local tweenspeed = 10
+local Distance = 6
 
 local function GetDistance(Endpoint)
     if typeof(Endpoint) == "Instance" then
