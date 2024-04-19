@@ -69,17 +69,27 @@ uitab:Button('Destruir GUI', function()
     win:Exit()
 end)
 
-maintab:Toggle('Recolección Automática', function(v)
+maintab:Toggle('Auto Colect', function(v)
     getgenv().AutoChest = v
 end)
-maintab:Button('Robar Todas las Habilidades', function()
-    for i,v in pairs(workspace.Tycoons:GetDescendants()) do
-        if v.Name == "Button" then
-            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
-            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+
+maintab:Toggle('Auto Build', function(v)
+    getgenv().AutoBuild = v
+end)
+
+maintab:Button('Steal All Powers(In Progress)', function()
+    for _,v in pairs(workspace.Tycoons:GetDescendants()) do
+        if v.Name == "Assets" then
+            for _,v2 in pairs(v:GetDescendants()) do
+                if v2.Name == "Button" then
+                    v2.CanCollide = false
+                    v2.Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+                end
+            end
         end
     end
 end)
+
 task.spawn(function()
     while wait() do
         pcall(function()
@@ -95,4 +105,33 @@ task.spawn(function()
             end
         end)
     end
+end)  -- Aquí se cierra el bloque de la función anónima
+
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            if getgenv().AutoBuild then
+                local player = game.Players.LocalPlayer
+                local character = player.Character
+                if character then
+                    for _, tycoon in pairs(workspace.Tycoons:GetChildren()) do
+                        if tycoon.Name == player.Name then
+                            for _, buttonFolder in pairs(tycoon:GetChildren()) do
+                                if buttonFolder.Name == "Buttons" then
+                                    for _, button in pairs(buttonFolder:GetChildren()) do
+                                        if button.Name == "Button" then
+                                            character:SetPrimaryPartCFrame(CFrame.new(button.Position))
+                                            wait(1)
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
 end)
+
+
