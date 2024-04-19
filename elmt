@@ -1,0 +1,98 @@
+function fireproximityprompt(ProximityPrompt, Amount, Skip)
+    assert(ProximityPrompt, "Argumento #1 faltante o nulo")
+    assert(typeof(ProximityPrompt) == "Instance" and ProximityPrompt:IsA("ProximityPrompt"), "Se intentó activar un Valor que no es un ProximityPrompt")
+
+    local HoldDuration = ProximityPrompt.HoldDuration
+    if Skip then
+        ProximityPrompt.HoldDuration = 0
+    end
+
+    for i = 1, Amount or 1 do
+        ProximityPrompt:InputHoldBegin()
+        if Skip then
+            local RunService = game:GetService("RunService")
+            local Start = os.time()
+            repeat
+                RunService.Heartbeat:Wait(0.1)
+            until os.time() - Start > HoldDuration
+        end
+        ProximityPrompt:InputHoldEnd()
+    end
+    ProximityPrompt.HoldDuration = HoldDuration
+end
+
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local gui, mainFrame, originalSize, isExpanded
+
+local function toggleGUIVisibility(visible)
+    if gui then
+        gui.Enabled = visible
+    end
+end
+
+local function toggleGUISize(expand)
+    if mainFrame and originalSize then
+        if expand then
+            mainFrame.Size = originalSize
+        else
+            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modificar el tamaño según sea necesario
+        end
+        isExpanded = expand
+    end
+end
+
+local bb = game:GetService('VirtualUser')
+
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    wait(2)
+    ab.Text = "Estado: Activo"
+end)
+
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+local maintab = win:Tab('Main')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destruir GUI', function()
+    win:Exit()
+end)
+
+maintab:Toggle('Recolección Automática', function(v)
+    getgenv().AutoChest = v
+end)
+maintab:Button('Robar Todas las Habilidades', function()
+    for i,v in pairs(workspace.Tycoons:GetDescendants()) do
+        if v.Name == "Button" then
+            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
+            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+        end
+    end
+end)
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            if getgenv().AutoChest then  
+                task.wait(1)
+                local player = game.Players.LocalPlayer
+                local character = player.Character
+                if character then
+                    character:SetPrimaryPartCFrame(CFrame.new(workspace.BalloonCrate.Crate.Position))
+                end
+                
+                fireproximityprompt(workspace.BalloonCrate.Crate.ProximityPrompt, 1, true)
+            end
+        end)
+    end
+end)
