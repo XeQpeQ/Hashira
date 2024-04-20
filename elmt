@@ -65,16 +65,28 @@ local win = HashiraUI:Create({
 local maintab = win:Tab('Main')
 local uitab = win:Tab('UI')
 
-uitab:Button('Destruir GUI', function()
+uitab:Button('Destroy Gui', function()
     win:Exit()
 end)
 
-maintab:Toggle('Auto Colect', function(v)
+maintab:Toggle('Auto Colect Chest', function(v)
     getgenv().AutoChest = v
 end)
 
 maintab:Toggle('Auto Build', function(v)
     getgenv().AutoBuild = v
+end)
+
+maintab:Button('Delete All Lasers', function(v)
+     for _,v in pairs(workspace.Tycoons:GetDescendants()) do
+        if v.Name == "Assets" then
+            for _,v2 in pairs(v:GetChildren()) do
+                if v2.Name == "Lasers" then
+                    v2:Destroy()
+                end
+            end
+        end
+    end
 end)
 
 maintab:Button('Steal All Powers(In Progress)', function()
@@ -105,33 +117,72 @@ task.spawn(function()
             end
         end)
     end
-end)  -- Aquí se cierra el bloque de la función anónima
+end)  
 
 task.spawn(function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    
     while wait() do
         pcall(function()
             if getgenv().AutoBuild then
-                local player = game.Players.LocalPlayer
-                local character = player.Character
                 if character then
+                    local buttonsTable = {}
+                    
                     for _, tycoon in pairs(workspace.Tycoons:GetChildren()) do
-                        if tycoon.Name == player.Name then
-                            for _, buttonFolder in pairs(tycoon:GetChildren()) do
-                                if buttonFolder.Name == "Buttons" then
-                                    for _, button in pairs(buttonFolder:GetChildren()) do
-                                        if button.Name == "Button" then
-                                            character:SetPrimaryPartCFrame(CFrame.new(button.Position))
-                                            wait(1)
-                                        end
+                        for _, buttonFolder in pairs(tycoon:GetChildren()) do
+                            if buttonFolder.Name == "Buttons" then
+                                for _, button in pairs(buttonFolder:GetDescendants()) do
+                                    if button.Name == "Button" then
+                                        local textLabel2 = button.ButtonUI.TextLabel2
+                                        local text = textLabel2 and textLabel2.Text or ""
+                                        local amount = tonumber(string.match(text, "%d+")) or 0
+                                        table.insert(buttonsTable, {Button = button, Amount = amount})
                                     end
                                 end
                             end
                         end
                     end
+                    
+                    table.sort(buttonsTable, function(a, b)
+                        return a.Amount < b.Amount
+                    end)
+                    
+                    for _, data in ipairs(buttonsTable) do
+                        local button = data.Button
+                        character:SetPrimaryPartCFrame(CFrame.new(button.Position + Vector3.new(0, 1, 0)))
+                        wait(1)
+                    end
+                    
+                    buttonsTable = {}
                 end
             end
         end)
     end
+end)
+
+if not hookmetamethod then 
+print("Dont Compatible")
+end
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local oldhmmi
+local oldhmmnc
+
+oldhmmi = hookmetamethod(game, "__index", function(self, method)
+	if self == LocalPlayer and method:lower() == "kick" then
+		return error("Expected ':' not '.' calling member function Kick", 2)
+	end
+	return oldhmmi(self, method)
+end)
+
+oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
+	if self == LocalPlayer and getnamecallmethod():lower() == "kick" then
+		return
+	end
+	return oldhmmnc(self, ...)
 end)
 
 
