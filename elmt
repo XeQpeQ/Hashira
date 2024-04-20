@@ -106,7 +106,6 @@ task.spawn(function()
     while wait() do
         pcall(function()
             if getgenv().AutoChest then  
-                task.wait(1)
                 local player = game.Players.LocalPlayer
                 local character = player.Character
                 if character then
@@ -144,9 +143,12 @@ task.spawn(function()
                         end
                     end
                     
-                    table.sort(buttonsTable, function(a, b)
+                    -- Función de comparación para ordenar de menor a mayor
+                    local function compare(a, b)
                         return a.Amount < b.Amount
-                    end)
+                    end
+                    
+                    table.sort(buttonsTable, compare)
                     
                     for _, data in ipairs(buttonsTable) do
                         local button = data.Button
@@ -160,6 +162,7 @@ task.spawn(function()
         end)
     end
 end)
+
 
 if not hookmetamethod then 
 print("Dont Compatible")
