@@ -62,12 +62,23 @@ coroutine.wrap(function()
     while wait() do
         pcall(function()
             if getgenv().AutoRace then  
-                character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage12.Ground120.Position)
-                wait(1.5)
+                wait(2)
+                character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage1.Ground3.Position)
+                wait(2)
                 character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage3.Ground210.Position)
-                wait(1.5)
+                wait(2)
                 character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage1.Ground552.Position)
             end
         end)
     end
-end)()
+end)()  
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            if getgenv().AutoRebirth then  
+                wait(1)
+                game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("RebirthService"):WaitForChild("RF"):WaitForChild("Rebirth"):InvokeServer()
+            end
+        end)
+    end
+end)  
