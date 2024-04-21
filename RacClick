@@ -1,0 +1,73 @@
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
+local character = player.Character or player.CharacterAdded:Wait()
+local gui, mainFrame, originalSize, isExpanded
+
+local function toggleGUIVisibility(visible)
+    if gui then
+        gui.Enabled = visible
+    end
+end
+
+local function toggleGUISize(expand)
+    if mainFrame and originalSize then
+        if expand then
+            mainFrame.Size = originalSize
+        else
+            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modificar el tamaño según sea necesario
+        end
+        isExpanded = expand
+    end
+end
+
+local bb = game:GetService('VirtualUser')
+
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    wait(2)
+    ab.Text = "Estado: Activo"
+end)
+
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+local maintab = win:Tab('Main')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destroy Gui', function()
+    win:Exit()
+end)
+
+maintab:Toggle('Auto Race', function(v)
+    getgenv().AutoRace = v
+end)
+
+maintab:Toggle('Auto Rebirth', function(v)
+    getgenv().AutoRebirth = v
+end)
+
+coroutine.wrap(function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    while wait() do
+        pcall(function()
+            if getgenv().AutoRace then  
+                character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage12.Ground120.Position)
+                wait(1.5)
+                character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage3.Ground210.Position)
+                wait(1.5)
+                character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage1.Ground552.Position)
+            end
+        end)
+    end
+end)()
