@@ -65,11 +65,13 @@ coroutine.wrap(function()
     while wait() do
         pcall(function()
             if getgenv().AutoRace then  
-                character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage12.Ground120.Position)
                 task.wait(2)
-                character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage3.Ground210.Position)
+                character:MoveTo(CFrame.new(-584062, -8, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1))
                 task.wait(2)
-                character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage1.Ground552.Position)
+                character:MoveTo(CFrame.new(-693062, -8, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1))
+                task.wait(2)
+                character:MoveTo(CFrame.new(-1103062, -8, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1))
+                task.wait(2)
             end
         end)
     end
