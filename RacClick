@@ -59,23 +59,20 @@ maintab:Toggle('Auto Rebirth', function(v)
     getgenv().AutoRebirth = v
 end)
 
-coroutine.wrap(function()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    while wait() do
-        pcall(function()
-            if getgenv().AutoRace then  
-                task.wait(2)
-                character:MoveTo(CFrame.new(-584062, -8, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1))
-                task.wait(2)
-                character:MoveTo(CFrame.new(-693062, -8, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1))
-                task.wait(2)
-                character:MoveTo(CFrame.new(-1103062, -8, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1))
-                task.wait(2)
-            end
-        end)
+task.spawn(function()
+    while true do
+        if getgenv().AutoRace then  
+            character:MoveTo(Vector3.new(-584062, -8, 0))
+            task.wait(2)
+            character:MoveTo(Vector3.new(-693062, -8, 0))
+            task.wait(2)
+            character:MoveTo(Vector3.new(-1103062, -8, 0))
+            task.wait(2)
+        end
+        task.wait()
     end
-end)()
+end)
+
 task.spawn(function()
     while wait() do
         pcall(function()
