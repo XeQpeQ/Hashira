@@ -25,6 +25,7 @@ local scripts = {
     [11468159863] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/Map1",
     [13489082242] = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/ProjectSlayers/TradeHub",
     [1962086868]  = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/tof"
+    [9285238704]  = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/RacClick"
 }
 
 local function loadScript(placeId)
