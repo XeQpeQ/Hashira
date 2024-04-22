@@ -59,7 +59,7 @@ maintab:Toggle('Auto Rebirth', function(v)
     getgenv().AutoRebirth = v
 end)
 
-coroutine.wrap(function()
+task.spawn(function()
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     while wait() do
@@ -73,7 +73,7 @@ coroutine.wrap(function()
             end
         end)
     end
-end)()  
+end)
 task.spawn(function()
     while wait() do
         pcall(function()
