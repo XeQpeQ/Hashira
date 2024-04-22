@@ -34,7 +34,5 @@ local function loadScript(placeId)
     end
 end
 
-game.Players.PlayerAdded:Connect(function(player)
-    local placeId = game.PlaceId
-    loadScript(placeId)
-end)
+local placeId = game.PlaceId
+loadScript(placeId)
