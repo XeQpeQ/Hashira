@@ -47,6 +47,9 @@ local uitab = win:Tab('UI')
 uitab:Button('Destroy Gui', function()
     win:Exit()
 end)
+maintab:Toggle('Auto Click', function(v)
+    getgenv().AutoClick = v
+end)
 
 maintab:Toggle('Auto Race', function(v)
     getgenv().AutoRace = v
@@ -62,11 +65,10 @@ coroutine.wrap(function()
     while wait() do
         pcall(function()
             if getgenv().AutoRace then  
-                wait(2)
                 character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage12.Ground120.Position)
-                wait(2)
+                task.wait(2)
                 character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage3.Ground210.Position)
-                wait(2)
+                task.wait(2)
                 character:MoveTo(game:GetService("Workspace").LoadedWorld.Track.Stage1.Ground552.Position)
             end
         end)
@@ -82,3 +84,12 @@ task.spawn(function()
         end)
     end
 end)  
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            if getgenv().AutoClick then  
+                game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ClickService"):WaitForChild("RF"):WaitForChild("Click"):InvokeServer()
+            end
+        end)
+    end
+end)
