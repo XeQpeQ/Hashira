@@ -47,22 +47,22 @@ local uitab = win:Tab('UI')
 uitab:Button('Destroy Gui', function()
     win:Exit()
 end)
+
 maintab:Toggle('AutoLvl', function(v)
     getgenv().AutoLvl = v
 end)
 
 task.spawn(function()
-    while wait() do
-        if getgenv().AutoLvl then  
-            local player = game.Players.LocalPlayer
-
-            for i = 1, 30 do
-               game:GetService("Workspace").Levels[i].Map.Levels["1"].Collectibles.Model.Part
+    while true do
+        if getgenv().AutoLvl then
+            local levels = game:GetService("Workspace").Levels
+            for i = 2, 30 do
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels[tostring(i)].Map.Levels["1"].Collectibles.Model.Part.Position))
+                wait(2)
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels[tostring(i)].Map.Levels["1"].Checkpoints["3"].Position))
+                wait(2)
             end
-
-            player.Character:SetPrimaryPartCFrame(game:GetService("Workspace").Levels["1"].Map.Levels["1"].Collectibles.Model.Part.Position)
-            wait(1) 
-            player.Character:SetPrimaryPartCFrame(checkpoints[30].CFrame)
         end
+        wait(0.1)
     end
 end)
