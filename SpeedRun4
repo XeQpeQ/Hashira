@@ -56,11 +56,21 @@ task.spawn(function()
     while true do
         if getgenv().AutoLvl then
             local levels = game:GetService("Workspace").Levels
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(-282.857147, 157.624817, -434.966736, 0, 0, 1, 0, 1, -0, -1, 0, 0))
+            task.wait(1)
             for i = 2, 30 do
-                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels[tostring(i)].Map.Levels["1"].Collectibles.Model.Part.Position))
-                wait(2)
+                if i == 30 then
+                    local args = {
+                        [1] = "lc",
+                        [2] = "Re1"
+                    }
+
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("State"):FireServer(unpack(args))
+                    task.wait(1)
+                    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(-282.857147, 157.624817, -434.966736, 0, 0, 1, 0, 1, -0, -1, 0, 0))
+                end
                 game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels[tostring(i)].Map.Levels["1"].Checkpoints["3"].Position))
-                wait(2)
+                task.wait(1.5)
             end
         end
         wait(0.1)
