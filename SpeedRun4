@@ -1,0 +1,89 @@
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
+local character = player.Character or player.CharacterAdded:Wait()
+local gui, mainFrame, originalSize, isExpanded
+
+local function toggleGUIVisibility(visible)
+    if gui then
+        gui.Enabled = visible
+    end
+end
+
+local function toggleGUISize(expand)
+    if mainFrame and originalSize then
+        if expand then
+            mainFrame.Size = originalSize
+        else
+            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modificar el tamaño según sea necesario
+        end
+        isExpanded = expand
+    end
+end
+
+local bb = game:GetService('VirtualUser')
+
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    wait(2)
+    ab.Text = "Estado: Activo"
+end)
+
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+local maintab = win:Tab('Main')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destroy Gui', function()
+    win:Exit()
+end)
+maintab:Button('Lvl Max', function(v)
+    local remotes = {
+        "Re1",
+        "Re2",
+        "Re3",
+        "Re4",
+        "Re5",
+        "Re6",
+        "Re7",
+        "Re8",
+        "Re9",
+        "Re10",
+        "Re11",
+"Re12",
+"Re13",
+"Re14",
+"Re15",
+"Re16",
+"Re17",
+"Re18",
+"Re19",
+"Re20",
+"Re21",
+"Re22",
+"Re23",
+"Re24",
+"Re25",
+"Re26",
+"Re27",
+"Re28",
+"Re29",
+"Re30",
+"Re31"
+    }
+
+    for _, remote in ipairs(remotes) do
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("State"):FireServer("lc", remote)
+        task.wait(0.5)
+    end
+end)
