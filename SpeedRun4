@@ -47,43 +47,22 @@ local uitab = win:Tab('UI')
 uitab:Button('Destroy Gui', function()
     win:Exit()
 end)
-maintab:Button('Lvl Max', function(v)
-    local remotes = {
-        "Re1",
-        "Re2",
-        "Re3",
-        "Re4",
-        "Re5",
-        "Re6",
-        "Re7",
-        "Re8",
-        "Re9",
-        "Re10",
-        "Re11",
-"Re12",
-"Re13",
-"Re14",
-"Re15",
-"Re16",
-"Re17",
-"Re18",
-"Re19",
-"Re20",
-"Re21",
-"Re22",
-"Re23",
-"Re24",
-"Re25",
-"Re26",
-"Re27",
-"Re28",
-"Re29",
-"Re30",
-"Re31"
-    }
+maintab:Toggle('AutoLvl', function(v)
+    getgenv().AutoLvl = v
+end)
 
-    for _, remote in ipairs(remotes) do
-        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("State"):FireServer("lc", remote)
-        task.wait(0.5)
+task.spawn(function()
+    while wait() do
+        if getgenv().AutoLvl then  
+            local player = game.Players.LocalPlayer
+
+            for i = 1, 30 do
+               game:GetService("Workspace").Levels[i].Map.Levels["1"].Collectibles.Model.Part
+            end
+
+            player.Character:SetPrimaryPartCFrame(game:GetService("Workspace").Levels["1"].Map.Levels["1"].Collectibles.Model.Part.Position)
+            wait(1) 
+            player.Character:SetPrimaryPartCFrame(checkpoints[30].CFrame)
+        end
     end
 end)
