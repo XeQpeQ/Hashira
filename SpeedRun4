@@ -70,7 +70,7 @@ task.spawn(function()
     local waitTime = 1 / targetFrameRate  
     local lastExecution = tick()
     
-    RunService.RenderStepped:Connect(function()
+    RunService.Stepped:Connect(function()
         local currentTime = tick()
         local deltaTime = currentTime - lastExecution
         
