@@ -79,52 +79,43 @@ end)
 
 local RunService = game:GetService("RunService")
 
-spawn(function() 
-    RunService.Stepped:Connect(function()
-        
+spawn(function()
+    game:GetService("RunService").Stepped:Connect(function()
         if getgenv().AutoLvl then
-            
             local levels = game:GetService("Workspace").Levels
-
-            local level = workspace:WaitForChild("Levels"):FindFirstChild(tostring(i))
-
-            for i,v in pairs(levels:GetChildren()) do
+            
+            for i, v in pairs(levels:GetChildren()) do
                 if v.Name:match("1") and v:FindFirstChild("MaterialVariants") then
                     v.Name = "OtherThing"
                 end
             end
             
             for i = 1, 30 do
-                if i == 30 then
-                    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels["30"].Map.Levels["1"].Checkpoints["3"].Position))
-                    task.wait(3)
-                    local args = {
-                        [1] = "lc",
-                        [2] = "Re1"
-                    }
-
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("State"):FireServer(unpack(args))
-                    
-                    for i,v in pairs(levels:GetChildren()) do
-                        if v.Name:match("1") and v:FindFirstChild("MaterialVariants") then
-                            v.Name = "OtherThing"
-                        end
-                    end
-                end
-                
+                local level = levels:FindFirstChild(tostring(i))
                 if level then
-                local map = level:WaitForChild("Map")
+                    local map = level:WaitForChild("Map")
                     local level1 = map:WaitForChild("Levels"):WaitForChild("1")
                     local collectibles = level1:WaitForChild("Collectibles")
-                    local checkpoints2 = level1:WaitForChild("Checkpoints"):WaitForChild("3")
+                    local checkpoints3 = level1:WaitForChild("Checkpoints"):WaitForChild("3")
                     local collectibleModel = collectibles:FindFirstChild("Model")
-                     if not collectibleModel then
-                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(checkpoints2.Position))
+                    
+                    if not collectibleModel then
+                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(checkpoints3.Position))
                     else
                         game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(collectibleModel:WaitForChild("Part").Position))
                     end
-                task.wait(1.2)
+                    task.wait(1.2)
                 end
+            end
+            
+            if level then
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels["30"].Map.Levels["1"].Checkpoints["3"].Position))
+                task.wait(3)
+                local args = {
+                    [1] = "lc",
+                    [2] = "Re1"
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("State"):FireServer(unpack(args))
             end
         end
     end)
