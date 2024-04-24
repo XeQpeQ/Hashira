@@ -64,6 +64,7 @@ end
             task.wait(1)
             for i = 1, 30 do
                 if i == 30 then
+                    task.wait(2)
                     local args = {
                         [1] = "lc",
                         [2] = "Re1"
