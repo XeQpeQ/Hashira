@@ -51,31 +51,63 @@ end)
 maintab:Toggle('AutoLvl', function(v)
     getgenv().AutoLvl = v
 end)
-
 task.spawn(function()
-    while true do
-        if getgenv().AutoLvl then
-for i,v in pairs(game:GetService("Workspace").Levels:GetChildren()) do
+    while wait() do
+        for i,v in pairs(game:GetService("Workspace").Levels:GetChildren()) do
 if v.Name:match("1") and v:FindFirstChild("MaterialVariants") then
 v.Name = "OtherThing"
 end
 end
+    end
+end)
+
+local RunService = game:GetService("RunService")
+
+local RunService = game:GetService("RunService")
+
+task.spawn(function()
+    local targetFrameRate = 60
+    local waitTime = 1 / targetFrameRate  
+    local lastExecution = tick()
+    
+    RunService.RenderStepped:Connect(function()
+        local currentTime = tick()
+        local deltaTime = currentTime - lastExecution
+        
+        if getgenv().AutoLvl and deltaTime >= waitTime then
+            lastExecution = currentTime
+            
             local levels = game:GetService("Workspace").Levels
-            task.wait(1)
+            
+            for i,v in pairs(levels:GetChildren()) do
+                if v.Name:match("1") and v:FindFirstChild("MaterialVariants") then
+                    v.Name = "OtherThing"
+                end
+            end
+            
             for i = 1, 30 do
                 if i == 30 then
-                    task.wait(2)
+                    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels["30"].Map.Levels["1"].Checkpoints["3"].Position))
+                    task.wait(3)
                     local args = {
                         [1] = "lc",
                         [2] = "Re1"
                     }
 
                     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("State"):FireServer(unpack(args))
+                    
+                    for i,v in pairs(levels:GetChildren()) do
+                        if v.Name:match("1") and v:FindFirstChild("MaterialVariants") then
+                            v.Name = "OtherThing"
+                        end
+                    end
                 end
+                
                 game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels[tostring(i)].Map.Levels["1"].Checkpoints["3"].Position))
                 task.wait(1.2)
             end
         end
-        wait(0.1)
-    end
+    end)
 end)
+
+
