@@ -66,6 +66,10 @@ end)
 maintab:Toggle('AutoCybernaut', function(v)
     getgenv().AutoCybernaut = v
 end)
+maintab:Toggle('AutoBirch', function(v)
+    getgenv().AutoBirch = v
+end)
+
 local RunService = game:GetService("RunService")
 
 spawn(function() 
@@ -253,6 +257,42 @@ spawn(function()
                 local level
                 if i > 12 then
                     level = levels:FindFirstChild("correct")
+                else
+                    level = levels:FindFirstChild("Model")
+                end
+                    
+                if level then
+                    local map = level:WaitForChild("Map")
+                    local level1 = map:WaitForChild("Levels"):WaitForChild("1")
+                    local collectibles = level1:WaitForChild("Collectibles")
+                    local checkpoints3 = level1:WaitForChild("Checkpoints"):WaitForChild("3")
+                    local collectibleModel = collectibles:FindFirstChild("Model")
+                    
+                    if not collectibleModel then
+                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(checkpoints3.Position))
+                    else
+                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(collectibleModel:WaitForChild("Part").Position))
+                    end
+                    task.wait(1.2)
+                end
+            end
+            
+            if level then
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels["30"].Map.Levels["1"].Checkpoints["3"].Position))
+                task.wait(3)
+            end
+        end
+    end)
+end)
+spawn(function()
+    game:GetService("RunService").Stepped:Connect(function()
+        if getgenv().AutoBirch then
+            local levels = game:GetService("Workspace").Levels
+            
+            for i = 1, 30 do
+                local level
+                if i > 28 then
+                    level = levels:FindFirstChild("birch".. i)
                 else
                     level = levels:FindFirstChild("Model")
                 end
