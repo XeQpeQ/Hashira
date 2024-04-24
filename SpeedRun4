@@ -63,19 +63,10 @@ end)
 
 local RunService = game:GetService("RunService")
 
-local RunService = game:GetService("RunService")
-
-task.spawn(function()
-    local targetFrameRate = 60
-    local waitTime = 1 / targetFrameRate  
-    local lastExecution = tick()
-    
+spawn(function() 
     RunService.Stepped:Connect(function()
-        local currentTime = tick()
-        local deltaTime = currentTime - lastExecution
         
-        if getgenv().AutoLvl and deltaTime >= waitTime then
-            lastExecution = currentTime
+        if getgenv().AutoLvl then
             
             local levels = game:GetService("Workspace").Levels
             
