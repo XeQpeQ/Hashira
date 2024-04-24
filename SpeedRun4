@@ -41,7 +41,8 @@ local win = HashiraUI:Create({
         TimePosition = 1
     }
 })
-local maintab = win:Tab('Main')
+local maintab = win:Tab('Main Worlds')
+local Bonustab = win:Tab('Bonus Worlds')
 local uitab = win:Tab('UI')
 
 uitab:Button('Destroy Gui', function()
@@ -51,23 +52,29 @@ end)
 maintab:Toggle('AutoClassic', function(v)
     getgenv().AutoLvl = v
 end)
-maintab:Toggle('AutoDonut', function(v)
+maintab:Toggle('AutoForbidden', function(v)
+    getgenv().AutoForbidden = v
+end)
+Bonustab:Toggle('AutoDonut', function(v)
     getgenv().AutoDonut = v
 end)
-maintab:Toggle('AutoMoon', function(v)
+Bonustab:Toggle('AutoMoon', function(v)
     getgenv().AutoMoon = v
 end)
-maintab:Toggle('AutoChromium', function(v)
+Bonustab:Toggle('AutoChromium', function(v)
     getgenv().AutoChromium  = v
 end)
-maintab:Toggle('AutoCosmic', function(v)
+Bonustab:Toggle('AutoCosmic', function(v)
     getgenv().AutoCosmic = v
 end)
-maintab:Toggle('AutoCybernaut', function(v)
+Bonustab:Toggle('AutoCybernaut', function(v)
     getgenv().AutoCybernaut = v
 end)
-maintab:Toggle('AutoBirch', function(v)
+Bonustab:Toggle('AutoBirch', function(v)
     getgenv().AutoBirch = v
+end)
+Bonustab:Toggle('AutoPeach', function(v)
+    getgenv().AutoPeach = v
 end)
 
 local RunService = game:GetService("RunService")
@@ -117,6 +124,29 @@ spawn(function()
                         game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(collectibleModel:WaitForChild("Part").Position))
                     end
                 task.wait(1.2)
+                end
+            end
+        end
+    end)
+end)
+spawn(function()
+    game:GetService("RunService").Stepped:Connect(function()
+        if getgenv().AutoForbidden then
+            for i = 1, 8 do
+                local level = workspace:WaitForChild("Levels"):FindFirstChild(tostring(i))
+                if level then
+                    local map = level:WaitForChild("Map")
+                    local level1 = map:WaitForChild("Levels"):WaitForChild("1")
+                    local collectibles = level1:WaitForChild("Collectibles")
+                    local checkpoints2 = level1:WaitForChild("Checkpoints"):WaitForChild("2")
+                    local collectibleModel = collectibles:FindFirstChild("Model")
+                    
+                    if not collectibleModel then
+                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(checkpoints2.Position))
+                    else
+                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(collectibleModel:WaitForChild("Part").Position))
+                    end
+                    task.wait(1.2)
                 end
             end
         end
@@ -293,6 +323,42 @@ spawn(function()
                 local level
                 if i > 28 then
                     level = levels:FindFirstChild("birch".. i)
+                else
+                    level = levels:FindFirstChild("Model")
+                end
+                    
+                if level then
+                    local map = level:WaitForChild("Map")
+                    local level1 = map:WaitForChild("Levels"):WaitForChild("1")
+                    local collectibles = level1:WaitForChild("Collectibles")
+                    local checkpoints3 = level1:WaitForChild("Checkpoints"):WaitForChild("3")
+                    local collectibleModel = collectibles:FindFirstChild("Model")
+                    
+                    if not collectibleModel then
+                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(checkpoints3.Position))
+                    else
+                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(collectibleModel:WaitForChild("Part").Position))
+                    end
+                    task.wait(1.2)
+                end
+            end
+            
+            if level then
+                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels["30"].Map.Levels["1"].Checkpoints["3"].Position))
+                task.wait(3)
+            end
+        end
+    end)
+end)
+spawn(function()
+    game:GetService("RunService").Stepped:Connect(function()
+        if getgenv().AutoPeach then
+            local levels = game:GetService("Workspace").Levels
+            
+            for i = 1, 30 do
+                local level
+                if i > 28 then
+                    level = levels:FindFirstChild(tostring(i))
                 else
                     level = levels:FindFirstChild("Model")
                 end
