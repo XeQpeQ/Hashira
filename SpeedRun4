@@ -90,7 +90,7 @@ spawn(function()
                 end
             end
             
-            for i = 1, 30 do
+            for i = 1, 31 do
                 local level = levels:FindFirstChild(tostring(i))
                 if level then
                     local map = level:WaitForChild("Map")
@@ -109,8 +109,6 @@ spawn(function()
             end
             
             if level then
-                game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels["30"].Map.Levels["1"].Checkpoints["3"].Position))
-                task.wait(3)
                 local args = {
                     [1] = "lc",
                     [2] = "Re1"
@@ -121,7 +119,7 @@ spawn(function()
     end)
 end)
 spawn(function()
-    game:GetService("RunService").Stepped:Connect(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
         if getgenv().AutoForbidden then
             for i = 1, 8 do
                 local level = workspace:WaitForChild("Levels"):FindFirstChild(tostring(i))
@@ -144,7 +142,7 @@ spawn(function()
     end)
 end)
 spawn(function()
-    game:GetService("RunService").Stepped:Connect(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
         if getgenv().AutoDonut then
             for i = 1, 30 do
                 local level = workspace:WaitForChild("Levels"):FindFirstChild(tostring(i))
@@ -160,14 +158,14 @@ spawn(function()
                     else
                         game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(collectibleModel:WaitForChild("Part").Position))
                     end
-                    task.wait(1.2)
+                    task.wait(3)
                 end
             end
         end
     end)
 end)
 spawn(function()
-    game:GetService("RunService").Stepped:Connect(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
         if getgenv().AutoMoon then
             local levels = game:GetService("Workspace").Levels
             
@@ -208,7 +206,7 @@ spawn(function()
     end)
 end)
 spawn(function()
-    game:GetService("RunService").Stepped:Connect(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
         if getgenv().AutoChromium then
             local levels = game:GetService("Workspace").Levels
             
@@ -239,7 +237,7 @@ spawn(function()
     end)
 end)
 spawn(function()
-    game:GetService("RunService").Stepped:Connect(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
         if getgenv().AutoCosmic then
             local levels = game:GetService("Workspace").Levels
             
@@ -270,7 +268,7 @@ spawn(function()
     end)
 end)
 spawn(function()
-    game:GetService("RunService").Stepped:Connect(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
         if getgenv().AutoCybernaut then
             local levels = game:GetService("Workspace").Levels
             
@@ -306,7 +304,7 @@ spawn(function()
     end)
 end)
 spawn(function()
-    game:GetService("RunService").Stepped:Connect(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
         if getgenv().AutoBirch then
             local levels = game:GetService("Workspace").Levels
             
@@ -342,7 +340,7 @@ spawn(function()
     end)
 end)
 spawn(function()
-    game:GetService("RunService").Stepped:Connect(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
         if getgenv().AutoPeach then
             local levels = game:GetService("Workspace").Levels
             
