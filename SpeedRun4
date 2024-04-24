@@ -55,10 +55,14 @@ end)
 task.spawn(function()
     while true do
         if getgenv().AutoLvl then
+for i,v in pairs(game:GetService("Workspace").Levels:GetChildren()) do
+if v.Name:match("1") and v:FindFirstChild("MaterialVariants") then
+v.Name = "OtherThing"
+end
+end
             local levels = game:GetService("Workspace").Levels
-            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(-282.857147, 157.624817, -434.966736, 0, 0, 1, 0, 1, -0, -1, 0, 0))
             task.wait(1)
-            for i = 2, 30 do
+            for i = 1, 30 do
                 if i == 30 then
                     local args = {
                         [1] = "lc",
@@ -66,11 +70,9 @@ task.spawn(function()
                     }
 
                     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("State"):FireServer(unpack(args))
-                    task.wait(1)
-                    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(-282.857147, 157.624817, -434.966736, 0, 0, 1, 0, 1, -0, -1, 0, 0))
                 end
                 game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(levels[tostring(i)].Map.Levels["1"].Checkpoints["3"].Position))
-                task.wait(1.5)
+                task.wait(1.2)
             end
         end
         wait(0.1)
