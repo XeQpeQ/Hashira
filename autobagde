@@ -55,7 +55,7 @@ spawn(function()
     RunService.Stepped:Connect(function()    
       if getgenv().AutoBagde then
             for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("TouchTransmitter") or v:IsA("TouchInterest") then
+if v:IsA("TouchTransmitter") then
 firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
 task.wait()
 firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1) 
