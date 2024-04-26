@@ -46,7 +46,7 @@ uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
-maintab:Toggle('Collect Bagdes', function()
+maintab:Button('Collect Bagdes', function()
 for _,v in pairs(workspace:GetDescendants()) do
 if v:IsA("TouchTransmitter") or v:IsA("TouchInterest") then
 firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
