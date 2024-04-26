@@ -10,7 +10,7 @@ end)
 
 UserInputService.InputBegan:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.Z then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/AnimationStealer", true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/autobagde", true))()
     end
 end)
 
