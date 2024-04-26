@@ -49,10 +49,9 @@ end)
 maintab:Toggle('Collect Bagdes', function(v)
 getgenv().AutoBagde = v
 end)
-local RunService = game:GetService("RunService")
 
-spawn(function() 
-    RunService.Stepped:Connect(function()    
+spawn(function()   
+      while wait() do
       if getgenv().AutoBagde then
             for _,v in pairs(workspace:GetDescendants()) do
 if v:IsA("TouchTransmitter") then
@@ -62,5 +61,5 @@ firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent,
 end
 end
         end
-    end)
+    end
 end)
