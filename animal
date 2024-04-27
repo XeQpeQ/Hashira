@@ -50,12 +50,10 @@ maintab:Toggle('AutoCoins', function(v)
    getgenv().AutoCoins = v
 end)
 
-local RunService = game:GetService("RunService")
-
 spawn(function() 
-    RunService.Stepped:Connect(function()    
+      while wait() do
       if getgenv().AutoCoins then
             game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("CoinEvent"):FireServer()
         end
-    end)
+    end
 end)
