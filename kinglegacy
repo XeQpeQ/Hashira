@@ -66,6 +66,10 @@ AutoFarm:Toggle('Auto Tashi(Lvl 30)', function(v)
     getgenv().AutoTashi = v
 end)
 
+AutoFarm:Toggle('Auto The Clown(Lvl 75)', function(v)
+    getgenv().AutoTheClown = v
+end)
+
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -161,6 +165,28 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
+            if getgenv().AutoTheClown then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 1 The Clown"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+                local TheClown = game:GetService("Workspace").Monster.Boss["The Clown [Lv. 75]"]
+                if TheClown and TheClown.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TheClown.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if TheClown.Humanoid.Health == 0 then
+                        TheClown:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
             if getgenv().AutoSoldier then
               local args = {
     [1] = "FS_None_M1"
@@ -217,3 +243,19 @@ game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes
         end)
     end
 end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoTheClown then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
