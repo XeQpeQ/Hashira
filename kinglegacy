@@ -1,3 +1,7 @@
+if game:GetService("Players").LocalPlayer.Character.Services:FindFirstChild("Client") then
+    game:GetService("Players").LocalPlayer.Character.Services["Client"].Disabled = true
+end
+
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
@@ -46,105 +50,62 @@ uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
-AutoFarm:Toggle('Auto Bandit', function(v)
-    getgenv().AutoBandit = v
+AutoFarm:Toggle('Auto Soldier(Lvl 1)', function(v)
+    getgenv().AutoSoldier = v
 end)
 
-local LP = game.Players.LocalPlayer
-local FarmMethod = "Behind"
-local tweenspeed = 20
-local Distance = 10
-
-local function GetDistance(Endpoint)
-    if typeof(Endpoint) == "Instance" then
-        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
-    elseif typeof(Endpoint) == "CFrame" then
-        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
-    end
-    local Magnitude = (Endpoint - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-    return Magnitude
-end
-
-function Tween(Endpoint)
-    if typeof(Endpoint) == "Instance" then
-        Endpoint = Endpoint.CFrame
-    end
-    local TweenFunc = {}
-    local Distance = GetDistance(Endpoint)
-    local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
-    TweenInfo:Play()
-    function TweenFunc:Cancel()
-        TweenInfo:Cancel()
-        return false
-    end
-    if Distance <= 100 then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Endpoint
-        TweenInfo:Cancel()
-        return false
-    end
-    return TweenFunc
-end
-
--- Auto Farm Method
-task.spawn(function()
-    while wait() do
-        pcall(function()
-            SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AutoBandit and NearestMobs)
-            if FarmMethod == "Above" then
-                FarmModes = CFrame.new(0,Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
-            elseif FarmMethod == "Below" then
-                FarmModes = CFrame.new(0,-Distance,0) * CFrame.Angles(math.rad(90),0,0)
-            elseif FarmMethod == "Behind" then
-                FarmModes = CFrame.new(0,0,Distance)
-            elseif FarmMethod == "Ahead" then
-                FarmModes = CFrame.new(0, 0, -Distance)
-                local rotation = CFrame.Angles(0, math.rad(180), 0)
-                FarmModes = FarmModes * rotation
-            end
-        end)
-    end
+AutoFarm:Toggle('Auto Clown(Lvl 10)', function(v)
+    getgenv().AutoClown = v
 end)
 
-local TweenFa 
+AutoFarm:Toggle('Auto Smoky(Lvl 20)', function(v)
+    getgenv().AutoSmoky = v
+end)
+
+AutoFarm:Toggle('Auto Tashi(Lvl 30)', function(v)
+    getgenv().AutoTashi = v
+end)
 
 task.spawn(function()
     while task.wait() do
         pcall(function()
-            if getgenv().AutoBandit then
-                if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                    antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
-                    antifall3.Velocity = Vector3.new(0, 0, 0)
-                    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-                elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                    for i, v in pairs(game:GetService("Workspace").Monster.Mon:GetChildren()) do
-                        if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Soldier [Lv. 1]") then
-                            if v.Humanoid.Health > 0 then
-                                local distance = GetDistance(v:GetModelCFrame() * FarmModes)
-                                repeat
-                                    task.wait()
-                                    if distance < 25 and distance < 150 then
-                                        if TweenFa then
-                                            TweenFa:Cancel()
-                                            wait(.1)
-                                        end
-                                        LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame()
-                                    else
-                                        TweenFa = Tween(v:GetModelCFrame() * FarmModes)
-                                    end
-                                    if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
-                                        NearestMobs = true
-                                    elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
-                                        NearestMobs = false
-                                    end
-                                until not getgenv().AutoBandit or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
-                                NearestMobs = false
-                            end
-                        end
+            if getgenv().AutoSoldier then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 4 Soldiers"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local soldier = game:GetService("Workspace").Monster.Mon["Soldier [Lv. 1]"]
+                if soldier and soldier.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = soldier.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if soldier.Humanoid.Health == 0 then
+                        soldier:Destroy()
                     end
                 end
             end
-            if getgenv().AutoBandit == false and TweenFa then
-                TweenFa:Cancel()
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoClown then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 5 Clown Pirates"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+                local Clown = game:GetService("Workspace").Monster.Mon["Clown Pirate [Lv. 10]"]
+                if Clown and Clown.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Clown.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Clown.Humanoid.Health == 0 then
+                        Clown:Destroy()
+                    end
+                end
             end
         end)
     end
@@ -153,7 +114,99 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
-            if getgenv().AutoBandit then
+            if getgenv().AutoSmoky then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 1 Smoky"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local Smoky = game:GetService("Workspace").Monster.Boss["Smoky [Lv. 20]"]
+                if Smoky and Smoky.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Smoky.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Smoky.Humanoid.Health == 0 then
+                        Smoky:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoTashi then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 1 Tashi"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+
+                local Tashi = game:GetService("Workspace").Monster.Boss["Tashi [Lv. 30]"]
+                if Tashi and Tashi.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Tashi.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Tashi.Humanoid.Health == 0 then
+                        Tashi:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoSoldier then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoClown then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoSmoky then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoTashi then
               local args = {
     [1] = "FS_None_M1"
 }
