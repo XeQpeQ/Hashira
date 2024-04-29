@@ -43,7 +43,8 @@ local win = HashiraUI:Create({
         TimePosition = 1
     }
 })
-local AutoFarm = win:Tab('AutoFarm')
+local AutoFarm = win:Tab('Island 1')
+local AutoFarm2 = win:Tab('Island 2')
 local uitab = win:Tab('UI')
 
 uitab:Button('Destroy GUI', function()
@@ -66,10 +67,14 @@ AutoFarm:Toggle('Auto Tashi(Lvl 30)', function(v)
     getgenv().AutoTashi = v
 end)
 
-AutoFarm:Toggle('Auto The Clown(Lvl 75)', function(v)
-    getgenv().AutoTheClown = v
+
+AutoFarm2:Button('Teleport Island 2', function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn2.Position))
 end)
 
+AutoFarm2:Toggle('Auto The Clown(Lvl 75)', function(v)
+    getgenv().AutoTheClown = v
+end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
