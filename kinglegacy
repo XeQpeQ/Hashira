@@ -48,6 +48,7 @@ local win = HashiraUI:Create({
     }
 })
 local AutoFarm = win:Tab('Auto Farm')
+local Teleport = win:Tab('Teleport')
 local uitab = win:Tab('UI')
 
 uitab:Button('Destroy GUI', function()
@@ -84,6 +85,22 @@ end)
 
 AutoFarm:Toggle('Auto The Barbaric(Lvl 145: Need go to Soldier Island )', function(v)
     getgenv().AutoTheBarbaric = v
+end)
+
+AutoFarm:Toggle('Auto Trainer Chef(Lvl 250: Need go to Nave Of Chef Island )', function(v)
+    getgenv().AutoTrainerChef = v
+end)
+
+Teleport:Button('Teleport to Pirate Island', function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn2.Position))
+end)
+
+Teleport:Button('Teleport to Soldier', function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn3.Position))
+end)
+
+Teleport:Button('Teleport to Nave of Chef', function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn7.Position))
 end)
 
 task.spawn(function()
@@ -272,6 +289,29 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
+            if getgenv().AutoTrainerChef then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 4 Trainer Chef"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local TrainerChef = game:GetService("Workspace").Monster.Mon["Trainer Chef [Lv. 250]"]
+                if TrainerChef and TrainerChef.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TrainerChef.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if TrainerChef.Humanoid.Health == 0 then
+                        TrainerChef:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
             if getgenv().AutoSoldier then
               local args = {
     [1] = "FS_None_M1"
@@ -377,6 +417,20 @@ task.spawn(function()
     while task.wait() do
         pcall(function()
             if getgenv().AutoTheBarbaric then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoTrainerChef then
               local args = {
     [1] = "FS_None_M1"
 }
