@@ -48,8 +48,8 @@ local win = HashiraUI:Create({
 local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
 local FarmMethod = "Above"
-local tweenspeed = 10
-local Distance = 10
+local tweenspeed = 5
+local Distance = 5
 
 local function GetDistance(Endpoint)
     if typeof(Endpoint) == "Instance" then
