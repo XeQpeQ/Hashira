@@ -48,7 +48,6 @@ local win = HashiraUI:Create({
     }
 })
 local AutoFarm = win:Tab('Island 1')
-local AutoFarm2 = win:Tab('Island 2')
 local uitab = win:Tab('UI')
 
 uitab:Button('Destroy GUI', function()
@@ -71,35 +70,18 @@ AutoFarm:Toggle('Auto Tashi(Lvl 30)', function(v)
     getgenv().AutoTashi = v
 end)
 
-
-local TweenService = game:GetService("TweenService")
-
-AutoFarm2:Button('Teleport Island 2', function()
-    local spawnPosition = game:GetService("Workspace").SpawnPoints.Spawn2.Position -- Obtener la posición del Spawn2
-
-    -- Crear una instancia de la CFrame del spawnPosition
-    local targetCFrame = CFrame.new(spawnPosition)
-
-    -- Configurar las propiedades de la animación de Tween
-    local tweenInfo = TweenInfo.new(
-        1, -- Duración en segundos
-        Enum.EasingStyle.Linear, -- Estilo de interpolación
-        Enum.EasingDirection.Out, -- Dirección de interpolación
-        0, -- Veces para repetir (0 = una vez)
-        false, -- Revertir la animación
-        0 -- Retraso en segundos
-    )
-
-    -- Crear una Tween para mover el personaje a la posición del spawn con la CFrame
-    local tween = TweenService:Create(game.Players.LocalPlayer.Character.PrimaryPart, tweenInfo, {CFrame = targetCFrame})
-
-    -- Reproducir la Tween
-    tween:Play()
-end)
-
-AutoFarm2:Toggle('Auto The Clown(Lvl 75)', function(v)
+AutoFarm:Toggle('Auto The Clown(Lvl 75: Need go to Pirate Island )', function(v)
     getgenv().AutoTheClown = v
 end)
+
+AutoFarm:Toggle('Auto Commander(Lvl 100: Need go to Soldier Island )', function(v)
+    getgenv().AutoCommander = v
+end)
+
+AutoFarm:Toggle('Auto Captain(Lvl 120: Need go to Soldier Island )', function(v)
+    getgenv().AutoCaptain = v
+end)
+
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -217,6 +199,52 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
+            if getgenv().AutoCaptain then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 1 Captain"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local Captain = game:GetService("Workspace").Monster.Boss["Captain [Lv. 120]"]
+                if Captain and Captain.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Captain.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Captain.Humanoid.Health == 0 then
+                        Captain:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoCommander then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 4 Commander"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local Commander = game:GetService("Workspace").Monster.Mon["Commander [Lv. 100]"]
+                if Commander and Commander.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Commander.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Commander.Humanoid.Health == 0 then
+                        Commander:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
             if getgenv().AutoSoldier then
               local args = {
     [1] = "FS_None_M1"
@@ -288,4 +316,32 @@ game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes
         end)
     end
 end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoCommander then
+              local args = {
+    [1] = "FS_None_M1"
+}
 
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoCaptain then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
