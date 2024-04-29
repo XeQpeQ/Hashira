@@ -82,6 +82,10 @@ AutoFarm:Toggle('Auto Captain(Lvl 120: Need go to Soldier Island )', function(v)
     getgenv().AutoCaptain = v
 end)
 
+AutoFarm:Toggle('Auto The Barbaric(Lvl 145: Need go to Soldier Island )', function(v)
+    getgenv().AutoTheBarbaric = v
+end)
+
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -199,6 +203,29 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
+            if getgenv().AutoCommander then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 4 Commander"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local Commander = game:GetService("Workspace").Monster.Mon["Commander [Lv. 100]"]
+                if Commander and Commander.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Commander.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Commander.Humanoid.Health == 0 then
+                        Commander:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
             if getgenv().AutoCaptain then
                 local args = {
     [1] = "take",
@@ -222,26 +249,26 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
-            if getgenv().AutoCommander then
+            if getgenv().AutoTheBarbaric then
                 local args = {
     [1] = "take",
-    [2] = "Kill 4 Commander"
+    [2] = "Kill 1 The Barbaric"
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
 
-                local Commander = game:GetService("Workspace").Monster.Mon["Commander [Lv. 100]"]
-                if Commander and Commander.HumanoidRootPart then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Commander.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
-                    if Commander.Humanoid.Health == 0 then
-                        Commander:Destroy()
+
+                local Barbaric = game:GetService("Workspace").Monster.Boss["The Barbaric [Lv. 145]"]
+                if Barbaric and Barbaric.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Barbaric.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Barbaric.Humanoid.Health == 0 then
+                        Barbaric:Destroy()
                     end
                 end
             end
         end)
     end
 end)
-
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -335,6 +362,21 @@ task.spawn(function()
     while task.wait() do
         pcall(function()
             if getgenv().AutoCaptain then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoTheBarbaric then
               local args = {
     [1] = "FS_None_M1"
 }
