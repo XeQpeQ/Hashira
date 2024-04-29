@@ -1,3 +1,10 @@
+task.spawn(function()
+    while task.wait() do
+    if game:GetService("Players").LocalPlayer.Character.Services:FindFirstChild("Client") then
+    game:GetService("Players").LocalPlayer.Character.Services["Client"].Disabled = true
+        end
+    end
+end)
 if game:GetService("Players").LocalPlayer.Character.Services:FindFirstChild("Client") then
     game:GetService("Players").LocalPlayer.Character.Services["Client"].Disabled = true
 end
