@@ -47,7 +47,7 @@ local win = HashiraUI:Create({
         TimePosition = 1
     }
 })
-local AutoFarm = win:Tab('Island 1')
+local AutoFarm = win:Tab('Auto Farm')
 local uitab = win:Tab('UI')
 
 uitab:Button('Destroy GUI', function()
