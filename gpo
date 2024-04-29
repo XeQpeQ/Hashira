@@ -1,7 +1,3 @@
-if game.Players.LocalPlayer.PlayerScripts:FindFirstChild("ClientMain") then
-    game.Players.LocalPlayer.PlayerScripts.ClientMain.Disabled = true
-end
-
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
@@ -47,8 +43,8 @@ local win = HashiraUI:Create({
 
 local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
-local FarmMethod = "Above"
-local tweenspeed = 5
+local FarmMethod = "Behind"
+local tweenspeed = 50
 local Distance = 5
 
 local function GetDistance(Endpoint)
@@ -73,7 +69,7 @@ function Tween(Endpoint)
         TweenInfo:Cancel()
         return false
     end
-    if Distance <= 100 then
+    if Distance <= 5 then
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Endpoint
         TweenInfo:Cancel()
         return false
