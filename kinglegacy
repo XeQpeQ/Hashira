@@ -68,8 +68,29 @@ AutoFarm:Toggle('Auto Tashi(Lvl 30)', function(v)
 end)
 
 
+local TweenService = game:GetService("TweenService")
+
 AutoFarm2:Button('Teleport Island 2', function()
-    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn2.Position))
+    local spawnPosition = game:GetService("Workspace").SpawnPoints.Spawn2.Position -- Obtener la posición del Spawn2
+
+    -- Crear una instancia de la CFrame del spawnPosition
+    local targetCFrame = CFrame.new(spawnPosition)
+
+    -- Configurar las propiedades de la animación de Tween
+    local tweenInfo = TweenInfo.new(
+        1, -- Duración en segundos
+        Enum.EasingStyle.Linear, -- Estilo de interpolación
+        Enum.EasingDirection.Out, -- Dirección de interpolación
+        0, -- Veces para repetir (0 = una vez)
+        false, -- Revertir la animación
+        0 -- Retraso en segundos
+    )
+
+    -- Crear una Tween para mover el personaje a la posición del spawn con la CFrame
+    local tween = TweenService:Create(game.Players.LocalPlayer.Character.PrimaryPart, tweenInfo, {CFrame = targetCFrame})
+
+    -- Reproducir la Tween
+    tween:Play()
 end)
 
 AutoFarm2:Toggle('Auto The Clown(Lvl 75)', function(v)
