@@ -49,6 +49,8 @@ local win = HashiraUI:Create({
 })
 local AutoFarm = win:Tab('Auto Farm')
 local AutoFarm2 = win:Tab('Auto Farm2')
+local Fruit = win:Tab('Fruit')
+
 local Teleport = win:Tab('Teleport')
 local uitab = win:Tab('UI')
 
@@ -100,6 +102,14 @@ AutoFarm2:Toggle('Auto Dory(Lvl 350: Need go to Nave Of Chef Island )', function
     getgenv().AutoDory = v
 end)
 
+AutoFarm2:Toggle('Auto Snow Soldier(Lvl 400: Need go to Ice Island )', function(v)
+    getgenv().AutoSnowSoldier = v
+end)
+
+AutoFarm2:Toggle('Auto King Snow(Lvl 450: Need go to Ice Island )', function(v)
+    getgenv().AutoKingSnow = v
+end)
+
 Teleport:Button('Teleport to Pirate Island', function()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn2.Position))
 end)
@@ -110,6 +120,20 @@ end)
 
 Teleport:Button('Teleport to Nave of Chef', function()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn7.Position))
+end)
+
+Teleport:Button('Teleport to Ice Island', function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn4.Position))
+end)
+
+Fruit:Button('Get All Fruits', function()
+for _,v in pairs(game:GetService("Workspace").AllDroppedFruit:GetDescendants()) do
+if v:IsA("TouchTransmitter") then
+firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+task.wait()
+firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1) 
+end
+end
 end)
 
 task.spawn(function()
@@ -362,6 +386,51 @@ game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes
         end)
     end
 end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoSnowSoldier then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 5 Snow Soldier"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local SnowSoldier = game:GetService("Workspace").Monster.Mon["Snow Soldier [Lv. 400]"]
+                if SnowSoldier and SnowSoldier.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = SnowSoldier.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if SnowSoldier.Humanoid.Health == 0 then
+                        SnowSoldier:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoKingSnow then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 1 King Snow"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local KingSnow = game:GetService("Workspace").Monster.Boss["King Snow [Lv. 450]"]
+                if KingSnow and KingSnow.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = KingSnow.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if KingSnow.Humanoid.Health == 0 then
+                        KingSnow:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
 
 task.spawn(function()
     while task.wait() do
@@ -514,6 +583,35 @@ task.spawn(function()
     while task.wait() do
         pcall(function()
             if getgenv().AutoDory then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoSnowSoldier then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoKingSnow then
               local args = {
     [1] = "FS_None_M1"
 }
