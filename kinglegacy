@@ -110,6 +110,27 @@ AutoFarm2:Toggle('Auto King Snow(Lvl 450: Need go to Ice Island )', function(v)
     getgenv().AutoKingSnow = v
 end)
 
+AutoFarm2:Toggle('Auto Little Dear(Lvl 500: Need go to Ice Island )', function(v)
+    getgenv().AutoLittleDear = v
+end)
+
+AutoFarm2:Toggle('Auto Candle Man(Lvl 525: Need go to Desert Island )', function(v)
+    getgenv().AutoCandleMan = v
+end)
+
+AutoFarm2:Toggle('Auto Sand Bandit(Lvl 575: Need go to Desert Island )', function(v)
+    getgenv().AutoSandBandit = v
+end)
+
+AutoFarm2:Toggle('Auto Bomb Man(Lvl 625: Need go to Desert Island )', function(v)
+    getgenv().AutoBombMan = v
+end)
+
+AutoFarm2:Toggle('Auto Desert Marauder(Lvl 675: Need go to Desert Island )', function(v)
+    getgenv().AutoDesertMarauder = v
+end)
+
+
 Teleport:Button('Teleport to Pirate Island', function()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn2.Position))
 end)
@@ -124,6 +145,10 @@ end)
 
 Teleport:Button('Teleport to Ice Island', function()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn4.Position))
+end)
+
+Teleport:Button('Teleport to Desert Island', function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn5.Position))
 end)
 
 Fruit:Button('Get All Fruits', function()
@@ -435,6 +460,121 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
+            if getgenv().AutoLittleDear then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 1 Little Dear"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local LittleDear = game:GetService("Workspace").Monster.Boss["Little Dear [Lv. 500]"]
+                if LittleDear and LittleDear.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = LittleDear.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if LittleDear.Humanoid.Health == 0 then
+                        LittleDear:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoCandleMan then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 1 Candle Man"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local CandleMan = game:GetService("Workspace").Monster.Boss["Candle Man [Lv. 525]"]
+                if CandleMan and CandleMan.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CandleMan.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if CandleMan.Humanoid.Health == 0 then
+                        CandleMan:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoSandBandit then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 4 Sand Bandit"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local SandBandit = game:GetService("Workspace").Monster.Mon["Sand Bandit [Lv. 575]"]
+                if SandBandit and SandBandit.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = SandBandit.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if SandBandit.Humanoid.Health == 0 then
+                        SandBandit:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoBombMan then
+                local args = {
+    [1] = "take",
+    [2] = "Kill 1 Bomb Man"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local BombMan = game:GetService("Workspace").Monster.Boss["Bomb Man [Lv. 625]"]
+                if BombMan and BombMan.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = BombMan.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if BombMan.Humanoid.Health == 0 then
+                        BombMan:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoDesertMarauder then
+ local args = {
+    [1] = "take",
+    [2] = "Kill 4 Desert Marauder"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local DesertMarauder = game:GetService("Workspace").Monster.Mon["Desert Marauder [Lv. 675]"]
+                if DesertMarauder and DesertMarauder.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = DesertMarauder.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if DesertMarauder.Humanoid.Health == 0 then
+                        DesertMarauder:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
             if getgenv().AutoSoldier then
               local args = {
     [1] = "FS_None_M1"
@@ -612,6 +752,81 @@ task.spawn(function()
     while task.wait() do
         pcall(function()
             if getgenv().AutoKingSnow then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoLittleDear then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoCandleMan then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoSandBandit then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoBombMan then
+              local args = {
+    [1] = "FS_None_M1"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoDesertMarauder then
               local args = {
     [1] = "FS_None_M1"
 }
