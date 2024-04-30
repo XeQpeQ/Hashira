@@ -48,6 +48,7 @@ local win = HashiraUI:Create({
     }
 })
 local AutoFarm = win:Tab('Auto Farm')
+local AutoFarm2 = win:Tab('Auto Farm2')
 local Teleport = win:Tab('Teleport')
 local uitab = win:Tab('UI')
 
@@ -95,7 +96,7 @@ AutoFarm:Toggle('Auto Dark Leg(Lvl 300: Need go to Nave Of Chef Island )', funct
     getgenv().AutoDarkLeg = v
 end)
 
-AutoFarm:Toggle('Auto Dory(Lvl 350: Need go to Nave Of Chef Island )', function(v)
+AutoFarm2:Toggle('Auto Dory(Lvl 350: Need go to Nave Of Chef Island )', function(v)
     getgenv().AutoDory = v
 end)
 
