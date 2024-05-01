@@ -159,6 +159,10 @@ AutoFarm3:Toggle('Rumble Man(Lvl 950: Need go to Sky Island )', function(v)
     getgenv().AutoRumbleMan = v
 end)
 
+AutoFarm3:Toggle('Elite Soldier(Lvl 1000: Need go to Bubble Island )', function(v)
+    getgenv().AutoEliteSoldier = v
+end)
+
 Teleport:Button('Teleport to Pirate Island', function()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn2.Position))
 end)
@@ -188,7 +192,7 @@ Teleport:Button('Teleport to Sky Island', function()
 end)
 
 Teleport:Button('Teleport to Bubble Island', function()
-    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn9.Position))
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn8.Position))
 end)
 
 Fruit:Button('Get All Fruits', function()
@@ -777,6 +781,29 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
+            if getgenv().AutoEliteSoldier then
+ local args = {
+    [1] = "take",
+    [2] = "Kill 4 Elite Soldiers"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local EliteSoldier = game:GetService("Workspace").Monster.Mon["Elite Soldier [Lv. 1000]"]
+                if EliteSoldier and EliteSoldier.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EliteSoldier.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if EliteSoldier.Humanoid.Health == 0 then
+                        EliteSoldier:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
             if getgenv().AutoSoldier then
               local args = {
     [1] = "FS_None_M1"
@@ -1135,11 +1162,46 @@ task.spawn(function()
         pcall(function()
             if getgenv().AutoRumbleMan then
               local args = {
-    [1] = "FS_None_M1"
+    [1] = "SW_Tashi Blade_M1"
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
 
+            end
+        end)
+    end
+end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoEliteSoldier then
+                local function isTashiBladeEquipped()
+                    local equippedWeapon = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                    
+                    if equippedWeapon and equippedWeapon.Name == "Tashi Blade" then
+                        return true
+                    else
+                        return false
+                    end
+                end
+                
+                local function equipTashiBlade()
+                    local tashiBlade = game.Players.LocalPlayer.Backpack:FindFirstChild("Tashi Blade")
+                    
+                    if tashiBlade then
+                        tashiBlade.Parent = game.Players.LocalPlayer.Character
+                    end
+                end
+                
+                if not isTashiBladeEquipped() then
+                    equipTashiBlade()
+                end
+                
+                local args = {
+                    [1] = "SW_Tashi Blade_M1"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
             end
         end)
     end
