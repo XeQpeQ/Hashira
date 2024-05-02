@@ -188,6 +188,22 @@ AutoFarm4:Toggle('Leo (Lvl 1450: Need go to Lobby Island )', function(v)
     getgenv().AutoLeo = v
 end)
 
+AutoFarm4:Toggle('Zombie (Lvl 1500: Need go to Zombie Island )', function(v)
+    getgenv().AutoZombie = v
+end)
+
+AutoFarm4:Toggle('Elite Zombie (Lvl 1550: Need go to Zombie Island )', function(v)
+    getgenv().AutoEliteZombie = v
+end)
+
+AutoFarm4:Toggle('Revenant (Lvl 1600: Need go to Zombie Island )', function(v)
+    getgenv().AutoRevenant = v
+end)
+
+AutoFarm4:Toggle('Shadow Master (Lvl 1650: Need go to Zombie Island )', function(v)
+    getgenv().AutoShadowMaster = v
+end)
+
 Teleport:Button('Teleport to Pirate Island', function()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn2.Position))
 end)
@@ -219,8 +235,13 @@ end)
 Teleport:Button('Teleport to Bubble Island', function()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn8.Position))
 end)
+
 Teleport:Button('Teleport to Lobby Island', function()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn10.Position))
+end)
+
+Teleport:Button('Teleport to Zombie Island', function()
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(game:GetService("Workspace").SpawnPoints.Spawn11.Position))
 end)
 
 Fruit:Button('Get All Fruits', function()
@@ -969,6 +990,98 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
+            if getgenv().AutoZombie then
+ local args = {
+    [1] = "take",
+    [2] = "Kill 4 Zombies"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local Zombie = game:GetService("Workspace").Monster.Mon["Zombie [Lv. 1500]"]
+                if Zombie and Zombie.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Zombie.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Zombie.Humanoid.Health == 0 then
+                        Zombie:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoEliteZombie then
+ local args = {
+    [1] = "take",
+    [2] = "Kill 4 Elite Zombies"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local EliteZombie = game:GetService("Workspace").Monster.Mon["Elite Zombie [Lv. 1550]"]
+                if EliteZombie and EliteZombie.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EliteZombie.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if EliteZombie.Humanoid.Health == 0 then
+                        EliteZombie:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoRevenant then
+ local args = {
+    [1] = "take",
+    [2] = "Kill 4 Revenant"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local Revenant = game:GetService("Workspace").Monster.Mon["Revenant [Lv. 1600]"]
+                if Revenant and Revenant.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Revenant.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if Revenant.Humanoid.Health == 0 then
+                        Revenant:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoShadowMaster then
+ local args = {
+    [1] = "take",
+    [2] = "Kill 1 Shadow Master"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+                local ShadowMaster = game:GetService("Workspace").Monster.Boss["Shadow Master [Lv. 1650]"]
+                if ShadowMaster and ShadowMaster.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = ShadowMaster.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    if ShadowMaster.Humanoid.Health == 0 then
+                        ShadowMaster:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
             if getgenv().AutoSoldier then
               local args = {
     [1] = "FS_None_M1"
@@ -1551,6 +1664,146 @@ task.spawn(function()
     while task.wait() do
         pcall(function()
             if getgenv().AutoLeo then
+                local function isTashiBladeEquipped()
+                    local equippedWeapon = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                    
+                    if equippedWeapon and equippedWeapon.Name == "Tashi Blade" then
+                        return true
+                    else
+                        return false
+                    end
+                end
+                
+                local function equipTashiBlade()
+                    local tashiBlade = game.Players.LocalPlayer.Backpack:FindFirstChild("Tashi Blade")
+                    
+                    if tashiBlade then
+                        tashiBlade.Parent = game.Players.LocalPlayer.Character
+                    end
+                end
+                
+                if not isTashiBladeEquipped() then
+                    equipTashiBlade()
+                end
+                
+                local args = {
+                    [1] = "SW_Tashi Blade_M1"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+            end
+        end)
+    end
+end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoZombie then
+                local function isTashiBladeEquipped()
+                    local equippedWeapon = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                    
+                    if equippedWeapon and equippedWeapon.Name == "Tashi Blade" then
+                        return true
+                    else
+                        return false
+                    end
+                end
+                
+                local function equipTashiBlade()
+                    local tashiBlade = game.Players.LocalPlayer.Backpack:FindFirstChild("Tashi Blade")
+                    
+                    if tashiBlade then
+                        tashiBlade.Parent = game.Players.LocalPlayer.Character
+                    end
+                end
+                
+                if not isTashiBladeEquipped() then
+                    equipTashiBlade()
+                end
+                
+                local args = {
+                    [1] = "SW_Tashi Blade_M1"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+            end
+        end)
+    end
+end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoEliteZombie then
+                local function isTashiBladeEquipped()
+                    local equippedWeapon = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                    
+                    if equippedWeapon and equippedWeapon.Name == "Tashi Blade" then
+                        return true
+                    else
+                        return false
+                    end
+                end
+                
+                local function equipTashiBlade()
+                    local tashiBlade = game.Players.LocalPlayer.Backpack:FindFirstChild("Tashi Blade")
+                    
+                    if tashiBlade then
+                        tashiBlade.Parent = game.Players.LocalPlayer.Character
+                    end
+                end
+                
+                if not isTashiBladeEquipped() then
+                    equipTashiBlade()
+                end
+                
+                local args = {
+                    [1] = "SW_Tashi Blade_M1"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+            end
+        end)
+    end
+end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoRevenant then
+                local function isTashiBladeEquipped()
+                    local equippedWeapon = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                    
+                    if equippedWeapon and equippedWeapon.Name == "Tashi Blade" then
+                        return true
+                    else
+                        return false
+                    end
+                end
+                
+                local function equipTashiBlade()
+                    local tashiBlade = game.Players.LocalPlayer.Backpack:FindFirstChild("Tashi Blade")
+                    
+                    if tashiBlade then
+                        tashiBlade.Parent = game.Players.LocalPlayer.Character
+                    end
+                end
+                
+                if not isTashiBladeEquipped() then
+                    equipTashiBlade()
+                end
+                
+                local args = {
+                    [1] = "SW_Tashi Blade_M1"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("SkillAction"):InvokeServer(unpack(args))
+            end
+        end)
+    end
+end)
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoShadowMaster then
                 local function isTashiBladeEquipped()
                     local equippedWeapon = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
                     
