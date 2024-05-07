@@ -1,34 +1,21 @@
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
-local VirtualInputManager = game:GetService("VirtualInputManager")
 
 local gui, mainFrame, originalSize, isExpanded
-
-local function toggleGUIVisibility(visible)
-    if gui then
-        gui.Enabled = visible
-    end
-end
-
-local function toggleGUISize(expand)
-    if mainFrame and originalSize then
-        if expand then
-            mainFrame.Size = originalSize
-        else
-            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modifica el tamaño según sea necesario
-        end
-        isExpanded = expand
-    end
-end
 
 local bb = game:GetService('VirtualUser')
 
 game:GetService('Players').LocalPlayer.Idled:Connect(function()
     bb:CaptureController()
     bb:ClickButton2(Vector2.new())
-    ab.Text = "Roblox intentó expulsarte, pero lo evité"
-    wait(2)
-    ab.Text = "Estado: Activo"
+    --[[
+    Se necesita una referencia al objeto 'ab' para actualizar su texto. 
+    Asumiré que 'ab' es un objeto GUI TextLabel definido en algún lugar del código que no fue proporcionado.
+    Si 'ab' no está definido, necesitarás cambiarlo por una referencia válida al objeto TextLabel.
+    ]]
+    -- ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    -- wait(2)
+    -- ab.Text = "Estado: Activo"
 end)
 
 local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
@@ -42,7 +29,6 @@ local win = HashiraUI:Create({
 })
 
 local LP = game.Players.LocalPlayer
-local client = game.Players.LocalPlayer
 local FarmMethod = "Above"
 local tweenspeed = 50
 local Distance = 10
@@ -106,7 +92,7 @@ AutoFarm:Toggle('Auto Bandit', function(v)
 end)
 
 AutoFarm:Button('No Stamina', function()
-     local Namecall
+    local Namecall
     Namecall = hookmetamethod(game, '__namecall', function(self, ...)
         local Args = {...}
         local method = getnamecallmethod()
@@ -123,25 +109,22 @@ spawn(function()
     local TweenFa 
     local antifall3 
 
-    while task.wait() do
+    while wait() do
         pcall(function()
             if getgenv().AutoBandit then
                 local args = {
-    [1] = "Samook",
-    [2] = "Add"
-}
+                    [1] = "Kisuke",
+                    [2] = "Add"
+                }
 
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
-
-                local bandit = game:GetService("Workspace").NPCs.Bandit
-                if bandit and bandit.HumanoidRootPart then
-                    if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                        antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
-                        antifall3.Velocity = Vector3.new(0, 0, 0)
-                        antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-                    elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                        for i, v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do
-                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Bandit") then
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
+                for i,v in pairs(game:GetService("Workspace").World.Live.Mobs.Hollow:GetDescendants()) do 
+                        if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                            antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+                            antifall3.Velocity = Vector3.new(0, 0, 0)
+                            antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                        elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Hollow") then
                                 if v.Humanoid.Health > 0 then
                                     local distance = GetDistance(v:GetModelCFrame() * FarmModes)
                                     repeat
@@ -163,7 +146,6 @@ game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest
                                     until not getgenv().AutoBandit or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
                                     NearestMobs = false
                                 end
-                            end
                         end
                     end
                 end
@@ -176,23 +158,20 @@ game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest
                     antifall3:Destroy() 
                 end
             end
-            
-            if bandit and bandit.Humanoid.Health == 0 then
-                bandit:Destroy()
-            end
         end)
     end
 end)
+
 spawn(function()
     while wait() do
         if getgenv().AutoBandit then
-        local args = {
-    [1] = "Swing",
-    [2] = 4,
-    [3] = "Fist"
-}
+            local args = {
+                [1] = "Swing",
+                [2] = 4,
+                [3] = "Fist"
+            }
 
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
 
             local Player = game:GetService("Players").LocalPlayer
             pcall(function()
