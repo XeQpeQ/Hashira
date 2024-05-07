@@ -49,9 +49,8 @@ local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
 local FarmMethod = "Above"
 local tweenspeed = 50
-local Distance = 18
+local Distance = 25
 
--- Define local function GetDistance to calculate distance between player and endpoint
 local function GetDistance(Endpoint)
     if typeof(Endpoint) == "Instance" or typeof(Endpoint) == "CFrame" then
         Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
@@ -60,7 +59,6 @@ local function GetDistance(Endpoint)
     return Magnitude
 end
 
--- Define local function Tween to handle tweening
 local function Tween(Endpoint)
     if typeof(Endpoint) == "Instance" then
         Endpoint = Endpoint.CFrame
@@ -81,7 +79,6 @@ local function Tween(Endpoint)
     return TweenFunc
 end
 
--- Define a task to handle farming methods
 task.spawn(function()
     while wait() do
         pcall(function()
@@ -101,21 +98,17 @@ task.spawn(function()
     end
 end)
 
--- Define GUI tabs
 local AutoFarm = win:Tab('AutoFarm')
 local uitab = win:Tab('UI')
 
--- Define a button to destroy GUI
 uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
--- Define a toggle for Auto Bandit
 AutoFarm:Toggle('Auto Bandit', function(v)
     getgenv().AutoBandit = v
 end)
 
--- Define a button for No Stamina
 AutoFarm:Button('No Stamina', function()
      local Namecall
     Namecall = hookmetamethod(game, '__namecall', function(self, ...)
@@ -130,8 +123,10 @@ AutoFarm:Button('No Stamina', function()
     end)
 end)
 
--- Define AutoFarm function for bandit farming
 spawn(function()
+    local TweenFa 
+    local antifall3 
+
     while task.wait() do
         pcall(function()
             if getgenv().AutoBandit then
@@ -169,10 +164,16 @@ spawn(function()
                         end
                     end
                 end
+            else
+                if TweenFa then 
+                    TweenFa:Cancel() 
+                end
+                
+                if antifall3 then 
+                    antifall3:Destroy() 
+                end
             end
-            if getgenv().AutoBandit == false then
-                TweenFa:Cancel()
-            end
+            
             if bandit and bandit.Humanoid.Health == 0 then
                 bandit:Destroy()
             end
@@ -182,7 +183,8 @@ end)
 spawn(function()
     while wait() do
         if getgenv().AutoBandit then
-            local args = {
+if not game.Players.LocalPlayer.PlayerGui.Quest:FindFirstChild("Quest").Visible == true then
+local args = {
                 [1] = {
                     [1] = "takequest",
                     [2] = "Help Raphtalia"
@@ -190,6 +192,7 @@ spawn(function()
             }
 
             game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Quest"):InvokeServer(unpack(args))
+end
 
             local args = {
                 [1] = {
@@ -199,7 +202,7 @@ spawn(function()
                     },
                     [3] = "Melee",
                     [4] = {
-                        [1] = 1,
+                        [1] = 3,
                         [2] = "Ground",
                         [3] = "Melee"
                     },
