@@ -49,25 +49,25 @@ local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
 local FarmMethod = "Above"
 local tweenspeed = 50
-local Distance = 5
+local Distance = 18
 
+-- Define local function GetDistance to calculate distance between player and endpoint
 local function GetDistance(Endpoint)
-    if typeof(Endpoint) == "Instance" then
-        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
-    elseif typeof(Endpoint) == "CFrame" then
+    if typeof(Endpoint) == "Instance" or typeof(Endpoint) == "CFrame" then
         Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
     end
     local Magnitude = (Endpoint - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
     return Magnitude
 end
 
-function Tween(Endpoint)
+-- Define local function Tween to handle tweening
+local function Tween(Endpoint)
     if typeof(Endpoint) == "Instance" then
         Endpoint = Endpoint.CFrame
     end
     local TweenFunc = {}
     local Distance = GetDistance(Endpoint)
-    local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
+    local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance / tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1, 0, 0), math.rad(0))})
     TweenInfo:Play()
     function TweenFunc:Cancel()
         TweenInfo:Cancel()
@@ -81,10 +81,11 @@ function Tween(Endpoint)
     return TweenFunc
 end
 
+-- Define a task to handle farming methods
 task.spawn(function()
     while wait() do
         pcall(function()
-            SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AutoBandit and NearestMobs)
+            -- Define farming methods based on FarmMethod value
             if FarmMethod == "Above" then
                 FarmModes = CFrame.new(0,Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
             elseif FarmMethod == "Below" then
@@ -100,18 +101,37 @@ task.spawn(function()
     end
 end)
 
+-- Define GUI tabs
 local AutoFarm = win:Tab('AutoFarm')
 local uitab = win:Tab('UI')
 
+-- Define a button to destroy GUI
 uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
+-- Define a toggle for Auto Bandit
 AutoFarm:Toggle('Auto Bandit', function(v)
     getgenv().AutoBandit = v
 end)
 
-task.spawn(function()
+-- Define a button for No Stamina
+AutoFarm:Button('No Stamina', function()
+     local Namecall
+    Namecall = hookmetamethod(game, '__namecall', function(self, ...)
+        local Args = {...}
+        local method = getnamecallmethod()
+
+        if method == 'FireServer' and self.Name == 'takestam' then 
+            return nil
+        end 
+
+        return Namecall(self, ...)
+    end)
+end)
+
+-- Define AutoFarm function for bandit farming
+spawn(function()
     while task.wait() do
         pcall(function()
             if getgenv().AutoBandit then
@@ -123,7 +143,7 @@ task.spawn(function()
                         antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
                     elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
                         for i, v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do
-                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Bandit") then
+                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Bandit") and not v.Name:match("Bandit Boss") then
                                 if v.Humanoid.Health > 0 then
                                     local distance = GetDistance(v:GetModelCFrame() * FarmModes)
                                     repeat
@@ -150,12 +170,54 @@ task.spawn(function()
                     end
                 end
             end
-            if getgenv().AutoBandit == false and TweenFa then
+            if getgenv().AutoBandit == false then
                 TweenFa:Cancel()
             end
             if bandit and bandit.Humanoid.Health == 0 then
                 bandit:Destroy()
             end
         end)
+    end
+end)
+spawn(function()
+    while wait() do
+        if getgenv().AutoBandit then
+            local args = {
+                [1] = {
+                    [1] = "takequest",
+                    [2] = "Help Raphtalia"
+                }
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Quest"):InvokeServer(unpack(args))
+
+            local args = {
+                [1] = {
+                    [1] = "damage",
+                    [2] = {
+                        [1] = workspace:WaitForChild("NPCs"):WaitForChild("Bandit"):WaitForChild("HumanoidRootPart")
+                    },
+                    [3] = "Melee",
+                    [4] = {
+                        [1] = 1,
+                        [2] = "Ground",
+                        [3] = "Melee"
+                    },
+                    [5] = true,
+                    [6] = CFrame.new(workspace:WaitForChild("NPCs"):WaitForChild("Bandit"):WaitForChild("HumanoidRootPart").Position),
+                    ["aircombo"] = "Ground"
+                }
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("CombatRegister"):InvokeServer(unpack(args))
+
+            local Player = game:GetService("Players").LocalPlayer
+            pcall(function()
+                if Player.Backpack:FindFirstChild("Melee") and Player.Character:FindFirstChild("Melee") == nil then
+                    local tool = Player.Backpack:FindFirstChild("Melee")
+                    Player.Character.Humanoid:EquipTool(tool)
+                end
+            end)
+        end
     end
 end)
