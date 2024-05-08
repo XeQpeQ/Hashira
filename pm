@@ -30,7 +30,7 @@ local win = HashiraUI:Create({
 
 local LP = game.Players.LocalPlayer
 local FarmMethod = "Above"
-local tweenspeed = 50
+local tweenspeed = 30
 local Distance = 10
 
 local function GetDistance(Endpoint)
@@ -112,12 +112,6 @@ spawn(function()
     while wait() do
         pcall(function()
             if getgenv().AutoBandit then
-                local args = {
-                    [1] = "Kisuke",
-                    [2] = "Add"
-                }
-
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
                 for i,v in pairs(game:GetService("Workspace").World.Live.Mobs.Hollow:GetDescendants()) do 
                         if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
                             antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
@@ -165,6 +159,12 @@ end)
 spawn(function()
     while wait() do
         if getgenv().AutoBandit then
+            local args = {
+                    [1] = "Kisuke",
+                    [2] = "Add"
+                }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
             local args = {
                 [1] = "Swing",
                 [2] = 4,
