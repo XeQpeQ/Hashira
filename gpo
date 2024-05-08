@@ -99,6 +99,8 @@ task.spawn(function()
 end)
 
 local AutoFarm = win:Tab('AutoFarm')
+local Teleport = win:Tab('Teleport')
+
 local uitab = win:Tab('UI')
 
 uitab:Button('Destroy GUI', function()
@@ -122,6 +124,53 @@ AutoFarm:Button('No Stamina', function()
         return Namecall(self, ...)
     end)
 end)
+
+AutoFarm:Button('No Fall Dmg', function()
+     local Namecall
+    Namecall = hookmetamethod(game, '__namecall', function(self, ...)
+        local Args = {...}
+        local method = getnamecallmethod()
+
+        if method == 'FireServer' and self.Name == 'FallDmg' then 
+            return nil
+        end 
+
+        return Namecall(self, ...)
+    end)
+end)
+
+Teleport:Button('Land of The Sky', function() 
+    local TweenService = game:GetService("TweenService")
+    local LP = game:GetService("Players").LocalPlayer
+    local Character = LP.Character
+    local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+    local Islands = game:GetService("Workspace").Islands
+    local antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+    antifall3.Velocity = Vector3.new(0, 0, 0)
+    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+    for _, island in ipairs(Islands:GetChildren()) do
+        if island.Name:find("Land of the Sky") then
+            local targetCFrame = island:GetModelCFrame()
+            if targetCFrame then
+                local distance = (targetCFrame.Position - HumanoidRootPart.Position).Magnitude
+                local speed = 30 -- velocidad en unidades por segundo
+                local tweenDuration = distance / speed
+                local tweenInfo = TweenInfo.new(tweenDuration, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+                local tween = TweenService:Create(HumanoidRootPart, tweenInfo, {CFrame = targetCFrame})
+                
+                tween:Play()
+                tween.Completed:Connect(function()
+                    tween:Destroy()
+                    antifall3:Destroy()
+                end)
+            else
+                warn("Target island CFrame not found.")
+            end
+            break
+        end
+    end
+end)
+
 
 spawn(function()
     local TweenFa 
