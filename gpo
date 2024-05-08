@@ -182,45 +182,50 @@ spawn(function()
 end)
 spawn(function()
     while wait() do
+        -- Verifica si la variable AutoBandit está activada
         if getgenv().AutoBandit then
-if not game.Players.LocalPlayer.PlayerGui.Quest:FindFirstChild("Quest").Visible == true then
-local args = {
+            local args = {
                 [1] = {
                     [1] = "takequest",
                     [2] = "Help Raphtalia"
                 }
             }
-
             game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Quest"):InvokeServer(unpack(args))
-end
-
-            local args = {
-                [1] = {
-                    [1] = "damage",
-                    [2] = {
-                        [1] = workspace:WaitForChild("NPCs"):WaitForChild("Bandit"):WaitForChild("HumanoidRootPart")
-                    },
-                    [3] = "Melee",
-                    [4] = {
-                        [1] = 3,
-                        [2] = "Ground",
-                        [3] = "Melee"
-                    },
-                    [5] = true,
-                    [6] = CFrame.new(workspace:WaitForChild("NPCs"):WaitForChild("Bandit"):WaitForChild("HumanoidRootPart").Position),
-                    ["aircombo"] = "Ground"
-                }
-            }
-
-            game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("CombatRegister"):InvokeServer(unpack(args))
-
-            local Player = game:GetService("Players").LocalPlayer
-            pcall(function()
-                if Player.Backpack:FindFirstChild("Melee") and Player.Character:FindFirstChild("Melee") == nil then
-                    local tool = Player.Backpack:FindFirstChild("Melee")
-                    Player.Character.Humanoid:EquipTool(tool)
-                end
-            end)
         end
+        
+        -- Daña al NPC 'Bandit' 14 veces
+        local bandit = workspace:WaitForChild("NPCs"):WaitForChild("Bandit")
+        if bandit then
+            for i = 1, 2 do
+                local args = {
+                    [1] = {
+                        [1] = "damage",
+                        [2] = {
+                            [1] = bandit:WaitForChild("HumanoidRootPart")
+                        },
+                        [3] = "Melee",
+                        [4] = {
+                            [1] = i,
+                            [2] = "Ground",
+                            [3] = "Melee"
+                        },
+                        [5] = true,
+                        [6] = CFrame.new(bandit.HumanoidRootPart.Position),
+                        ["aircombo"] = "Ground"
+                    }
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("CombatRegister"):InvokeServer(unpack(args))
+            end
+        end
+        
+        -- Equipa la herramienta 'Melee' si está en la mochila y no equipada
+        local Player = game:GetService("Players").LocalPlayer
+        pcall(function()
+            if Player.Character and Player.Backpack:FindFirstChild("Melee") and Player.Character:FindFirstChild("Melee") == nil then
+                local tool = Player.Backpack:FindFirstChild("Melee")
+                Player.Character.Humanoid:EquipTool(tool)
+            end
+        end)
     end
 end)
+
