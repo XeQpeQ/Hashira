@@ -160,19 +160,19 @@ spawn(function()
     while wait() do
         if getgenv().AutoBandit then
             local args = {
-                    [1] = "Kisuke",
-                    [2] = "Add"
-                }
+    [1] = "Ayesha",
+    [2] = "Add"
+}
 
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
             local args = {
                 [1] = "Swing",
-                [2] = 4,
+                [2] = 3,
                 [3] = "Fist"
             }
 
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
-
+            
             local Player = game:GetService("Players").LocalPlayer
             pcall(function()
                 if Player.Backpack:FindFirstChild("Fists") and Player.Character:FindFirstChild("Fists") == nil then
