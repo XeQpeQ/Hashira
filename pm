@@ -169,8 +169,8 @@ spawn(function()
             
             local Player = game:GetService("Players").LocalPlayer
             pcall(function()
-                if Player.Backpack:FindFirstChild("Fists") and Player.Character:FindFirstChild("Fists") == nil then
-                    local tool = Player.Backpack:FindFirstChild("Fists")
+                if Player.Backpack:FindFirstChild("Zanpakuto") and Player.Character:FindFirstChild("Zanpakuto") == nil then
+                    local tool = Player.Backpack:FindFirstChild("Zanpakuto")
                     Player.Character.Humanoid:EquipTool(tool)
                 end
             end)
