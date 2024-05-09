@@ -112,13 +112,13 @@ spawn(function()
     while wait() do
         pcall(function()
             if getgenv().AutoBandit then
-                for i,v in pairs(game:GetService("Workspace").World.Live.Mobs.Hollow:GetDescendants()) do 
+                for i,v in pairs(game:GetService("Workspace").World.Live:GetDescendants()) do 
                         if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
                             antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
                             antifall3.Velocity = Vector3.new(0, 0, 0)
                             antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
                         elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Hollow") then
+                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Zangetsu") then
                                 if v.Humanoid.Health > 0 then
                                     local distance = GetDistance(v:GetModelCFrame() * FarmModes)
                                     repeat
@@ -160,15 +160,9 @@ spawn(function()
     while wait() do
         if getgenv().AutoBandit then
             local args = {
-    [1] = "Ayesha",
-    [2] = "Add"
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
-            local args = {
                 [1] = "Swing",
                 [2] = 3,
-                [3] = "Fist"
+                [3] = "Sword"
             }
 
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
