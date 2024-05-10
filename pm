@@ -157,7 +157,7 @@ spawn(function()
 end)
 
 spawn(function()
-    while wait() do
+    while wait(1) do
         if getgenv().AutoBandit then
             local args = {
                 [1] = "Swing",
