@@ -178,17 +178,20 @@ spawn(function()
     end
 end)
 spawn(function()
-    local i = 1
-    while true do
-        wait() -- Esperar un poco antes de verificar de nuevo
-        if game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar.Visible == false then
-            local pickedSword = getNil("pickedSword".. i, "Model")
-            if pickedSword then
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer("pickupZanpakuto", i, pickedSword)
-            end
-            i = i + 1
+local i = 1
+    while wait() do
+        local swordBar = game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar
+        if swordBar.Visible == false then
+local args = {
+    [1] = "pickupZanpakuto",
+    [2] = i,
+    [3] = getNil("pickedSword".. i, "Model")
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
+           i = i + 1
             if i > 118 then
-                i = 1 -- Reiniciar el contador cuando llegue a 118
+                i = 1
             end
         end
     end
