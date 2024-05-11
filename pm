@@ -87,8 +87,12 @@ uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
-AutoFarm:Toggle('Auto Bandit', function(v)
+AutoFarm:Toggle('Auto Zangetsu', function(v)
     getgenv().AutoBandit = v
+end)
+
+AutoFarm:Toggle('Auto Sword', function(v)
+    getgenv().AutoSword = v
 end)
 
 AutoFarm:Button('No Stamina', function()
@@ -157,7 +161,7 @@ spawn(function()
 end)
 
 spawn(function()
-    while wait(1) do
+    while wait(.5) do
         if getgenv().AutoBandit then
             local args = {
                 [1] = "Swing",
@@ -179,6 +183,7 @@ spawn(function()
 end)
 spawn(function()
     while wait() do
+        if getgenv().AutoSword then
         if game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar.Visible == false then
             for i = 1, 118 do
                 function getNil(name, class)
@@ -200,5 +205,6 @@ spawn(function()
             end
         end
     end
+end
 end)
 
