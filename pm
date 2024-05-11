@@ -130,29 +130,18 @@ game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Serve
     end
 end)
 spawn(function()
-    local i = 1
-    while wait(1) do
+    while wait() do
         if getgenv().AutoSword then
         if game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar.Visible == false then
-                function getNil(name, class)
-                    for _, v in pairs(game:GetChildren()) do
-                        if v:IsA(class) and v.Name == name then
-                            return v
-                        end
-                    end
-                end
-
-                local args = {
-                    [1] = "pickupZanpakuto",
-                    [2] = i,
-                    [3] = getNil("pickedSword" .. i, "Model")
-                }
-
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
-                i = i + 1
-            if i > 118 then
-                i = 1
-            end
+                for i, v in pairs(game:GetService("Workspace").World.Map["Sword Locations"]:GetChildren()) do
+    local swordNumber = tonumber(string.match(v.Name, "pickedSword(%d+)"))
+    if swordNumber and swordNumber >= 1 and swordNumber <= 50 then
+        local proximityPrompt = v:FindFirstChildWhichIsA("ProximityPrompt", true)
+        if proximityPrompt then
+            fireproximityprompt(proximityPrompt, 0, true)
+        end
+    end
+end
             end
     end
 end
