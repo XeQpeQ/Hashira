@@ -110,57 +110,6 @@ AutoFarm:Button('No Stamina', function()
 end)
 
 spawn(function()
-    local TweenFa 
-    local antifall3 
-
-    while wait() do
-        pcall(function()
-            if getgenv().AutoBandit then
-                for i,v in pairs(game:GetService("Workspace").World.Live:GetDescendants()) do 
-                        if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                            antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
-                            antifall3.Velocity = Vector3.new(0, 0, 0)
-                            antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-                        elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Zangetsu") then
-                                if v.Humanoid.Health > 0 then
-                                    local distance = GetDistance(v:GetModelCFrame() * FarmModes)
-                                    repeat
-                                        task.wait()
-                                        if distance < 25 and distance < 150 then
-                                            if TweenFa then
-                                                TweenFa:Cancel()
-                                                wait(.1)
-                                            end
-                                            LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame()
-                                        else
-                                            TweenFa = Tween(v:GetModelCFrame() * FarmModes)
-                                        end
-                                        if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
-                                            NearestMobs = true
-                                        elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
-                                            NearestMobs = false
-                                        end
-                                    until not getgenv().AutoBandit or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
-                                    NearestMobs = false
-                                end
-                        end
-                    end
-                end
-            else
-                if TweenFa then 
-                    TweenFa:Cancel() 
-                end
-                
-                if antifall3 then 
-                    antifall3:Destroy() 
-                end
-            end
-        end)
-    end
-end)
-
-spawn(function()
     while wait(.5) do
         if getgenv().AutoBandit then
 local args = {
