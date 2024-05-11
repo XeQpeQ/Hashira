@@ -185,6 +185,21 @@ spawn(function()
     while wait() do
         if getgenv().AutoSword then
         if game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar.Visible == false then
+            local Player = game:GetService("Players").LocalPlayer
+            pcall(function()
+                if Player.Backpack:FindFirstChild("Zanpakuto") and Player.Character:FindFirstChild("Zanpakuto") == nil then
+                    local tool = Player.Backpack:FindFirstChild("Zanpakuto")
+                    Player.Character.Humanoid:EquipTool(tool)
+                end
+            end)
+local headPosition = workspace.World.Live.Mobs.Zanpakuto.Zangetsu.HumanoidRootPart.Position
+
+local args = {
+    [1] = "Gochutekkan",
+    [2] = headPosition 
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
             for i = 1, 118 do
                 function getNil(name, class)
                     for _, v in pairs(game:GetChildren()) do
