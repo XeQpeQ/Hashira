@@ -130,10 +130,10 @@ game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Serve
     end
 end)
 spawn(function()
-    while wait() do
+    local i = 1
+    while wait(1) do
         if getgenv().AutoSword then
         if game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar.Visible == false then
-            for i = 1, 118 do
                 function getNil(name, class)
                     for _, v in pairs(game:GetChildren()) do
                         if v:IsA(class) and v.Name == name then
@@ -149,9 +149,11 @@ spawn(function()
                 }
 
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
-                task.wait(0.5)
+                i = i + 1
+            if i > 118 then
+                i = 1
             end
-        end
+            end
     end
 end
 end)
