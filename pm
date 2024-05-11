@@ -163,13 +163,12 @@ end)
 spawn(function()
     while wait(.5) do
         if getgenv().AutoBandit then
-            local args = {
-                [1] = "Swing",
-                [2] = 3,
-                [3] = "Sword"
-            }
+local args = {
+    [1] = "Gochutekkan",
+    [2] = workspace.World.Live.Mobs.Zanpakuto.Zangetsu.HumanoidRootPart.Position
+}
 
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
             
             local Player = game:GetService("Players").LocalPlayer
             pcall(function()
@@ -184,45 +183,27 @@ end)
 spawn(function()
     while wait() do
         if getgenv().AutoSword then
-            if game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar.Visible == false then
-                local Player = game:GetService("Players").LocalPlayer
-                pcall(function()
-                    if Player.Backpack:FindFirstChild("Zanpakuto") and Player.Character:FindFirstChild("Zanpakuto") == nil then
-                        local tool = Player.Backpack:FindFirstChild("Zanpakuto")
-                        Player.Character.Humanoid:EquipTool(tool)
+        if game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar.Visible == false then
+            for i = 1, 118 do
+                function getNil(name, class)
+                    for _, v in pairs(game:GetChildren()) do
+                        if v:IsA(class) and v.Name == name then
+                            return v
+                        end
                     end
-                end)
-
-                local headPosition = workspace.World.Live.Mobs.Zanpakuto.Zangetsu.HumanoidRootPart.Position
+                end
 
                 local args = {
-                    [1] = "Gochutekkan",
-                    [2] = headPosition 
+                    [1] = "pickupZanpakuto",
+                    [2] = i,
+                    [3] = getNil("pickedSword" .. i, "Model")
                 }
 
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
-                
-                for i = 1, 118 do
-                    local function getNil(name, class)
-                        for _, v in pairs(game:GetChildren()) do
-                            if v:IsA(class) and v.Name == name then
-                                return v
-                            end
-                        end
-                    end
-
-                    local args = {
-                        [1] = "pickupZanpakuto",
-                        [2] = i,
-                        [3] = getNil("pickedSword" .. i, "Model")
-                    }
-
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
-                    wait(0.5)
-                end
+                task.wait(0.5)
             end
         end
     end
+end
 end)
-
 
