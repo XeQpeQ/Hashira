@@ -87,7 +87,7 @@ uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
-AutoFarm:Toggle('Auto Zangetsu', function(v)
+AutoFarm:Toggle('Auto Corrupted Shinigami', function(v)
     getgenv().AutoBandit = v
 end)
 
@@ -112,13 +112,13 @@ spawn(function()
     while wait() do
         pcall(function()
             if getgenv().AutoBandit then
-                for i,v in pairs(game:GetService("Workspace").World.Live:GetDescendants()) do 
+                for i,v in pairs(game:GetService("Workspace").World.Live.Mobs["Shikai Shinigami"]:GetDescendants()) do 
                         if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
                             antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
                             antifall3.Velocity = Vector3.new(0, 0, 0)
                             antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
                         elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Zangetsu") then
+                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Corrupt Shinigami") then
                                 if v.Humanoid.Health > 0 then
                                     local distance = GetDistance(v:GetModelCFrame() * FarmModes)
                                     repeat
@@ -157,8 +157,15 @@ spawn(function()
 end)
 
 spawn(function()
-    while wait(1) do
+    while wait(.5) do
         if getgenv().AutoBandit then
+            local args = {
+    [1] = "Swift",
+    [2] = "Add"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
+
             local args = {
                 [1] = "Swing",
                 [2] = 3,
@@ -169,8 +176,8 @@ spawn(function()
             
             local Player = game:GetService("Players").LocalPlayer
             pcall(function()
-                if Player.Backpack:FindFirstChild("Zanpakuto") and Player.Character:FindFirstChild("Zanpakuto") == nil then
-                    local tool = Player.Backpack:FindFirstChild("Zanpakuto")
+                if Player.Backpack:FindFirstChild("Barragan's Axe") and Player.Character:FindFirstChild("Barragan's Axe") == nil then
+                    local tool = Player.Backpack:FindFirstChild("Barragan's Axe")
                     Player.Character.Humanoid:EquipTool(tool)
                 end
             end)
