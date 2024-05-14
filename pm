@@ -112,13 +112,13 @@ spawn(function()
     while wait() do
         pcall(function()
             if getgenv().AutoBandit then
-                for i,v in pairs(game:GetService("Workspace").World.Live.Mobs["Shikai Shinigami"]:GetDescendants()) do 
+                for i,v in pairs(workspace.World.Live.Mobs.Quincy.Zone2:GetDescendants()) do 
                         if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
                             antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
                             antifall3.Velocity = Vector3.new(0, 0, 0)
                             antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
                         elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Corrupt Shinigami") then
+                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Schrift") then
                                 if v.Humanoid.Health > 0 then
                                     local distance = GetDistance(v:GetModelCFrame() * FarmModes)
                                     repeat
@@ -160,7 +160,7 @@ spawn(function()
     while wait(.5) do
         if getgenv().AutoBandit then
             local args = {
-    [1] = "Swift",
+    [1] = "Alphonse",
     [2] = "Add"
 }
 
