@@ -87,8 +87,12 @@ uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
-AutoFarm:Toggle('Auto Corrupted Shinigami', function(v)
+AutoFarm:Toggle('Auto Zangetsu', function(v)
     getgenv().AutoBandit = v
+end)
+
+AutoFarm:Toggle('Auto Sword', function(v)
+    getgenv().AutoSword = v
 end)
 
 AutoFarm:Button('No Stamina', function()
@@ -106,81 +110,39 @@ AutoFarm:Button('No Stamina', function()
 end)
 
 spawn(function()
-    local TweenFa 
-    local antifall3 
-
-    while wait() do
-        pcall(function()
-            if getgenv().AutoBandit then
-                for i,v in pairs(workspace.World.Live.Mobs.Quincy.Zone2:GetDescendants()) do 
-                        if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                            antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
-                            antifall3.Velocity = Vector3.new(0, 0, 0)
-                            antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-                        elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                            if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:match("Schrift") then
-                                if v.Humanoid.Health > 0 then
-                                    local distance = GetDistance(v:GetModelCFrame() * FarmModes)
-                                    repeat
-                                        task.wait()
-                                        if distance < 25 and distance < 150 then
-                                            if TweenFa then
-                                                TweenFa:Cancel()
-                                                wait(.1)
-                                            end
-                                            LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame()
-                                        else
-                                            TweenFa = Tween(v:GetModelCFrame() * FarmModes)
-                                        end
-                                        if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
-                                            NearestMobs = true
-                                        elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
-                                            NearestMobs = false
-                                        end
-                                    until not getgenv().AutoBandit or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
-                                    NearestMobs = false
-                                end
-                        end
-                    end
-                end
-            else
-                if TweenFa then 
-                    TweenFa:Cancel() 
-                end
-                
-                if antifall3 then 
-                    antifall3:Destroy() 
-                end
-            end
-        end)
-    end
-end)
-
-spawn(function()
     while wait(.5) do
         if getgenv().AutoBandit then
-            local args = {
-    [1] = "Alphonse",
-    [2] = "Add"
+local args = {
+    [1] = "Gochutekkan",
+    [2] = workspace.World.Live.Mobs.Zanpakuto.Zangetsu.HumanoidRootPart.Position
 }
 
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Quest_Remote"):FireServer(unpack(args))
-
-            local args = {
-                [1] = "Swing",
-                [2] = 3,
-                [3] = "Sword"
-            }
-
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Initiate_Server"):FireServer(unpack(args))
             
             local Player = game:GetService("Players").LocalPlayer
             pcall(function()
-                if Player.Backpack:FindFirstChild("Barragan's Axe") and Player.Character:FindFirstChild("Barragan's Axe") == nil then
-                    local tool = Player.Backpack:FindFirstChild("Barragan's Axe")
+                if Player.Backpack:FindFirstChild("Zanpakuto") and Player.Character:FindFirstChild("Zanpakuto") == nil then
+                    local tool = Player.Backpack:FindFirstChild("Zanpakuto")
                     Player.Character.Humanoid:EquipTool(tool)
                 end
             end)
         end
     end
+end)
+spawn(function()
+    while wait() do
+        if getgenv().AutoSword then
+        if game.Players.LocalPlayer.PlayerGui.HUD.Holder.Bars.SwordBar.Visible == false then
+                for i, v in pairs(game:GetService("Workspace").World.Map["Sword Locations"]:GetChildren()) do
+    local swordNumber = tonumber(string.match(v.Name, "pickedSword(%d+)"))
+    if swordNumber and swordNumber >= 1 and swordNumber <= 50 then
+        local proximityPrompt = v:FindFirstChildWhichIsA("ProximityPrompt", true)
+        if proximityPrompt then
+            fireproximityprompt(proximityPrompt, 0, true)
+        end
+    end
+end
+            end
+    end
+end
 end)
