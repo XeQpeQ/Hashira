@@ -1,0 +1,61 @@
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+
+local gui, mainFrame, originalSize, isExpanded
+
+local bb = game:GetService('VirtualUser')
+
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    --[[
+    Se necesita una referencia al objeto 'ab' para actualizar su texto. 
+    Asumiré que 'ab' es un objeto GUI TextLabel definido en algún lugar del código que no fue proporcionado.
+    Si 'ab' no está definido, necesitarás cambiarlo por una referencia válida al objeto TextLabel.
+    ]]
+    -- ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    -- wait(2)
+    -- ab.Text = "Estado: Activo"
+end)
+
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+
+local AutoFarm = win:Tab('AutoFarm')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
+
+AutoFarm:Toggle('Auto Collect', function(v)
+    getgenv().AutoCollect = v
+end)
+
+spawn(function()
+    while true do 
+        task.wait(2)
+        if getgenv().AutoCollect then
+               for _, v in pairs(workspace.PickupSpawns:GetDescendants()) do
+        if v:IsA("TouchTransmitter") then
+            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+            task.wait()
+            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+        end
+    end
+
+    for _, v in pairs(game.Players.LocalPlayer.PlayerGui.ScreenGui:GetChildren()) do
+        if v.Name:match("Reward") then
+            v:Destroy()
+        end
+    end
+        end
+    end
+end)
