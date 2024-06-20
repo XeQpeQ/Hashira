@@ -7,23 +7,14 @@ local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
- local Part = Instance.new("Part", Workspace)
- Part.Name = "TeleportS"
- Part.CFrame = Workspace["Shaggy 1%"]:GetModelCFrame()
+local Part = Instance.new("Part", Workspace)
+Part.Name = "TeleportS"
+Part.CFrame = Workspace["Shaggy 1%"]:GetModelCFrame()
 Part.Anchored = true
 Part.Transparency = 1
- Part.CanCollide = false
+Part.CanCollide = false
 
-local function resetCharacter()
-    player:LoadCharacter()
-end
-
-local function detectBoss()
-    return Workspace:FindFirstChild("Shaggy 1%")
-end
-
-local function transformAndTeleport()
-
+player.CharacterAdded:Connect(function()
     local args = {
         [1] = "galactic saiyan"
     }
@@ -33,46 +24,23 @@ local function transformAndTeleport()
     wait(10)
     VirtualInputManager:SendKeyEvent(false, "X", false, game)
     player.Character.HumanoidRootPart.CFrame = CFrame.new(Part.Position - Part.CFrame.LookVector * 1, Part.Position)
-end
 
-local function mainLoop()
-    while wait() do
-        local boss = detectBoss()
-        if not boss then
-            resetCharacter()
-            repeat
-                wait(1)
-                boss = detectBoss()
-            until boss
-            transformAndTeleport()
+    while workspace["Shaggy 1%"] and wait() do
+        if workspace["Shaggy 1%"].Humanoid.Health <= 0 then
+           player.Character.Humanoid.Health = 0
         end
-
         if not player.Character:FindFirstChild("Humanoid") or player.Character.Humanoid.Health <= 0 then
             break
         end
 
-        player.Character.HumanoidRootPart.CFrame = CFrame.new(boss.HumanoidRootPart.Position - boss.HumanoidRootPart.CFrame.LookVector * 1, boss.HumanoidRootPart.Position)
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace["Shaggy 1%"].HumanoidRootPart.Position - workspace["Shaggy 1%"].HumanoidRootPart.CFrame.LookVector * 1, workspace["Shaggy 1%"].HumanoidRootPart.Position)
         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
 
         local args = {
             [1] = false,
-            [2] = boss.HumanoidRootPart.Position
+            [2] = workspace["Shaggy 1%"].HumanoidRootPart.Position
         }
         ReplicatedStorage.Events:FindFirstChild("Infinite Barrage Fists"):FireServer(unpack(args))
     end
 end
-
-player.CharacterAdded:Connect(function()
-    local boss = detectBoss()
-    if not boss then
-        resetCharacter()
-        repeat
-            wait(1)
-            boss = detectBoss()
-        until boss
-    end
-
-    transformAndTeleport()
-
-    mainLoop()
 end)
