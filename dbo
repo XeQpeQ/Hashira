@@ -22,8 +22,7 @@ player.CharacterAdded:Connect(function()
     wait(10)
     VirtualInputManager:SendKeyEvent(false, "X", false, game)
     player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace.TeleportS.Position - workspace.TeleportS.CFrame.LookVector * 1, workspace.TeleportS.Position)
-    local boss = Workspace:FindFirstChild("Shaggy 1%")
-        while boss and wait() do
+        Stepped = game:GetService("RunService").RenderStepped:Connect(function()
             if boss.Humanoid.Health <= 0 then
                 task.wait(1)
                 player.Character.Humanoid.Health = 0
@@ -32,7 +31,7 @@ player.CharacterAdded:Connect(function()
             end
             
             if not player.Character:FindFirstChild("Humanoid") or player.Character.Humanoid.Health <= 0 then
-                break
+                Stepped:Disconnect()
             end
 
             player.Character.HumanoidRootPart.CFrame = CFrame.new(boss.HumanoidRootPart.Position - boss.HumanoidRootPart.CFrame.LookVector * 1, boss.HumanoidRootPart.Position)
@@ -44,5 +43,5 @@ player.CharacterAdded:Connect(function()
                 boss.HumanoidRootPart.Position
             }
             ReplicatedStorage.Events:FindFirstChild("Infinite Barrage Fists"):FireServer(unpack(args))
-        end
+        end)
 end)
