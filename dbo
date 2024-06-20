@@ -22,36 +22,27 @@ player.CharacterAdded:Connect(function()
     wait(10)
     VirtualInputManager:SendKeyEvent(false, "X", false, game)
     player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace.TeleportS.Position - workspace.TeleportS.CFrame.LookVector * 1, workspace.TeleportS.Position)
-    while wait() do
     local boss = Workspace:FindFirstChild("Shaggy 1%")
-    
-    if boss and boss:FindFirstChild("Humanoid") then
-        while wait() do
-            -- Verificar la salud del boss
+        while boss and wait() do
             if boss.Humanoid.Health <= 0 then
-                wait(1)
+                task.wait(1)
                 player.Character.Humanoid.Health = 0
-                Workspace:FindFirstChild("Shaggy 1%"):Destroy()
+                workspace:FindFirstChild("Shaggy 1%"):Destroy()
+                workspace:FindFirstChild("Shaggy 1%"):Destroy()
             end
             
-            -- Verificar la existencia y salud del jugador
             if not player.Character:FindFirstChild("Humanoid") or player.Character.Humanoid.Health <= 0 then
                 break
             end
 
-            -- Teletransportar al jugador cerca del boss
             player.Character.HumanoidRootPart.CFrame = CFrame.new(boss.HumanoidRootPart.Position - boss.HumanoidRootPart.CFrame.LookVector * 1, boss.HumanoidRootPart.Position)
             
-            -- Simular el evento del clic del ratón
             VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
             
-            -- Enviar el evento de ataque
             local args = {
                 false,
                 boss.HumanoidRootPart.Position
             }
             ReplicatedStorage.Events:FindFirstChild("Infinite Barrage Fists"):FireServer(unpack(args))
         end
-    end
-end
 end)
