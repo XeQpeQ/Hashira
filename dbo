@@ -7,12 +7,32 @@ local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
+ local Part = Instance.new("Part", Workspace)
+ Part.Name = "TeleportS"
+ Part.CFrame = Workspace["Shaggy 1%"]:GetModelCFrame()
+Part.Anchored = true
+Part.Transparency = 1
+ Part.CanCollide = false
+
 local function resetCharacter()
-    player.Character.Humanoid.Health = 0
+    player:LoadCharacter()
 end
 
 local function detectBoss()
     return Workspace:FindFirstChild("Shaggy 1%")
+end
+
+local function transformAndTeleport()
+
+    local args = {
+        [1] = "galactic saiyan"
+    }
+    ReplicatedStorage:WaitForChild("Transform"):FireServer(unpack(args))
+    wait(10)
+    VirtualInputManager:SendKeyEvent(true, "X", false, game)
+    wait(10)
+    VirtualInputManager:SendKeyEvent(false, "X", false, game)
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(Part.Position - Part.CFrame.LookVector * 1, Part.Position)
 end
 
 local function mainLoop()
@@ -24,6 +44,7 @@ local function mainLoop()
                 wait(1)
                 boss = detectBoss()
             until boss
+            transformAndTeleport()
         end
 
         if not player.Character:FindFirstChild("Humanoid") or player.Character.Humanoid.Health <= 0 then
@@ -51,21 +72,7 @@ player.CharacterAdded:Connect(function()
         until boss
     end
 
-    local Part = Instance.new("Part", Workspace)
-    Part.Name = "TeleportS"
-    Part.CFrame = Workspace["Shaggy 1%"]:GetModelCFrame()
-    Part.Anchored = true
-    Part.Transparency = 1
-    Part.CanCollide = false
+    transformAndTeleport()
 
-    local args = {
-        [1] = "galactic saiyan"
-    }
-    ReplicatedStorage:WaitForChild("Transform"):FireServer(unpack(args))
-    wait(10)
-    VirtualInputManager:SendKeyEvent(true, "X", false, game)
-    wait(10)
-    VirtualInputManager:SendKeyEvent(false, "X", false, game)
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(Workspace.TeleportS.Position - Workspace.TeleportS.CFrame.LookVector * 1, Workspace.TeleportS.Position)
     mainLoop()
 end)
