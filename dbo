@@ -42,5 +42,4 @@ player.CharacterAdded:Connect(function()
         }
         ReplicatedStorage.Events:FindFirstChild("Infinite Barrage Fists"):FireServer(unpack(args))
     end
-end
 end)
