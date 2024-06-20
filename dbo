@@ -6,39 +6,15 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
-  
-local Part = Instance.new("Part",Workspace)
+
+local Part = Instance.new("Part", Workspace)
 Part.Name = "TeleportS"
 Part.CFrame = workspace["Shaggy 1%"]:GetModelCFrame()
 Part.Anchored = true
 Part.Transparency = 1
 Part.CanCollide = false
-  
-local args = {
-    [1] = "galactic saiyan"
-}
 
-ReplicatedStorage:WaitForChild("Transform"):FireServer(unpack(args))
-wait(6)
-VirtualInputManager:SendKeyEvent(true, "X", false, game)
-wait(10)
-VirtualInputManager:SendKeyEvent(false, "X", false, game)
-player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace.TeleportS.Position - workspace.TeleportS.CFrame.LookVector * 1, workspace.TeleportS.Position)
-local Stepped
-Stepped = RunService.RenderStepped:Connect(function()
-    wait(0.5)
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace["Shaggy 1%"].HumanoidRootPart.Position - workspace["Shaggy 1%"].HumanoidRootPart.CFrame.LookVector * 1, workspace["Shaggy 1%"].HumanoidRootPart.Position)                                     
-    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-    local args = {
-        [1] = false,
-        [2] = Workspace["Shaggy 1%"].HumanoidRootPart.Position
-    }
-    ReplicatedStorage.Events:FindFirstChild("Infinite Barrage Fists"):FireServer(unpack(args))
-end)
-
-player.CharacterAdded:connect(function()
-    Stepped:Disconnect()
-    wait(0.5)
+local function transformAndTeleport()
     local args = {
         [1] = "galactic saiyan"
     }
@@ -48,14 +24,34 @@ player.CharacterAdded:connect(function()
     wait(10)
     VirtualInputManager:SendKeyEvent(false, "X", false, game)
     player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace.TeleportS.Position - workspace.TeleportS.CFrame.LookVector * 1, workspace.TeleportS.Position)
-    Stepped = RunService.RenderStepped:Connect(function()
-        wait(0.5)
-        player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace["Shaggy 1%"].HumanoidRootPart.Position - workspace["Shaggy 1%"].HumanoidRootPart.CFrame.LookVector * 1, workspace["Shaggy 1%"].HumanoidRootPart.Position)                                                                          
-        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-        local args = {
-            [1] = false,
-            [2] = Workspace["Shaggy 1%"].HumanoidRootPart.Position
-        }
-        ReplicatedStorage.Events:FindFirstChild("Infinite Barrage Fists"):FireServer(unpack(args))
-    end)
-end)
+end
+
+local function onStepped()
+    wait(0.5)
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace["Shaggy 1%"].HumanoidRootPart.Position - workspace["Shaggy 1%"].HumanoidRootPart.CFrame.LookVector * 1, workspace["Shaggy 1%"].HumanoidRootPart.Position)
+    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+    local args = {
+        [1] = false,
+        [2] = Workspace["Shaggy 1%"].HumanoidRootPart.Position
+    }
+    ReplicatedStorage.Events:FindFirstChild("Infinite Barrage Fists"):FireServer(unpack(args))
+end
+
+local Stepped
+
+local function onCharacterAdded()
+    if Stepped then
+        Stepped:Disconnect()
+    end
+
+    transformAndTeleport()
+
+    Stepped = RunService.RenderStepped:Connect(onStepped)
+end
+
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Inicializa la primera vez
+if player.Character then
+    onCharacterAdded()
+end
