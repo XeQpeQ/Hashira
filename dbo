@@ -29,7 +29,9 @@ player.CharacterAdded:Connect(function()
         while wait() do
             -- Verificar la salud del boss
             if boss.Humanoid.Health <= 0 then
+                wait(1)
                 player.Character.Humanoid.Health = 0
+                Workspace:FindFirstChild("Shaggy 1%"):Destroy()
             end
             
             -- Verificar la existencia y salud del jugador
