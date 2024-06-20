@@ -21,7 +21,7 @@ player.CharacterAdded:Connect(function()
     VirtualInputManager:SendKeyEvent(true, "X", false, game)
     wait(10)
     VirtualInputManager:SendKeyEvent(false, "X", false, game)
-    
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace.TeleportS.Position - workspace.TeleportS.CFrame.LookVector * 1, workspace.TeleportS.Position)
     while wait() do
         if Workspace["Shaggy 1%"]:FindFirstChild("Humanoid") then
         if Workspace["Shaggy 1%"].Humanoid.Health <= 0 then
