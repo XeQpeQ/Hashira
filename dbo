@@ -14,7 +14,10 @@ Part.CanCollide = false
 
 player.CharacterAdded:Connect(function()
     local boss = workspace:WaitForChild("Shaggy 1%")
-
+    local antifall3
+    antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+    antifall3.Velocity = Vector3.new(0, 0, 0)
+    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
     local args = {
         "galactic saiyan"
     }
@@ -40,6 +43,7 @@ player.CharacterAdded:Connect(function()
 
         if not player.Character:FindFirstChild("Humanoid") or player.Character.Humanoid.Health <= 0 then
             Stepped:Disconnect()
+            antifall3:Destroy()
         end
 
         player.Character.HumanoidRootPart.CFrame = CFrame.new(boss.HumanoidRootPart.Position - boss.HumanoidRootPart.CFrame.LookVector * 4, boss.HumanoidRootPart.Position)
