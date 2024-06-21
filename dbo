@@ -13,20 +13,25 @@ Part.Transparency = 1
 Part.CanCollide = false
 
 player.CharacterAdded:Connect(function()
+    local boss = workspace:WaitForChild("Shaggy 1%")
+
     local args = {
         "galactic saiyan"
     }
     ReplicatedStorage:WaitForChild("Transform"):FireServer(unpack(args))
+
     wait(10)
+
     VirtualInputManager:SendKeyEvent(true, "X", false, game)
     wait(10)
     VirtualInputManager:SendKeyEvent(false, "X", false, game)
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace.TeleportS.Position - workspace.TeleportS.CFrame.LookVector * 1, workspace.TeleportS.Position)
+
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(workspace.TeleportS.Position - workspace.TeleportS.CFrame.LookVector * 4, workspace.TeleportS.Position)
 
     local Stepped
     Stepped = game:GetService("RunService").RenderStepped:Connect(function()
         if boss.Humanoid.Health <= 0 then
-            task.wait(1)
+            wait(1)  
             player.Character.Humanoid.Health = 0
             if workspace:FindFirstChild("Shaggy 1%") then
                 workspace:FindFirstChild("Shaggy 1%"):Destroy()
@@ -37,7 +42,7 @@ player.CharacterAdded:Connect(function()
             Stepped:Disconnect()
         end
 
-        player.Character.HumanoidRootPart.CFrame = CFrame.new(boss.HumanoidRootPart.Position - boss.HumanoidRootPart.CFrame.LookVector * 1, boss.HumanoidRootPart.Position)
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(boss.HumanoidRootPart.Position - boss.HumanoidRootPart.CFrame.LookVector * 4, boss.HumanoidRootPart.Position)
 
         VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
 
