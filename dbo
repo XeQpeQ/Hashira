@@ -7,13 +7,13 @@ local Workspace = game:GetService("Workspace")
 
 local Part = Instance.new("Part", Workspace)
 Part.Name = "TeleportS"
-Part.CFrame = Workspace["Shaggy 1%"]:GetModelCFrame()
+Part.CFrame = Workspace[getgenv().Boss]:GetModelCFrame()
 Part.Anchored = true
 Part.Transparency = 1
 Part.CanCollide = false
 
 player.CharacterAdded:Connect(function()
-    local boss = workspace:WaitForChild("Shaggy 1%")
+    local boss = workspace:WaitForChild(getgenv().Boss)
     local antifall3
     antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
     antifall3.Velocity = Vector3.new(0, 0, 0)
@@ -36,8 +36,8 @@ player.CharacterAdded:Connect(function()
         if boss.Humanoid.Health <= 0 then
             wait(1)  
             player.Character.Humanoid.Health = 0
-            if workspace:FindFirstChild("Shaggy 1%") then
-                workspace:FindFirstChild("Shaggy 1%"):Destroy()
+            if workspace:FindFirstChild(getgenv().Boss) then
+                workspace:FindFirstChild(getgenv().Boss):Destroy()
             end
         end
 
