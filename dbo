@@ -7,13 +7,17 @@ local Workspace = game:GetService("Workspace")
 
 local Part = Instance.new("Part", Workspace)
 Part.Name = "TeleportS"
-Part.CFrame = Workspace[getgenv().Boss]:GetModelCFrame()
+Part.CFrame = Workspace["Shaggy 1%"]:GetModelCFrame()
 Part.Anchored = true
 Part.Transparency = 1
 Part.CanCollide = false
 
 player.CharacterAdded:Connect(function()
-    local boss = workspace:WaitForChild(getgenv().Boss)
+    local boss = workspace:WaitForChild("Shaggy 1%")
+    local antifall3
+    antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+    antifall3.Velocity = Vector3.new(0, 0, 0)
+    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
     local args = {
         "galactic saiyan"
     }
@@ -32,13 +36,14 @@ player.CharacterAdded:Connect(function()
         if boss.Humanoid.Health <= 0 then
             wait(1)  
             player.Character.Humanoid.Health = 0
-            if workspace:FindFirstChild(getgenv().Boss) then
-                workspace:FindFirstChild(getgenv().Boss):Destroy()
+            if workspace:FindFirstChild("Shaggy 1%") then
+                workspace:FindFirstChild("Shaggy 1%"):Destroy()
             end
         end
 
         if not player.Character:FindFirstChild("Humanoid") or player.Character.Humanoid.Health <= 0 then
             Stepped:Disconnect()
+            antifall3:Destroy()
         end
 
         player.Character.HumanoidRootPart.CFrame = CFrame.new(boss.HumanoidRootPart.Position - boss.HumanoidRootPart.CFrame.LookVector * 4, boss.HumanoidRootPart.Position)
