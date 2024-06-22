@@ -15,7 +15,7 @@ Part.CanCollide = false
 player.CharacterAdded:Connect(function()
     local boss = workspace:WaitForChild("Shaggy 1%")
     local antifall3
-    antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+    antifall3 = Instance.new("BodyVelocity", player.Character.HumanoidRootPart)
     antifall3.Velocity = Vector3.new(0, 0, 0)
     antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
     local args = {
