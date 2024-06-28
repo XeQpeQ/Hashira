@@ -1,7 +1,3 @@
-hookfunction(game:GetService("Players").LocalPlayer.PlayerScripts.ClientMain.GetPropertyChangedSignal, function()
-	return
-end)
-
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
