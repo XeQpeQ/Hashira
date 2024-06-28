@@ -2,25 +2,6 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 
-local gui, mainFrame, originalSize, isExpanded
-
-local function toggleGUIVisibility(visible)
-    if gui then
-        gui.Enabled = visible
-    end
-end
-
-local function toggleGUISize(expand)
-    if mainFrame and originalSize then
-        if expand then
-            mainFrame.Size = originalSize
-        else
-            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modifica el tamaño según sea necesario
-        end
-        isExpanded = expand
-    end
-end
-
 local bb = game:GetService('VirtualUser')
 
 game:GetService('Players').LocalPlayer.Idled:Connect(function()
