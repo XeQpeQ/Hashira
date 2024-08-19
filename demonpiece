@@ -169,10 +169,43 @@ task.spawn(function()
         end)
     end
 end)
+local Player = game.Players.LocalPlayer
+local Monsters = game:GetService("Workspace").NPC.Fight.Bandits
+local Settings = {
+    ViewHitbox = true -- Ajusta según sea necesario
+}
+
+local function IsAlive(enemy)
+    local Hum = enemy:FindFirstChild("Humanoid")
+    return Hum and Hum.Health > 0
+end
+
+local function ConfigurePrimaryPart(PP, CFrame)
+    PP.CFrame = CFrame
+    PP.CanCollide = false
+    PP.Transparency = Settings.ViewHitbox and 0.8 or 1
+    PP.Size = Vector3.new(50, 50, 50)
+end
+
+local function BringMobsTo(_Enemie, CFrame, SBring)
+    for _, v in ipairs(Monsters:GetChildren()) do
+        if (SBring or v.Name == _Enemie) and IsAlive(v) then
+            local PP, Hum = v.PrimaryPart, v.Humanoid
+            if PP and (PP.Position - CFrame.p).Magnitude < 500 then
+                Hum.WalkSpeed = 0
+                Hum:ChangeState(14)
+                ConfigurePrimaryPart(PP, CFrame)
+            end
+        end
+    end
+    return pcall(sethiddenproperty, Player, "SimulationRadius", math.huge)
+end
   task.spawn(function()
     while task.wait() do
         pcall(function()
             if getgenv().AutoBandit then
+             local destination = Player.Character.HumanoidRootPart.CFrame
+             BringMobsTo("bandit", destination, true)
              local args = {
     [1] = "Combat",
     [2] = 0.275,
