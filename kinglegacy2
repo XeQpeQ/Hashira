@@ -986,8 +986,12 @@ game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes
         end)
     end
 end)
+local Player = game.Players.LocalPlayer
+local Monsters = game:GetService("Workspace").Monster.Mon
+local Settings = {
+    ViewHitbox = true -- Ajusta según sea necesario
+}
 
--- Definimos la función BringMobsTo y sus auxiliares
 local function IsAlive(enemy)
     local Hum = enemy:FindFirstChild("Humanoid")
     return Hum and Hum.Health > 0
@@ -1025,13 +1029,12 @@ task.spawn(function()
 
                 game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
 
-                -- Llamamos a la función BringMobsTo para atraer a los zombies
-                local destination = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                local destination = Player.Character.HumanoidRootPart.CFrame
                 BringMobsTo("Zombie [Lv. 1500]", destination, true)
 
-                local Zombie = game:GetService("Workspace").Monster.Mon["Zombie [Lv. 1500]"]
+                local Zombie = Monsters["Zombie [Lv. 1500]"]
                 if Zombie and Zombie.HumanoidRootPart then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Zombie.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    Player.Character.HumanoidRootPart.CFrame = Zombie.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
                     if Zombie.Humanoid.Health == 0 then
                         Zombie:Destroy()
                     end
@@ -1040,7 +1043,6 @@ task.spawn(function()
         end)
     end
 end)
-
 
 task.spawn(function()
     while task.wait() do
