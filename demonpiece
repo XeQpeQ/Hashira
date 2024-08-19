@@ -1,18 +1,8 @@
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
-local TweenService = game:GetService("TweenService")
-local Workspace = game:GetService("Workspace")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local gui, mainFrame, originalSize, isExpanded
-local LocalPlayer = Players.LocalPlayer
-local FarmMethod = "Above"
-local tweenSpeed = 50
-local distance = 10
-local AutoBandit = false
-local NearestMobs = false
-local SkillActive = false
 
 local function toggleGUIVisibility(visible)
     if gui then
@@ -31,104 +21,15 @@ local function toggleGUISize(expand)
     end
 end
 
-local function getDistance(endpoint)
-    if typeof(endpoint) == "Instance" then
-        endpoint = Vector3.new(endpoint.Position.X, LocalPlayer.Character.HumanoidRootPart.Position.Y, endpoint.Position.Z)
-    elseif typeof(endpoint) == "CFrame" then
-        endpoint = Vector3.new(endpoint.Position.X, LocalPlayer.Character.HumanoidRootPart.Position.Y, endpoint.Position.Z)
-    end
-    return (endpoint - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-end
+local bb = game:GetService('VirtualUser')
 
-local function tween(endpoint)
-    if typeof(endpoint) == "Instance" then
-        endpoint = endpoint.CFrame
-    end
-    local distance = getDistance(endpoint)
-    local tweenInfo = TweenInfo.new(distance / tweenSpeed, Enum.EasingStyle.Linear)
-    local tween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, tweenInfo, {CFrame = endpoint})
-    tween:Play()
-
-    local function cancelTween()
-        tween:Cancel()
-    end
-
-    if distance <= 5 then
-        LocalPlayer.Character.HumanoidRootPart.CFrame = endpoint
-        cancelTween()
-        return
-    end
-    return cancelTween
-end
-
-local function autoBanditLogic()
-    while task.wait() do
-        pcall(function()
-            if AutoBandit then
-                local bandit = Workspace.NPC.Fight.Bandits.Bandit
-                if bandit and bandit.HumanoidRootPart then
-                    if not LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                        local antifall = Instance.new("BodyVelocity", LocalPlayer.Character.HumanoidRootPart)
-                        antifall.Velocity = Vector3.new(0, 0, 0)
-                        antifall.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-                    end
-
-                    for _, v in ipairs(Workspace.NPC.Fight.Bandits:GetChildren()) do
-                        if v:IsA("Model") and v.Name:match("Bandit") then
-                            if v.Humanoid.Health > 0 then
-                                local distance = getDistance(v:GetModelCFrame() * FarmModes)
-                                repeat
-                                    task.wait()
-                                    if distance < 25 and distance < 150 then
-                                        if TweenFa then
-                                            TweenFa()
-                                            wait(0.1)
-                                        end
-                                        LocalPlayer.Character.HumanoidRootPart.CFrame = v:GetModelCFrame()
-                                    else
-                                        TweenFa = tween(v:GetModelCFrame() * FarmModes)
-                                    end
-                                    if v.Humanoid.Health > 0 and distance < 10 then
-                                        NearestMobs = true
-                                    elseif v.Humanoid.Health <= 0 or distance > 10 then
-                                        NearestMobs = false
-                                    end
-                                until not AutoBandit or v.Humanoid.Health <= 0 or not v:IsDescendantOf(Workspace)
-                                NearestMobs = false
-                            end
-                        end
-                    end
-                end
-
-                if not AutoBandit and TweenFa then
-                    TweenFa()
-                end
-                if bandit and bandit.Humanoid.Health == 0 then
-                    bandit:Destroy()
-                end
-            end
-        end)
-    end
-end
-
-local function bringMobsTo(enemyName, cframe, sBring)
-    for _, v in ipairs(Workspace.NPC.Fight.Bandits:GetChildren()) do
-        if (sBring or v.Name == enemyName) and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-            local pp = v.PrimaryPart
-            if pp and (pp.Position - cframe.Position).Magnitude < 500 then
-                v.Humanoid.WalkSpeed = 0
-                v.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-                pp.CFrame = cframe
-                pp.CanCollide = false
-                pp.Transparency = 0.8
-                pp.Size = Vector3.new(50, 50, 50)
-            end
-        end
-    end
-    pcall(sethiddenproperty, LocalPlayer, "SimulationRadius", math.huge)
-end
-
-task.spawn(autoBanditLogic)
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    wait(2)
+    ab.Text = "Estado: Activo"
+end)
 
 local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
 local win = HashiraUI:Create({
@@ -140,26 +41,181 @@ local win = HashiraUI:Create({
     }
 })
 
-local AutoFarm = win:Tab('AutoFarm')
-local uiTab = win:Tab('UI')
+local LP = game.Players.LocalPlayer
+local client = game.Players.LocalPlayer
+local FarmMethod = "Above"
+local tweenspeed = 50
+local Distance = 10
 
-uiTab:Button('Destroy GUI', function()
+local function GetDistance(Endpoint)
+    if typeof(Endpoint) == "Instance" then
+        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+    elseif typeof(Endpoint) == "CFrame" then
+        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+    end
+    local Magnitude = (Endpoint - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    return Magnitude
+end
+
+function Tween(Endpoint)
+    if typeof(Endpoint) == "Instance" then
+        Endpoint = Endpoint.CFrame
+    end
+    local TweenFunc = {}
+    local Distance = GetDistance(Endpoint)
+    local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
+    TweenInfo:Play()
+    function TweenFunc:Cancel()
+        TweenInfo:Cancel()
+        return false
+    end
+    if Distance <= 5 then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Endpoint
+        TweenInfo:Cancel()
+        return false
+    end
+    return TweenFunc
+end
+
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AutoBandit and NearestMobs)
+            if FarmMethod == "Above" then
+                FarmModes = CFrame.new(0,Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
+            elseif FarmMethod == "Below" then
+                FarmModes = CFrame.new(0,-Distance,0) * CFrame.Angles(math.rad(90),0,0)
+            elseif FarmMethod == "Behind" then
+                FarmModes = CFrame.new(0,0,Distance)
+            elseif FarmMethod == "Ahead" then
+                FarmModes = CFrame.new(0, 0, -Distance)
+                local rotation = CFrame.Angles(0, math.rad(180), 0)
+                FarmModes = FarmModes * rotation
+            end
+        end)
+    end
+end)
+
+local AutoFarm = win:Tab('AutoFarm')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
 AutoFarm:Toggle('Auto Bandit', function(v)
-    AutoBandit = v
+    getgenv().AutoBandit = v
 end)
 
 AutoFarm:Button('Infinite Dash', function()
-    local originalNamecall = hookmetamethod(game, '__namecall', function(self, ...)
-        local args = {...}
-        local method = getnamecallmethod()
+    local Namecall
+Namecall = hookmetamethod(game, '__namecall', function(self, ...)
+	local Args = {...}
+	local method = getnamecallmethod()
 
-        if method == 'FireServer' and self.Name == 'Dash' then 
-            return false
+	if method == 'FireServer' and self.Name == 'Dash' then 
+		return false
+	end
+
+	return Namecall(self, ...)
+end)
+end)
+    
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoBandit then
+                local bandit = game:GetService("Workspace").NPC.Fight.Bandits.Bandit
+                if bandit and bandit.HumanoidRootPart then
+                    if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                        antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+                        antifall3.Velocity = Vector3.new(0, 0, 0)
+                        antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                    elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                        for i, v in pairs(game:GetService("Workspace").NPC.Fight.Bandits:GetChildren()) do
+                            if v:IsA("Model") and v.Name:match("Bandit") then
+                                if v.Humanoid.Health > 0 then
+                                    local distance = GetDistance(v:GetModelCFrame() * FarmModes)
+                                    repeat
+                                        task.wait()
+                                        if distance < 25 and distance < 150 then
+                                            if TweenFa then
+                                                TweenFa:Cancel()
+                                                wait(.1)
+                                            end
+                                            LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame()
+                                        else
+                                            TweenFa = Tween(v:GetModelCFrame() * FarmModes)
+                                        end
+                                        if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
+                                            NearestMobs = true
+                                        elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
+                                            NearestMobs = false
+                                        end
+                                    until not getgenv().AutoBandit or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
+                                    NearestMobs = false
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            if getgenv().AutoBandit == false and TweenFa then
+                TweenFa:Cancel()
+            end
+            if bandit and bandit.Humanoid.Health == 0 then
+                bandit:Destroy()
+            end
+        end)
+    end
+end)
+local Player = game.Players.LocalPlayer
+local Monsters = game:GetService("Workspace").NPC.Fight.Bandits
+local Settings = {
+    ViewHitbox = true -- Ajusta según sea necesario
+}
+
+local function IsAlive(enemy)
+    local Hum = enemy:FindFirstChild("Humanoid")
+    return Hum and Hum.Health > 0
+end
+
+local function ConfigurePrimaryPart(PP, CFrame)
+    PP.CFrame = CFrame
+    PP.CanCollide = false
+    PP.Transparency = Settings.ViewHitbox and 0.8 or 1
+    PP.Size = Vector3.new(50, 50, 50)
+end
+
+local function BringMobsTo(_Enemie, CFrame, SBring)
+    for _, v in ipairs(Monsters:GetChildren()) do
+        if (SBring or v.Name == _Enemie) and IsAlive(v) then
+            local PP, Hum = v.PrimaryPart, v.Humanoid
+            if PP and (PP.Position - CFrame.p).Magnitude < 500 then
+                Hum.WalkSpeed = 0
+                Hum:ChangeState(14)
+                ConfigurePrimaryPart(PP, CFrame)
+            end
         end
+    end
+    return pcall(sethiddenproperty, Player, "SimulationRadius", math.huge)
+end
+  task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoBandit then
+             local destination = Player.Character.HumanoidRootPart.CFrame
+             BringMobsTo("bandit", destination, true)
+             local args = {
+    [1] = "Combat",
+    [2] = 0.275,
+    [3] = "left",
+    [4] = 0.275,
+    [5] = "Combat"
+}
 
-        return originalNamecall(self, ...)
-    end)
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ServerMove"):FireServer(unpack(args))
+
+        end)
+    end
 end)
