@@ -997,25 +997,27 @@ local function IsAlive(enemy)
     return Hum and Hum.Health > 0
 end
 
-local function ConfigurePrimaryPart(PP, CFrame)
-    PP.CFrame = CFrame
+local function ConfigurePrimaryPart(PP, targetCFrame)
+    PP.CFrame = targetCFrame
     PP.CanCollide = false
     PP.Transparency = Settings.ViewHitbox and 0.8 or 1
     PP.Size = Vector3.new(50, 50, 50)
 end
 
-local function BringMobsTo(_Enemie, CFrame, SBring)
+local function BringMobsTo(_Enemie, targetCFrame, SBring)
     for _, v in ipairs(Monsters:GetChildren()) do
         if (SBring or v.Name == _Enemie) and IsAlive(v) then
             local PP, Hum = v.PrimaryPart, v.Humanoid
-            if PP and (PP.Position - CFrame.p).Magnitude < 500 then
+            if PP and (PP.Position - targetCFrame.p).Magnitude < 500 then
                 Hum.WalkSpeed = 0
-                Hum:ChangeState(14)
-                ConfigurePrimaryPart(PP, CFrame)
+                Hum:ChangeState(Enum.HumanoidStateType.Physics)
+                ConfigurePrimaryPart(PP, targetCFrame)
             end
         end
     end
-    return pcall(sethiddenproperty, Player, "SimulationRadius", math.huge)
+    return pcall(function()
+        sethiddenproperty(Player, "SimulationRadius", math.huge)
+    end)
 end
 
 task.spawn(function()
@@ -1023,17 +1025,17 @@ task.spawn(function()
         pcall(function()
             if getgenv().AutoZombie then
                 local args = {
-                    [1] = "take",
-                    [2] = "Kill 4 Zombies"
+                    "take",
+                    "Kill 4 Zombies"
                 }
 
                 game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
 
-                local Zombie = Monsters["Zombie [Lv. 1500]"]
-                if Zombie and Zombie.HumanoidRootPart then
+                local Zombie = Monsters:FindFirstChild("Zombie [Lv. 1500]")
+                if Zombie and Zombie:FindFirstChild("HumanoidRootPart") then
                     Player.Character.HumanoidRootPart.CFrame = Zombie.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
-                    local Enemy = typeof(_Enemie) == "Instance" and "Zombie [Lv. 1500]"
-                    BringMobsTo(Zombie [Lv. 1500], Enemy.PrimaryPart.CFrame, SBring)
+                    local EnemyName = "Zombie [Lv. 1500]"
+                    BringMobsTo(EnemyName, Zombie.HumanoidRootPart.CFrame, true)
                     if Zombie.Humanoid.Health == 0 then
                         Zombie:Destroy()
                     end
@@ -1042,6 +1044,7 @@ task.spawn(function()
         end)
     end
 end)
+
 
 task.spawn(function()
     while task.wait() do
