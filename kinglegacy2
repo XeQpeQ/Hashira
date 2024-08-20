@@ -1029,12 +1029,11 @@ task.spawn(function()
 
                 game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes"):WaitForChild("Functions"):WaitForChild("Quest"):InvokeServer(unpack(args))
 
-                local destination = Player.Character.HumanoidRootPart.CFrame
-                BringMobsTo("Zombie [Lv. 1500]", destination, true)
-
                 local Zombie = Monsters["Zombie [Lv. 1500]"]
                 if Zombie and Zombie.HumanoidRootPart then
                     Player.Character.HumanoidRootPart.CFrame = Zombie.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                    local Enemy = typeof(_Enemie) == "Instance" and "Zombie [Lv. 1500]"
+                    BringMobsTo(Zombie [Lv. 1500], Enemy.PrimaryPart.CFrame, SBring)
                     if Zombie.Humanoid.Health == 0 then
                         Zombie:Destroy()
                     end
@@ -1754,8 +1753,6 @@ task.spawn(function()
                 if not isTashiBladeEquipped() then
                     equipTashiBlade()
                 end
-
-                BringMobsTo(_Enemie, Enemy.PrimaryPart.CFrame, SBring)
 
                 local args = {
                     [1] = "SW_Tashi Blade_M1"
