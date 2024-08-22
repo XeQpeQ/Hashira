@@ -38,6 +38,51 @@ game:GetService('Players').LocalPlayer.Idled:Connect(function()
     ab.Text = "Estado: Activo"
 end)
 
+if not _env.LoadedFarm then
+  _env.LoadedFarm = true
+  task.spawn(function()
+    while _wait() do
+      for _,f in _env.FarmFuncs do
+        if _env[f[1]] then local s,r=pcall(f[2])if s and r then break end;end
+      end
+    end
+  end)
+end
+local sethiddenproperty = sethiddenproperty or (function()end)
+local Player = game.Players.LocalPlayer
+local Monsters = game:GetService("Workspace").Monster.Mon
+local Settings = {
+    ViewHitbox = true -- Ajusta según sea necesario
+}
+
+local function IsAlive(enemy)
+    local Hum = enemy:FindFirstChild("Humanoid")
+    return Hum and Hum.Health > 0
+end
+
+local function ConfigurePrimaryPart(PP, targetCFrame)
+    PP.CFrame = targetCFrame
+    PP.CanCollide = false
+    PP.Transparency = Settings.ViewHitbox and 0.8 or 1
+    PP.Size = Vector3.new(50, 50, 50)
+end
+
+local function BringMobsTo(_Enemie, targetCFrame, SBring)
+    for _, v in ipairs(Monsters:GetChildren()) do
+        if (SBring or v.Name == _Enemie) and IsAlive(v) then
+            local PP, Hum = v.PrimaryPart, v.Humanoid
+            if PP and (PP.Position - targetCFrame.p).Magnitude < 500 then
+                Hum.WalkSpeed = 0
+                Hum:ChangeState(Enum.HumanoidStateType.Physics)
+                ConfigurePrimaryPart(PP, targetCFrame)
+            end
+        end
+    end
+    return pcall(function()
+        sethiddenproperty(Player, "SimulationRadius", math.huge)
+    end)
+end
+
 local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
 local win = HashiraUI:Create({
     Name = "Hashira Hub",
@@ -986,39 +1031,6 @@ game:GetService("ReplicatedStorage"):WaitForChild("Chest"):WaitForChild("Remotes
         end)
     end
 end)
-local Player = game.Players.LocalPlayer
-local Monsters = game:GetService("Workspace").Monster.Mon
-local Settings = {
-    ViewHitbox = true -- Ajusta según sea necesario
-}
-
-local function IsAlive(enemy)
-    local Hum = enemy:FindFirstChild("Humanoid")
-    return Hum and Hum.Health > 0
-end
-
-local function ConfigurePrimaryPart(PP, targetCFrame)
-    PP.CFrame = targetCFrame
-    PP.CanCollide = false
-    PP.Transparency = Settings.ViewHitbox and 0.8 or 1
-    PP.Size = Vector3.new(50, 50, 50)
-end
-
-local function BringMobsTo(_Enemie, targetCFrame, SBring)
-    for _, v in ipairs(Monsters:GetChildren()) do
-        if (SBring or v.Name == _Enemie) and IsAlive(v) then
-            local PP, Hum = v.PrimaryPart, v.Humanoid
-            if PP and (PP.Position - targetCFrame.p).Magnitude < 500 then
-                Hum.WalkSpeed = 0
-                Hum:ChangeState(Enum.HumanoidStateType.Physics)
-                ConfigurePrimaryPart(PP, targetCFrame)
-            end
-        end
-    end
-    return pcall(function()
-        sethiddenproperty(Player, "SimulationRadius", math.huge)
-    end)
-end
 
 task.spawn(function()
     while task.wait() do
