@@ -124,7 +124,7 @@ task.spawn(function()
                 for i, enemy in pairs(game:GetService("Workspace").Runtime.Enemies:GetChildren()) do
                     if enemy:IsA("Model") and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
                         enemy.WalkSpeed = 0
-                        enemy:ChangeState(14)
+                        Enemy:ChangeState(Enum.HumanoidStateType.Physics)
                         
                         local distance = GetDistance(enemy:GetModelCFrame() * FarmModes)
                         
