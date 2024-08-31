@@ -43,7 +43,7 @@ local win = HashiraUI:Create({
 
 local LP = game.Players.LocalPlayer
 local client = game.Players.LocalPlayer
-local FarmMethod = "Below"
+local FarmMethod = "Above"
 local tweenspeed = 50
 local Distance = 10
 
