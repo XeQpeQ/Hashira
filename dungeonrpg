@@ -1,0 +1,169 @@
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+local gui, mainFrame, originalSize, isExpanded
+
+local function toggleGUIVisibility(visible)
+    if gui then
+        gui.Enabled = visible
+    end
+end
+
+local function toggleGUISize(expand)
+    if mainFrame and originalSize then
+        if expand then
+            mainFrame.Size = originalSize
+        else
+            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modifica el tamaño según sea necesario
+        end
+        isExpanded = expand
+    end
+end
+
+local bb = game:GetService('VirtualUser')
+
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    wait(2)
+    ab.Text = "Estado: Activo"
+end)
+
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+
+local LP = game.Players.LocalPlayer
+local client = game.Players.LocalPlayer
+local FarmMethod = "Below"
+local tweenspeed = 50
+local Distance = 10
+
+local function GetDistance(Endpoint)
+    if typeof(Endpoint) == "Instance" then
+        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+    elseif typeof(Endpoint) == "CFrame" then
+        Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+    end
+    local Magnitude = (Endpoint - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    return Magnitude
+end
+
+function Tween(Endpoint)
+    if typeof(Endpoint) == "Instance" then
+        Endpoint = Endpoint.CFrame
+    end
+    local TweenFunc = {}
+    local Distance = GetDistance(Endpoint)
+    local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
+    TweenInfo:Play()
+    function TweenFunc:Cancel()
+        TweenInfo:Cancel()
+        return false
+    end
+    if Distance <= 5 then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Endpoint
+        TweenInfo:Cancel()
+        return false
+    end
+    return TweenFunc
+end
+
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AutoBandit and NearestMobs)
+            if FarmMethod == "Above" then
+                FarmModes = CFrame.new(0,Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
+            elseif FarmMethod == "Below" then
+                FarmModes = CFrame.new(0,-Distance,0) * CFrame.Angles(math.rad(90),0,0)
+            elseif FarmMethod == "Behind" then
+                FarmModes = CFrame.new(0,0,Distance)
+            elseif FarmMethod == "Ahead" then
+                FarmModes = CFrame.new(0, 0, -Distance)
+                local rotation = CFrame.Angles(0, math.rad(180), 0)
+                FarmModes = FarmModes * rotation
+            end
+        end)
+    end
+end)
+
+local AutoFarm = win:Tab('AutoFarm')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
+
+AutoFarm:Toggle('Auto Bandit', function(v)
+    getgenv().AutoBandit = v
+end)
+    
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoBandit then
+                local humanoidRootPart = LP.Character.HumanoidRootPart
+                
+                -- Check and create BodyVelocity if not exists
+                if not humanoidRootPart:FindFirstChild("BodyVelocity") then
+                    local antifall3 = Instance.new("BodyVelocity", humanoidRootPart)
+                    antifall3.Velocity = Vector3.new(0, 0, 0)
+                    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                end
+
+                -- Iterate through enemies in the workspace
+                for i, enemy in pairs(game:GetService("Workspace").Runtime.Enemies:GetChildren()) do
+                    if enemy:IsA("Model") and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                        local distance = GetDistance(enemy:GetModelCFrame() * FarmModes)
+                        
+                        repeat
+                            task.wait()
+                            if distance < 25 then
+                                -- Close enough to move directly
+                                if TweenFa then
+                                    TweenFa:Cancel()
+                                    wait(0.1)
+                                end
+                                humanoidRootPart.CFrame = enemy:GetModelCFrame()
+                            elseif distance < 150 then
+                                -- Tween to the enemy if not too far
+                                TweenFa = Tween(enemy:GetModelCFrame() * FarmModes)
+                            end
+
+                            -- Update NearestMobs status
+                            if enemy.Humanoid.Health > 0 and enemy:FindFirstChild("HumanoidRootPart") and distance < 10 then
+                                NearestMobs = true
+                            elseif enemy.Humanoid.Health <= 0 or not enemy:FindFirstChild("HumanoidRootPart") or distance > 10 then
+                                NearestMobs = false
+                            end
+                            
+                        until not getgenv().AutoBandit or not enemy.Parent or enemy.Humanoid.Health <= 0 or not enemy:IsDescendantOf(workspace)
+                        
+                        -- Reset NearestMobs after exiting the loop
+                        NearestMobs = false
+                    end
+                end
+            end
+
+            -- Stop the Tween if AutoBandit is disabled
+            if not getgenv().AutoBandit and TweenFa then
+                TweenFa:Cancel()
+            end
+
+            -- Destroy the bandit if it's dead
+            if bandit and bandit:FindFirstChild("Humanoid") and bandit.Humanoid.Health == 0 then
+                bandit:Destroy()
+            end
+        end)
+    end
+end)
+
