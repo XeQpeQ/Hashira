@@ -1,106 +1,257 @@
---[[
-	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
-]]
-local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/BimbusCoder/Roblox-Scripts/master/MaterialLua"))()
-local UI = Material.Load({Title = "Dragon Blox Ultimate | {}#0001", Style = 1, SizeX = 250, SizeY = 250, Theme = "Mocha"})
 
--- Tabs
-local Main = UI.New({Title = "Main"})
--- 
-local plr = game.Players.LocalPlayer
-local RunService = game:GetService('RunService')
-local questRemote = game:GetService("ReplicatedStorage").Package.Events.Qaction 
-local punchRemote = game:GetService("ReplicatedStorage").Package.Events.p
-local equipRemote = game:GetService("ReplicatedStorage").Package.Events.equipskill
-local rebirthRemote = game:GetService("ReplicatedStorage").Package.Events.reb
+--anti afk
 
-local Settings = {Tables = {Forms = {'SSJB4','True God of Creation','True God of Destruction','Super Broly','LSSJG','LSSJ4','SSJG4','LSSJ3','SSJ5','Mystic Kaioken','LSSJ Kaioken','SSJ2 Kaioken','SSJR3','SSJB3','God Of Destruction','God Of Creation','Jiren Ultra Instinct', 'Mastered Ultra Instinct','Godly SSJ2', 'Ultra Instinct Omen', 'Evil SSJ','Blue Evolution','Dark Rose','Kefla SSJ2','SSJ Berserker','True Rose', 'SSJB Kaioken','SSJ Rose', 'SSJ Blue','Corrupt SSJ','SSJ Rage','SSJG','SSJ4','Mystic','LSSJ','SSJ3','Spirit SSJ','SSJ2 Majin','SSJ2','SSJ Kaioken','SSJ','FSSJ','Kaioken'}};Variables = {Farm = false}}
-setmetatable(Settings, {__index = function() warn('Dumbass') end}) -- literally no use i was just bored
+local vu = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:connect(function()
+   vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+   wait(1)
+   vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end)
 
-local function returnQuest(boolean)
-    local quest = getrenv()._G.x.GetRecommendedQuest(game.Players.LocalPlayer)
-    if (boolean) and quest:find('Bills Planet') then 
-        return 'SSJG Kakata'
-    else 
-        return quest 
-    end 
-end 
-local function transform()
-    pcall(function()
-        for i,v in pairs(Settings.Tables.Forms) do
-            if equipRemote:InvokeServer(v) then
-                break
-            end
+
+--Variable
+transform = false
+local player = game:GetService("Players").LocalPlayer
+local events = game:GetService("ReplicatedStorage").Package.Events
+local player = game.Players.LocalPlayer
+local rs = game:GetService("RunService")
+local data = game.ReplicatedStorage.Datas[player.UserId]
+local skills = game.ReplicatedStorage.Package.Skills
+local events = game.ReplicatedStorage.Package.Events
+local market = game:GetService("MarketplaceService")
+local key = (function()
+    for i,v in pairs(getgc()) do
+        if type(v) == "function" and islclosure(v) and table.find(getconstants(v),"ShakeOnce") and getconstant(v,1) == "_G" then
+            local c = getconstants(v)
+            return c[table.find(c,"InvokeServer")-1]
         end
-        repeat wait()
-            if plr.Character.Status.SelectedTransformation.Value ~= plr.Character.Status.Transformation.Value then
-                game:GetService("ReplicatedStorage").Package.Events.ta:InvokeServer()
-            end
-        until game.Players.LocalPlayer.Character.Status.SelectedTransformation.Value == game.Players.LocalPlayer.Character.Status.Transformation.Value
-    end)
+    end
+    return nil
+end)()
+local Quest = {
+    "Top X Fighter",
+    "SSJB Wukong",
+    "Citizen",
+    "Kid Nohag",
+    "Chilly",
+    "X Fighter Trainer",
+    "Super Vegetable",
+    "Klirin",
+    "SSJ2 Wukong",
+    "Perfect Atom",
+    "Radish",
+    "Mapa",
+    "Broccoli",
+    "SSJG Kakata",
+    "Kai-fist Master",
+    "Kaio Student",
+    "Turtle Student"
+}
+-- Shitty Tabels
+local MobTable = {}
+for i,v in pairs(game:GetService("Workspace").Living:GetChildren()) do
+    table.insert(MobTable, v.Name)
 end
 
-RunService.RenderStepped:Connect(function()
-    if Settings.Variables.Farm then 
-        plr.Character:WaitForChild('Humanoid'):ChangeState(11)
-    end 
-end)
-local RebirthFarm = Main.Toggle({
-    Text = 'Rebirth-Farm',
-    Callback = function(bool)
-        Settings.Variables.Farm = bool 
-        while bool and wait() do 
-            if (not plr.PlayerGui.Main.MainFrame.Frames.Quest.Nop.Visible and bool) then
-                for i,v in next, workspace.Living:GetChildren() do 
-                    if (v.Name == returnQuest(true) or v.Name == game:GetService("ReplicatedStorage").Package.Quests[returnQuest(true)].Objective.Value) and not plr.PlayerGui.Main.MainFrame.Frames.Quest.Nop.Visible and v:FindFirstChild('Humanoid') and v:FindFirstChild('HumanoidRootPart') and v.Humanoid.Health > 0 then 
-                        repeat wait()
-                            pcall(function() plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,2) end)
-                            punchRemote:FireServer('Blacknwhite27',1)
-                        until not v or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or v.Humanoid.Health <= 0 or not Settings.Variables.Farm or plr.PlayerGui:WaitForChild('Main').MainFrame.Frames.Quest.Nop.Visible
-                    end 
-                end 
-            else 
-                pcall(function() questRemote:InvokeServer(workspace.Others.NPCs[returnQuest(true)]) end)
-            end 
-        end 
-    end
-})
 
-local GodMode = Main.Toggle({
-    Text = 'GodMode',
-    Callback = function(bool)
-        pcall(function()
-            if bool then
-                plr.Character.Status.Blocking.Parent = nil 
-            else
-                plr.Character.Humanoid.Health = -math.huge 
-            end
+-- Drain
+local drain = events.drain
+local drain2 = drain:Clone()
+drain2.Parent = events
+
+-- Grab Gamepasses
+function gamepass(gamepassid)
+    local s,res = pcall(market.UserOwnsGamePassAsync,market,player.UserId,gamepassid)
+    if not s then
+        res = false
+    end
+    return res
+end
+local gamepasses = {}
+for i,v in pairs(skills:GetChildren()) do
+    if v:FindFirstChild("Gamepass") then
+        gamepasses[v.Gamepass.Value] = gamepass(v.Gamepass.Value)
+    end
+end
+
+--Recharge
+function recharge()
+    repeat
+        spawn(function()
+            events.cha:InvokeServer(key)
         end)
-    end 
-})
-local AutoTransform = Main.Toggle({
-    Text = 'Auto-Transform',
-    Callback = function(bool)
-        pcall(function()
-            while bool and wait() do 
-                transform()
+        wait()
+    until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
+end
+
+
+-- Check Tranformations
+function trans()
+	local unlocked = {}
+    if pcall(function() return player.Character.Status.Transformation,player.Character.Status.SelectedTransformation,player.Character.Stats.Ki end) then
+		local shit = skills:GetChildren()
+		for i = 1, #shit do local v = shit[i]
+			if v:FindFirstChild("Time") then
+				local un = true
+                local shit2 = v.Requirements:GetChildren()
+                local al = v:FindFirstChild("Allignment")
+				for i2 = 1, #shit2 do local v2 = shit2[i2]
+					if data[v2.Name].Value < v2.Value then
+						un = false
+					end
+				end
+				if al and al.Value ~= data.Allignment.Value then
+				    un = false
+                end
+                if v:FindFirstChild("Gamepass") and not gamepasses[v.Gamepass.Value] then
+                    un = false
+                end
+				if un then
+					table.insert(unlocked, v.Name)
+				end
             end
-        end)
-    end 
-})
-local AutoRebirth = Main.Toggle({
-    Text = 'Rebirth',
-    Callback = function(bool)
-        while bool and wait() do 
-            rebirthRemote:InvokeServer()
-        end 
-    end 
-})
-local AutoCharge = Main.Toggle({
-    Text = 'Auto-Charge',
-    Callback = function(bool) 
-        while bool and wait() do 
-            game:GetService("ReplicatedStorage").Package.Events.cha:InvokeServer('Blacknwhite27')
+		end
+		if #unlocked > 1 then
+			table.sort(unlocked, function(a,b)
+				return skills[a].Requirements.Strength.Value > skills[b].Requirements.Strength.Value
+            end)
+            if unlocked[1] ~= player.Character.Status.Transformation.Value then
+    			return unlocked[1]
+            end
         end
-    end 
-})
+		return false
+	end
+end
+
+-- Transformation
+function transformation()
+    local form = trans()
+    if typeof(form) == "string" then
+        print(form)
+        if player.Character.Status.Transformation.Value ~= "None" then
+            spawn(function()
+                events.ta:InvokeServer()
+            end)
+        end
+        repeat
+            spawn(function()
+                events.equipskill:InvokeServer(form)
+            end)
+            wait(.25)
+        until player.Character.Status.SelectedTransformation.Value == form
+        repeat
+            spawn(function()
+                events.cha:InvokeServer(key)
+            end)
+            wait()
+        until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
+        local max = player.Character.Stats.Ki.MaxValue
+        repeat
+            wait(.25)
+            spawn(function()
+                events.ta:InvokeServer()
+            end)
+        until max < player.Character.Stats.Ki.MaxValue
+        if not energy then
+            recharge()
+        end
+    end
+end
+-- Ui Lib Section
+local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/AikaV3rm/UiLib/master/Lib.lua')))()
+
+local w = library:CreateWindow("DBU") -- Creates the window
+
+local farm = w:CreateFolder("Autofarm") -- Creates the folder(U will put here your buttons,etc)
+local trans = w:CreateFolder("Transform")
+local info = w:CreateFolder("Information")
+
+farm:Toggle("On/Off Toggle", function(Val)
+    Autofarm = Val
+end)
+
+farm:Dropdown("Select Mob", MobTable ,true, function(Value)
+    SelectedMob = Value
+end)
+farm:Dropdown("Select Quest",Quest, true, function(Value)
+    SelectedQuest = Value
+end)
+farm:Slider("Tp Distance",{
+    min = 0; -- min value of the slider
+    max = 10; -- max value of the slider
+    precise = true; -- max 2 decimals
+},function(value)
+    TpDistance = value
+end)
+trans:Toggle("Auto Transform", function(Val)
+    Transform = Val
+end)
+trans:Toggle("No Energy Drain", function(Val)
+    energy = Val
+end)
+--NoClip
+Stepped = game:GetService('RunService').Stepped:Connect(function()
+    if player.Character and player.Character:FindFirstChild("Humanoid") then 
+        player.Character.Humanoid:ChangeState(11)
+    end
+    if Autofarm == false then 
+        Stepped:Disconnect()
+    end
+end)
+
+--Function
+local function quest()
+    if game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value ~= SelectedQuest then
+        player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
+		repeat
+			wait()
+			events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[SelectedQuest])
+		until game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value == SelectedQuest
+	end
+end
+
+
+--Loop
+spawn(function()
+    while true do wait()
+        if Autofarm and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+    for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+        if v.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+            repeat
+                quest()
+                player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + v.HumanoidRootPart.CFrame.lookVector * TpDistance
+                wait()
+                local ohString1 = "Blacknwhite27"
+                local ohNumber2 = 1
+                game:GetService("ReplicatedStorage").Package.Events.p:FireServer(ohString1, ohNumber2)
+            until Autofarm == false or v == nil or v.Humanoid.Health <= 0
+			
+        end
+    end
+        end
+end
+end)
+
+spawn(function()
+    while true do wait()
+        if Transform then
+            transformation()
+            wait(1)
+        end
+    end
+end)
+
+
+-- Energy Toggle
+spawn(function()
+    while true do
+        if energy and drain.Name == "drain" then
+            drain.Name = "drain2"
+            drain2.Name = "drain"
+        elseif not energy and drain.Name == "drain2" then
+            drain.Name = "drain"
+            drain2.Name = "drain2"
+        end
+        wait(.7)
+    end
+end)
