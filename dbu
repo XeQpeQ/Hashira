@@ -156,101 +156,76 @@ function transformation()
 end
 
 -- Ui Lib Section
-local library = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
-local w = library:CreateWindow({
-   Name = "Hashira Hub",
-   LoadingTitle = "",
-   LoadingSubtitle = "",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil, -- Create a custom folder for your hub/game
-      FileName = "Big Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
-   },
-   KeySystem = false, -- Set this to true to use our key system
-   KeySettings = {
-      Title = "Untitled",
-      Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided",
-      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
-   }
+local w = library:MakeWindow({Name = "Hashira Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "HashiraTest"})
+
+local farm = w:MakeTab({
+	Name = "AutoFarm",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+local trans = w:MakeTab({
+	Name = "Transformation",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
 })
 
-local tab = w:CreateTab("AutoFarm", 4483362458)
-local tab2 = w:CreateTab("Transform", 4483362458)
-local farm = tab:CreateSection("AutoFarm")  -- Corregido
-local trans = tab2:CreateSection("Transform")  -- Corregido
-
-local Toggle = farm:CreateToggle({
-   Name = "On/Off Toggle",
-   CurrentValue = false,
-   Flag = "Toggle1",
-   Callback = function(Value)
-       Autofarm = Value
-   end,
+farm:AddToggle({
+	Name = "On/Off Toggle",
+	Default = false,
+	Callback = function(Value)
+		Autofarm = Value
+	end    
 })
 
-local Dropdown = farm:CreateDropdown({
-   Name = "Select Mob",
-   Options = MobTable,
-   CurrentOption = {"None"},
-   MultipleOptions = false,
-   Flag = "Dropdown1", 
-   Callback = function(Option)
-       SelectedMob = Option
-   end,
+farm:AddDropdown({
+	Name = "Select Mob",
+	Default = "None",
+	Options = MobTable,
+	Callback = function(Option)
+		SelectedMob = Option
+	end    
 })
 
-local Dropdown = farm:CreateDropdown({
-   Name = "Select Quest",
-   Options = Quest,
-   CurrentOption = {"None"},
-   MultipleOptions = false,
-   Flag = "Dropdown1", 
-   Callback = function(Option)
-       SelectedQuest = Option
-   end,
+farm:AddDropdown({
+	Name = "Select Quest",
+	Default = "None",
+	Options = Quest,
+	Callback = function(Option)
+		SelectedQuest = Option
+	end    
 })
 
-local Slider = farm:CreateSlider({
-   Name = "Tp Distance",
-   Range = {0, 10},
-   Increment = 10,
-   Suffix = "Distance",
-   CurrentValue = 10,
-   Flag = "Slider1",
-   Callback = function(Value)
-       TpDistance = Value
-   end,
+farm:AddSlider({
+	Name = "Tp Distancce",
+	Min = 0,
+	Max = 10,
+	Default = 5,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "Distance",
+	Callback = function(Value)
+	     TpDistance = Value
+	end    
 })
 
-local Toggle = trans:CreateToggle({
-   Name = "Auto Transform",
-   CurrentValue = false,
-   Flag = "Toggle1",
-   Callback = function(Value)
-       Transform = Value
-   end,
+trans:AddToggle({
+	Name = "Auto Transform",
+	Default = false,
+	Callback = function(Value)
+	Transform = Value
+   end    
 })
 
-local Toggle = trans:CreateToggle({
-   Name = "No Energy Drain",
-   CurrentValue = false,
-   Flag = "Toggle1",
-   Callback = function(Value)
-       energy = Value
-   end,
+trans:AddToggle({
+	Name = "No Energy Drain",
+	Default = false,
+	Callback = function(Value)
+	energy = Value
+   end    
 })
 
---NoClip
 Stepped = game:GetService('RunService').Stepped:Connect(function()
     if player.Character and player.Character:FindFirstChild("Humanoid") then 
         player.Character.Humanoid:ChangeState(11)
