@@ -1,29 +1,56 @@
---Anti AFK
-local vu = game:GetService("VirtualUser")
-game:GetService("Players").LocalPlayer.Idled:connect(function()
-   vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-   wait(1)
-   vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-end)
---Variable
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local gui, mainFrame, originalSize, isExpanded
+local energy = workspace[player.Name].State.Energy.Value
+local maxEnergy = workspace[player.Name].State.MaxEnergy.Value
 
-transform = false
-local player = game:GetService("Players").LocalPlayer
-local events = game:GetService("ReplicatedStorage").Package.Events
-local rs = game:GetService("RunService")
-local data = game.ReplicatedStorage.Datas[player.UserId]
-local skills = game.ReplicatedStorage.Package.Skills
-local market = game:GetService("MarketplaceService")
-
-local key = (function()
-    for i,v in pairs(getgc()) do
-        if type(v) == "function" and islclosure(v) and table.find(getconstants(v),"ShakeOnce") and getconstant(v,1) == "_G" then
-            local c = getconstants(v)
-            return c[table.find(c,"InvokeServer")-1]
-        end
+-- Function to toggle GUI visibility
+local function toggleGUIVisibility(visible)
+    if gui then
+        gui.Enabled = visible
     end
-    return nil
-end)()
+end
+
+-- Function to toggle GUI size
+local function toggleGUISize(expand)
+    if mainFrame and originalSize then
+        if expand then
+            mainFrame.Size = originalSize
+        else
+            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modify the size as needed
+        end
+        isExpanded = expand
+    end
+end
+
+    local bb = game:GetService('VirtualUser')
+
+    game:GetService('Players').LocalPlayer.Idled:connect(function()
+        bb:CaptureController()
+        bb:ClickButton2(Vector2.new())
+        ab.Text = "Roblox intentó expulsarte, pero lo evité"
+        wait(2)
+        ab.Text = "Estado: Activo"
+    end)
+
+    local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+    local win = HashiraUI:Create({
+        Name = "Hashira Hub",
+        StartupSound = {
+            Toggle = false,
+            SoundID = "rbxassetid://6958727243",
+            TimePosition = 1
+        }
+    })
+    local maintab = win:Tab('Main')
+    local AutoFarm = win:Tab('AutoFarm')
+    local uitab = win:Tab('UI')
+
+    uitab:Button('Destroy GUI', function()
+        win:Exit()
+    end)
 
 local Quest = {
     "Top X Fighter",
@@ -45,204 +72,91 @@ local Quest = {
     "Turtle Student"
 }
 
--- Shitty Tabels
-local MobTable = {}
-for i,v in pairs(game:GetService("Workspace").Living:GetChildren()) do
-    table.insert(MobTable, v.Name)
-end
-
--- Drain
-local drain = events.drain
-local drain2 = drain:Clone()
-drain2.Parent = events
-
--- Grab Gamepasses
-function gamepass(gamepassid)
-    local s,res = pcall(market.UserOwnsGamePassAsync,market,player.UserId,gamepassid)
-    if not s then
-        res = false
-    end
-    return res
-end
-
-local gamepasses = {}
-for i,v in pairs(skills:GetChildren()) do
-    if v:FindFirstChild("Gamepass") then
-        gamepasses[v.Gamepass.Value] = gamepass(v.Gamepass.Value)
-    end
-end
-
---Recharge
-function recharge()
-    repeat
-        spawn(function()
-            events.cha:InvokeServer(key)
-        end)
-        wait()
-    until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
-end
-
--- Check Transformations
-function trans()
-	local unlocked = {}
-    if pcall(function() return player.Character.Status.Transformation,player.Character.Status.SelectedTransformation,player.Character.Stats.Ki end) then
-		local shit = skills:GetChildren()
-		for i = 1, #shit do local v = shit[i]
-			if v:FindFirstChild("Time") then
-				local un = true
-                local shit2 = v.Requirements:GetChildren()
-                local al = v:FindFirstChild("Allignment")
-				for i2 = 1, #shit2 do local v2 = shit2[i2]
-					if data[v2.Name].Value < v2.Value then
-						un = false
-					end
-				end
-				if al and al.Value ~= data.Allignment.Value then
-				    un = false
-                end
-                if v:FindFirstChild("Gamepass") and not gamepasses[v.Gamepass.Value] then
-                    un = false
-                end
-				if un then
-					table.insert(unlocked, v.Name)
-				end
-            end
-		end
-		if #unlocked > 1 then
-			table.sort(unlocked, function(a,b)
-				return skills[a].Requirements.Strength.Value > skills[b].Requirements.Strength.Value
-            end)
-            if unlocked[1] ~= player.Character.Status.Transformation.Value then
-    			return unlocked[1]
-            end
-        end
-		return false
+local function quest()
+    if game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value ~= "Top X Fighter" then
+        player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs["Top X Fighter"].HumanoidRootPart.CFrame
+		repeat
+			wait()
+			events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs["Top X Fighter"])
+		until game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value == "Top X Fighter"
 	end
 end
 
--- Transformation
-function transformation()
-    local form = trans()
-    if typeof(form) == "string" then
-        print(form)
-        if player.Character.Status.Transformation.Value ~= "None" then
-            spawn(function()
-                events.ta:InvokeServer()
-            end)
-        end
-        repeat
-            spawn(function()
-                events.equipskill:InvokeServer(form)
-            end)
-            wait(.25)
-        until player.Character.Status.SelectedTransformation.Value == form
-        repeat
-            spawn(function()
-                events.cha:InvokeServer(key)
-            end)
-            wait()
-        until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
-        local max = player.Character.Stats.Ki.MaxValue
-        repeat
-            wait(.25)
-            spawn(function()
-                events.ta:InvokeServer()
-            end)
-        until max < player.Character.Stats.Ki.MaxValue
-        if not energy then
-            recharge()
-        end
-    end
-end
-
--- Ui Lib Section
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/turtle"))()
-
-local w = library:Window("Hashira Hub")
-
-w:Toggle("On/Off Toggle", true, function(Value)
-    Autofarm = Value
+maintab:Toggle('Auto Train E', function(v)
+getgenv().AutoAttack = v
 end)
-
-local dropdown = w:Dropdown("Select Mob", MobTable, function(Option)
-   SelectedMob = Option
+maintab:Toggle('Auto Train Q', function(v)
+getgenv().AutoEnergy = v
 end)
-
-local dropdown = w:Dropdown("Select Quest", Quest, function(Option)
-   SelectedQuest = Option
+AutoFarm:Toggle('Auto X Fighter', function(v)
+getgenv().Autoxfighter = v
 end)
-
-w:Slider("Tp Distance",0,10,5, function(value)
-   TpDistance = value
-end)
-
-w:Toggle("AutoTransform", true, function(Value)
-    Transform = Value
-end)
-
-w:Toggle("No Energy Drain", true, function(Value)
-    energy = Value
-end)
-
 Stepped = game:GetService('RunService').Stepped:Connect(function()
     if player.Character and player.Character:FindFirstChild("Humanoid") then 
         player.Character.Humanoid:ChangeState(11)
     end
-    if Autofarm == false then 
+    if getgenv().Autoxfighter == false then 
         Stepped:Disconnect()
     end
 end)
-
---Function
-local function quest()
-    if game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value ~= SelectedQuest then
-        player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
-		repeat
-			wait()
-			events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[SelectedQuest])
-		until game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value == SelectedQuest
-	end
-end
-
---Loop
-spawn(function()
-    while true do wait()
-        if Autofarm and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-                if v.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().Autoxfighter and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			    for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+                        if v.Name:match("X Fighter") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
                     repeat
                         quest()
-                        player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + v.HumanoidRootPart.CFrame.lookVector * TpDistance
+                        player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + v.HumanoidRootPart.CFrame.lookVector * 7
                         wait()
                         local ohString1 = "Blacknwhite27"
                         local ohNumber2 = 1
                         game:GetService("ReplicatedStorage").Package.Events.p:FireServer(ohString1, ohNumber2)
-                    until Autofarm == false or v == nil or v.Humanoid.Health <= 0
+                    until getgenv().Autoxfighter == false or v == nil or v.Humanoid.Health <= 0
                 end
             end
-        end
-    end
+			end
+		end)
+	end
 end)
 
-spawn(function()
-    while true do wait()
-        if Transform then
-            transformation()
-            wait(1)
-        end
-    end
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoAttack then
+			VirtualInputManager:SendKeyEvent(true,"E",false,game) 
+			end
+		end)
+	end
 end)
 
--- Energy Toggle
-spawn(function()
-    while true do
-        if energy and drain.Name == "drain" then
-            drain.Name = "drain2"
-            drain2.Name = "drain"
-        elseif not energy and drain.Name == "drain2" then
-            drain.Name = "drain"
-            drain2.Name = "drain2"
-        end
-        wait(.7)
+task.spawn(function()
+    local player = game.Players.LocalPlayer
+    local autoC = false
+    
+    while wait() do
+        pcall(function()
+            local energy = workspace[player.Name].State.Energy.Value
+            local maxEnergy = workspace[player.Name].State.MaxEnergy.Value
+            
+            if getgenv().AutoEnergy then
+                if energy <= 50 then
+                    VirtualInputManager:SendKeyEvent(true, "C", false, game)
+                    autoC = true
+                elseif energy >= maxEnergy then
+                    VirtualInputManager:SendKeyEvent(false, "C", false, game)
+                    autoC = false
+                end
+                
+                if not autoC then
+                    VirtualInputManager:SendKeyEvent(true, "Q", false, game)
+                else
+                    VirtualInputManager:SendKeyEvent(false, "Q", false, game)
+                end
+            else
+                VirtualInputManager:SendKeyEvent(false, "C", false, game)
+                VirtualInputManager:SendKeyEvent(false, "Q", false, game)
+            end
+        end)
     end
 end)
