@@ -34,7 +34,7 @@ uitab:Button('Destroy GUI', function()
     win:Exit()
 end)
 
-local Quest = {
+local Quests = {
     "Top X Fighter",
     "SSJB Wukong",
     "Citizen",
