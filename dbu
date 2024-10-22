@@ -25,32 +25,36 @@ local function toggleGUISize(expand)
     end
 end
 
-    local bb = game:GetService('VirtualUser')
+local bb = game:GetService('VirtualUser')
 
-    game:GetService('Players').LocalPlayer.Idled:connect(function()
-        bb:CaptureController()
-        bb:ClickButton2(Vector2.new())
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    
+    -- Verifica si 'ab' está definida antes de cambiar su texto
+    if ab then
         ab.Text = "Roblox intentó expulsarte, pero lo evité"
         wait(2)
         ab.Text = "Estado: Activo"
-    end)
+    end
+end)
 
-    local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
-    local win = HashiraUI:Create({
-        Name = "Hashira Hub",
-        StartupSound = {
-            Toggle = false,
-            SoundID = "rbxassetid://6958727243",
-            TimePosition = 1
-        }
-    })
-    local maintab = win:Tab('Main')
-    local AutoFarm = win:Tab('AutoFarm')
-    local uitab = win:Tab('UI')
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+local maintab = win:Tab('Main')
+local AutoFarm = win:Tab('AutoFarm')
+local uitab = win:Tab('UI')
 
-    uitab:Button('Destroy GUI', function()
-        win:Exit()
-    end)
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
 
 local Quest = {
     "Top X Fighter",
@@ -75,22 +79,26 @@ local Quest = {
 local function quest()
     if game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value ~= "Top X Fighter" then
         player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs["Top X Fighter"].HumanoidRootPart.CFrame
-		repeat
-			wait()
-			events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs["Top X Fighter"])
-		until game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value == "Top X Fighter"
-	end
+        repeat
+            wait()
+            events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs["Top X Fighter"])
+        until game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value == "Top X Fighter"
+    end
 end
 
 maintab:Toggle('Auto Train E', function(v)
-getgenv().AutoAttack = v
+    getgenv().AutoAttack = v
 end)
+
 maintab:Toggle('Auto Train Q', function(v)
-getgenv().AutoEnergy = v
+    getgenv().AutoEnergy = v
 end)
+
 AutoFarm:Toggle('Auto X Fighter', function(v)
-getgenv().Autoxfighter = v
+    getgenv().Autoxfighter = v
 end)
+
+local Stepped
 Stepped = game:GetService('RunService').Stepped:Connect(function()
     if player.Character and player.Character:FindFirstChild("Humanoid") then 
         player.Character.Humanoid:ChangeState(11)
@@ -99,39 +107,39 @@ Stepped = game:GetService('RunService').Stepped:Connect(function()
         Stepped:Disconnect()
     end
 end)
+
 task.spawn(function()
-	while task.wait() do
-		pcall(function()
-			if getgenv().Autoxfighter and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-			    for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-                        if v.Name:match("X Fighter") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-                    repeat
-                        quest()
-                        player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + v.HumanoidRootPart.CFrame.lookVector * 7
-                        wait()
-                        local ohString1 = "Blacknwhite27"
-                        local ohNumber2 = 1
-                        game:GetService("ReplicatedStorage").Package.Events.p:FireServer(ohString1, ohNumber2)
-                    until getgenv().Autoxfighter == false or v == nil or v.Humanoid.Health <= 0
+    while task.wait() do
+        pcall(function()
+            if getgenv().Autoxfighter and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+                    if v.Name:match("X Fighter") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+                        repeat
+                            quest()
+                            player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + v.HumanoidRootPart.CFrame.lookVector * 7
+                            wait()
+                            local ohString1 = "Blacknwhite27"
+                            local ohNumber2 = 1
+                            game:GetService("ReplicatedStorage").Package.Events.p:FireServer(ohString1, ohNumber2)
+                        until getgenv().Autoxfighter == false or v == nil or v.Humanoid.Health <= 0
+                    end
                 end
             end
-			end
-		end)
-	end
+        end)
+    end
 end)
 
 task.spawn(function()
-	while task.wait() do
-		pcall(function()
-			if getgenv().AutoAttack then
-			VirtualInputManager:SendKeyEvent(true,"E",false,game) 
-			end
-		end)
-	end
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoAttack then
+                VirtualInputManager:SendKeyEvent(true,"E",false,game) 
+            end
+        end)
+    end
 end)
 
 task.spawn(function()
-    local player = game.Players.LocalPlayer
     local autoC = false
     
     while wait() do
