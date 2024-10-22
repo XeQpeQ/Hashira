@@ -1,6 +1,4 @@
-
---anti afk
-
+--Anti AFK
 local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
    vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
@@ -8,17 +6,15 @@ game:GetService("Players").LocalPlayer.Idled:connect(function()
    vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 end)
 
-
 --Variable
 transform = false
 local player = game:GetService("Players").LocalPlayer
 local events = game:GetService("ReplicatedStorage").Package.Events
-local player = game.Players.LocalPlayer
 local rs = game:GetService("RunService")
 local data = game.ReplicatedStorage.Datas[player.UserId]
 local skills = game.ReplicatedStorage.Package.Skills
-local events = game.ReplicatedStorage.Package.Events
 local market = game:GetService("MarketplaceService")
+
 local key = (function()
     for i,v in pairs(getgc()) do
         if type(v) == "function" and islclosure(v) and table.find(getconstants(v),"ShakeOnce") and getconstant(v,1) == "_G" then
@@ -28,6 +24,7 @@ local key = (function()
     end
     return nil
 end)()
+
 local Quest = {
     "Top X Fighter",
     "SSJB Wukong",
@@ -47,12 +44,12 @@ local Quest = {
     "Kaio Student",
     "Turtle Student"
 }
+
 -- Shitty Tabels
 local MobTable = {}
 for i,v in pairs(game:GetService("Workspace").Living:GetChildren()) do
     table.insert(MobTable, v.Name)
 end
-
 
 -- Drain
 local drain = events.drain
@@ -67,6 +64,7 @@ function gamepass(gamepassid)
     end
     return res
 end
+
 local gamepasses = {}
 for i,v in pairs(skills:GetChildren()) do
     if v:FindFirstChild("Gamepass") then
@@ -84,8 +82,7 @@ function recharge()
     until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
 end
 
-
--- Check Tranformations
+-- Check Transformations
 function trans()
 	local unlocked = {}
     if pcall(function() return player.Character.Status.Transformation,player.Character.Status.SelectedTransformation,player.Character.Stats.Ki end) then
@@ -157,6 +154,7 @@ function transformation()
         end
     end
 end
+
 -- Ui Lib Section
 local library = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
@@ -188,8 +186,8 @@ local w = library:CreateWindow({
 
 local tab = w:CreateTab("AutoFarm", 4483362458)
 local tab2 = w:CreateTab("Transform", 4483362458)
-local farm = tab:CreateSection("AutoFarm")
-local trans = tab2:CreateSection("Transform")
+local farm = tab:CreateSection("AutoFarm")  -- Corregido
+local trans = tab2:CreateSection("Transform")  -- Corregido
 
 local Toggle = farm:CreateToggle({
    Name = "On/Off Toggle",
@@ -273,26 +271,24 @@ local function quest()
 	end
 end
 
-
 --Loop
 spawn(function()
     while true do wait()
         if Autofarm and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-    for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-        if v.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-            repeat
-                quest()
-                player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + v.HumanoidRootPart.CFrame.lookVector * TpDistance
-                wait()
-                local ohString1 = "Blacknwhite27"
-                local ohNumber2 = 1
-                game:GetService("ReplicatedStorage").Package.Events.p:FireServer(ohString1, ohNumber2)
-            until Autofarm == false or v == nil or v.Humanoid.Health <= 0
-			
+            for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+                if v.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+                    repeat
+                        quest()
+                        player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + v.HumanoidRootPart.CFrame.lookVector * TpDistance
+                        wait()
+                        local ohString1 = "Blacknwhite27"
+                        local ohNumber2 = 1
+                        game:GetService("ReplicatedStorage").Package.Events.p:FireServer(ohString1, ohNumber2)
+                    until Autofarm == false or v == nil or v.Humanoid.Health <= 0
+                end
+            end
         end
     end
-        end
-end
 end)
 
 spawn(function()
@@ -303,7 +299,6 @@ spawn(function()
         end
     end
 end)
-
 
 -- Energy Toggle
 spawn(function()
