@@ -158,37 +158,98 @@ function transformation()
     end
 end
 -- Ui Lib Section
-local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wally2')))()
+local library = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-local w = library:CreateWindow("DBU") -- Creates the window
+local w = library:CreateWindow({
+   Name = "Hashira Hub",
+   LoadingTitle = "",
+   LoadingSubtitle = "",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
 
-local farm = w:CreateFolder("Autofarm") -- Creates the folder(U will put here your buttons,etc)
-local trans = w:CreateFolder("Transform")
-local info = w:CreateFolder("Information")
+local farm = w:CreateTab("AutoFarm", 4483362458)
+local trans = w:CreateTab("Transform", 4483362458)
 
-farm:Toggle("On/Off Toggle", function(Val)
-    Autofarm = Val
-end)
+local Toggle = Tab:CreateToggle({
+   Name = "On/Off Toggle",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+       Autofarm = Value
+   end,
+})
 
-farm:Dropdown("Select Mob", MobTable ,true, function(Value)
-    SelectedMob = Value
-end)
-farm:Dropdown("Select Quest",Quest, true, function(Value)
-    SelectedQuest = Value
-end)
-farm:Slider("Tp Distance",{
-    min = 0; -- min value of the slider
-    max = 10; -- max value of the slider
-    precise = true; -- max 2 decimals
-},function(value)
-    TpDistance = value
-end)
-trans:Toggle("Auto Transform", function(Val)
-    Transform = Val
-end)
-trans:Toggle("No Energy Drain", function(Val)
-    energy = Val
-end)
+local Dropdown = farm:CreateDropdown({
+   Name = "Select Mob",
+   Options = MobTable,
+   CurrentOption = {"None"},
+   MultipleOptions = false,
+   Flag = "Dropdown1", 
+   Callback = function(Option)
+       SelectedMob = Option
+   end,
+})
+
+local Dropdown = farm:CreateDropdown({
+   Name = "Select Quest",
+   Options = Quest,
+   CurrentOption = {"None"},
+   MultipleOptions = false,
+   Flag = "Dropdown2", 
+   Callback = function(Option)
+       SelectedQuest = Option
+   end,
+})
+
+local Slider = farm:CreateSlider({
+   Name = "Tp Distance",
+   Range = {0, 10},
+   Increment = 10,
+   Suffix = "Distance",
+   CurrentValue = 10,
+   Flag = "Slider1",
+   Callback = function(Value)
+       TpDistance = Value
+   end,
+})
+
+local Toggle = trans:CreateToggle({
+   Name = "Auto Transform",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+       Transform = Value
+   end,
+})
+
+local Toggle = trans:CreateToggle({
+   Name = "No Energy Drain",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+       energy = Value
+   end,
+})
+
 --NoClip
 Stepped = game:GetService('RunService').Stepped:Connect(function()
     if player.Character and player.Character:FindFirstChild("Humanoid") then 
