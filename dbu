@@ -189,7 +189,7 @@ local w = library:CreateWindow({
 local farm = w:CreateTab("AutoFarm", 4483362458)
 local trans = w:CreateTab("Transform", 4483362458)
 
-local Toggle = Tab:CreateToggle({
+local Toggle = farm:CreateToggle({
    Name = "On/Off Toggle",
    CurrentValue = false,
    Flag = "Toggle1",
