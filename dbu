@@ -1,257 +1,153 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local plr = game.Players.LocalPlayer
+local Settings = { Variables = { Farm = false } }
 
 local Window = Rayfield:CreateWindow({
-   Name = "Dragon Blox Ultimate",
-   LoadingTitle = "Dragon Blox Ultimate",
-   LoadingSubtitle = "by yeetman56y",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil, 
-      FileName = "dragon blox ultimate"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink", 
-      RememberJoins = true 
-   },
-   KeySystem = true, 
-   KeySettings = {
-      Title = "Dragon Blox Ultimate | Key",
-      Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided",
-      FileName = "dragon blox ultimate key",
-      Key = {"https://pastebin.com/raw/V8M7A2ig"} 
-   }
+    Name = "Dragon Blox Ultimate",
+    LoadingTitle = "Dragon Blox Ultimate",
+    LoadingSubtitle = "by yeetman56y",
+    ConfigurationSaving = {
+        Enabled = false,
+        FolderName = nil,
+        FileName = "dragon blox ultimate"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "noinvitelink",
+        RememberJoins = true
+    },
+    KeySystem = true,
+    KeySettings = {
+        Title = "Dragon Blox Ultimate | Key",
+        Subtitle = "Key System",
+        Note = "No method of obtaining the key is provided",
+        FileName = "dragon blox ultimate key",
+        Key = {"https://pastebin.com/raw/V8M7A2ig"}
+    }
 })
 
 local MainTab = Window:CreateTab("Home", nil) -- Title, Image
 local MainSection = MainTab:CreateSection("Main")
 
 Rayfield:Notify({
-   Title = "You Executed The Script",
-   Content = "Test Tbh",
-   Duration = 5,
-   Image = nil,
-   Actions = { -- Notification Buttons
-      Ignore = {
-         Name = "Okay!",
-         Callback = function()
-         print("The user tapped Okay!")
-      end
-   },
-},
+    Title = "You Executed The Script",
+    Content = "Test Tbh",
+    Duration = 5,
+    Image = nil,
+    Actions = {
+        Ignore = {
+            Name = "Okay!",
+            Callback = function()
+                print("The user tapped Okay!")
+            end
+        },
+    },
 })
 
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Farm",
-   CurrentValue = false,
-   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-        Settings.Variables.Farm = bool 
-        while bool and wait() do 
-            if (not plr.PlayerGui.Main.MainFrame.Frames.Quest.Nop.Visible and bool) then
-                for i,v in next, workspace.Living:GetChildren() do 
-                    if (v.Name == returnQuest(true) or v.Name == game:GetService("ReplicatedStorage").Package.Quests[returnQuest(true)].Objective.Value) and not plr.PlayerGui.Main.MainFrame.Frames.Quest.Nop.Visible and v:FindFirstChild('Humanoid') and v:FindFirstChild('HumanoidRootPart') and v.Humanoid.Health > 0 then 
-                        repeat wait()
-                            pcall(function() plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,0,2) end)
-                            punchRemote:FireServer('Blacknwhite27',1)
-                        until not v or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or v.Humanoid.Health <= 0 or not Settings.Variables.Farm or plr.PlayerGui:WaitForChild('Main').MainFrame.Frames.Quest.Nop.Visible
-                    end 
-                end 
-            else 
-                pcall(function() questRemote:InvokeServer(workspace.Others.NPCs[returnQuest(true)]) end)
-            end 
-        end 
-    end
-})
-
-local Slider = MainTab:CreateSlider({
-   Name = "Fly Speed",
-   Range = {0, 100000},
-   Increment = 10,
-   Suffix = "Speed",
-   CurrentValue = 16,
-   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-        local flyspeed = 200
-local flying = false
-local maxdistance = 100000000000000 --using math.huge makes this script wonky
-local uiservice = game.UserInputService
-local lplr = game.Players.LocalPlayer
-local mouse = lplr:GetMouse()
-local function GetVelocity(pos1,pos2,StudsPerSecond)
-local distance = (pos2 - pos1)
-local mag = distance.Magnitude
-return (distance/mag)*StudsPerSecond
-end
-local function getkey(keycode)
-local key = tostring(keycode):lower()
-local findcode, a = key:find("keycode.")
-return key:sub(a+1)
-end
-local keys = {}
-game.RunService.Heartbeat:connect(function()
-pcall(function()
-local hrp = lplr.Character.Humanoid.RootPart
-local frontoffset = CFrame.new() + Vector3.new(0,0,-maxdistance)
-local backoffset = CFrame.new() + Vector3.new(0,0,maxdistance)
-local leftoffset = CFrame.new() + Vector3.new(-maxdistance,0,0)
-local rightoffset = CFrame.new() + Vector3.new(maxdistance,0,0)
-local upoffset = CFrame.new() + Vector3.new(0,maxdistance,0)
-local downoffset = CFrame.new() + Vector3.new(0,-maxdistance,0)
-local velocity = Vector3.new()
-    if flying then
-    if keys.w_active then
-        velocity = velocity + GetVelocity(hrp.Position,(hrp.CFrame*frontoffset).Position,flyspeed)
-    end
-    if keys.s_active then
-        velocity = velocity + GetVelocity(hrp.Position,(hrp.CFrame*backoffset).Position,flyspeed)
-    end
-    if keys.a_active then
-        velocity = velocity + GetVelocity(hrp.Position,(hrp.CFrame*leftoffset).Position,flyspeed)
-    end
-    if keys.d_active then
-        velocity = velocity + GetVelocity(hrp.Position,(hrp.CFrame*rightoffset).Position,flyspeed)
-    end
-    if keys.e_active then
-        velocity = velocity + GetVelocity(hrp.Position,(CFrame.new(hrp.Position)*upoffset).Position,flyspeed)
-    end
-    if keys.q_active then
-        velocity = velocity + GetVelocity(hrp.Position,(CFrame.new(hrp.Position)*downoffset).Position,flyspeed)
-    end
-    hrp.Velocity = velocity
-     hrp.CFrame = CFrame.new(hrp.Position, (workspace.Camera.CFrame*(CFrame.new()+Vector3.new(0,0,-maxdistance))).Position)
-    end
-    if flying and not keys.w_active and not keys.a_active and not keys.s_active and not keys.d_active and not keys.q_active and not keys.e_active then
-        hrp.Anchored = true
-    else
-        hrp.Anchored = false
-    end
-end)
-end)
-uiservice.InputBegan:connect(function(key,processed)
-if processed then return end
-    if key.KeyCode == Enum.KeyCode.F and game.UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
-        flying = not flying
-        if flying then
-            uiservice.MouseBehavior = Enum.MouseBehavior.LockCenter
-            lplr.Character.Humanoid.CameraOffset = Vector3.new(2,0,0)
-        else
-            uiservice.MouseBehavior = Enum.MouseBehavior.Default
-            lplr.Character.Humanoid.CameraOffset = Vector3.new(0,0,0)
-        end
-    end
-    keys[getkey(key.KeyCode).."_active"] = true
-end)
-uiservice.InputEnded:connect(function(key)
-    keys[getkey(key.KeyCode).."_active"] = false
-end)
-
-   end,
-})
-
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Rebirth",
-   CurrentValue = false,
-   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(bool)
-       while bool and wait() do 
-            rebirthRemote:InvokeServer()
-        end 
-    end 
-})
-   -- The variable (Value) is a boolean on whether the toggle is true or false
-   end,
-})
-
-local Toggle = MainTab:CreateToggle({
-   Name = "God Mode",
-   CurrentValue = false,
-   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-        local LocalPlayer = game:GetService("Players").LocalPlayer
- 
-local function Invincibility()
-    if LocalPlayer.Character then
-        for i, v in pairs(LocalPlayer.Character:GetChildren()) do
-            if v.Name == "hitbox" then
-                v:Destroy()
+local ToggleAutoFarm = MainTab:CreateToggle({
+    Name = "Auto Farm",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        Settings.Variables.Farm = Value
+        while Settings.Variables.Farm and wait() do
+            if not plr.PlayerGui.Main.MainFrame.Frames.Quest.Nop.Visible then
+                for _, v in ipairs(workspace.Living:GetChildren()) do
+                    local questName = returnQuest(true) -- Asegúrate de definir returnQuest()
+                    if v.Name == questName and v:FindFirstChild('Humanoid') and v:FindFirstChild('HumanoidRootPart') and v.Humanoid.Health > 0 then
+                        repeat
+                            wait()
+                            pcall(function()
+                                plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                            end)
+                            punchRemote:FireServer('Blacknwhite27', 1)
+                        until v.Humanoid.Health <= 0 or plr.PlayerGui.Main.MainFrame.Frames.Quest.Nop.Visible or not Settings.Variables.Farm
+                    end
+                end
+            else
+                pcall(function()
+                    questRemote:InvokeServer(workspace.Others.NPCs[returnQuest(true)])
+                end)
             end
         end
     end
-end
- 
-while wait(0.5) do
-    Invincibility(LocalPlayer)
-end    
-   -- The variable (Value) is a boolean on whether the toggle is true or false
-   end,
 })
 
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Charge ",
-   CurrentValue = false,
-   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(bool)
-        while bool and wait() do 
+local SliderFlySpeed = MainTab:CreateSlider({
+    Name = "Fly Speed",
+    Range = {0, 100000},
+    Increment = 10,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "Slider1",
+    Callback = function(Value)
+        flyspeed = Value
+    end
+})
+
+local ToggleAutoRebirth = MainTab:CreateToggle({
+    Name = "Auto Rebirth",
+    CurrentValue = false,
+    Flag = "Toggle2",
+    Callback = function(bool)
+        while bool and wait() do
+            rebirthRemote:InvokeServer()
+        end
+    end
+})
+
+local ToggleGodMode = MainTab:CreateToggle({
+    Name = "God Mode",
+    CurrentValue = false,
+    Flag = "Toggle3",
+    Callback = function(Value)
+        local function Invincibility()
+            if plr.Character then
+                for _, v in ipairs(plr.Character:GetChildren()) do
+                    if v.Name == "hitbox" then
+                        v:Destroy()
+                    end
+                end
+            end
+        end
+        
+        while Value and wait(0.5) do
+            Invincibility()
+        end
+    end
+})
+
+local ToggleAutoCharge = MainTab:CreateToggle({
+    Name = "Auto Charge",
+    CurrentValue = false,
+    Flag = "Toggle4",
+    Callback = function(bool)
+        while bool and wait() do
             game:GetService("ReplicatedStorage").Package.Events.cha:InvokeServer('Blacknwhite27')
         end
-    end 
-}) 
-  
-local Dropdown = Tab:CreateDropdown({
-   Name = "Teleport",
-   Options = {"Earth","Bills Planet"},
-   CurrentOption = {"Earth"},
-   MultipleOptions = false,
-   Flag = "Teleport", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Option)
-        -- TeleportScript.lua
-
-
-local TeleportService = game:GetService("TeleportService")
-
-
-local function teleportPlayer(player, destinationPlaceId, destinationSpawnName)
-    -- Get the destination's place ID and spawn name
-    local success, errorMessage = pcall(function()
-        local teleportData = TeleportService:GetPlayerPlaceInstanceAsync(destinationPlaceId)
-        local spawnInfo = teleportData:GetSpawnInfo(destinationSpawnName)
-        return spawnInfo
-    end)
-
-    if success then
-        -- Teleport the player to the destination
-        TeleportService:TeleportToPlaceInstance(destinationPlaceId, success.id, player)
-    else
-        -- Failed to teleport, display error message
-        warn("Teleport failed: " .. errorMessage)
     end
-end
-
--- Connect the teleportation function to a trigger event
--- Replace "Teleport trigger" with the actual trigger object in your game
-script.Parent.Touched:Connect(function(triggerPart)
-   
-    local character = triggerPart.Parent"Kito", "Wukong"
-    local humanoid = character:FindFirstChild("Humanoid")
-    if humanoid then
-        
-        teleportPlayer(character.Parent,3311165597,5151400895 "Earth", "Bills Planet")
-    end
-end)
-       
-   end,
 })
 
-local Tab = Window:CreateTab("Misc") -- Title, Image
+local DropdownTeleport = MainTab:CreateDropdown({
+    Name = "Teleport",
+    Options = {"Earth", "Bills Planet"},
+    CurrentOption = "Earth",
+    MultipleOptions = false,
+    Flag = "Teleport",
+    Callback = function(Option)
+        -- Define your teleport logic here
+        print("Selected location: " .. Option)
+    end
+})
 
-local Toggle = MiscTab:CreateToggle({
-   Name = "Auto Transform",
-   CurrentValue = false,
-   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-        loadstring(game:HttpGet("https://pastebin.com/raw/zt5pVPJ5"))()   
-   -- The variable (Value) is a boolean on whether the toggle is true or false
-   end,
+local ToggleAutoTransform = MainTab:CreateToggle({
+    Name = "Auto Transform",
+    CurrentValue = false,
+    Flag = "Toggle5",
+    Callback = function(Value)
+        if Value then
+            loadstring(game:HttpGet("https://pastebin.com/raw/zt5pVPJ5"))()
+        end
+    end
 })
