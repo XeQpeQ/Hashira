@@ -15,16 +15,6 @@ local data = game.ReplicatedStorage.Datas[player.UserId]
 local skills = game.ReplicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
 
-local key = (function()
-    for i,v in pairs(getgc()) do
-        if type(v) == "function" and islclosure(v) and table.find(getconstants(v),"ShakeOnce") and getconstant(v,1) == "_G" then
-            local c = getconstants(v)
-            return c[table.find(c,"InvokeServer")-1]
-        end
-    end
-    return nil
-end)()
-
 local Quest = {
     "Top X Fighter",
     "SSJB Wukong",
@@ -76,7 +66,7 @@ end
 function recharge()
     repeat
         spawn(function()
-            events.cha:InvokeServer(key)
+            events.cha:InvokeServer()
         end)
         wait()
     until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
@@ -138,7 +128,7 @@ function transformation()
         until player.Character.Status.SelectedTransformation.Value == form
         repeat
             spawn(function()
-                events.cha:InvokeServer(key)
+                events.cha:InvokeServer()
             end)
             wait()
         until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
