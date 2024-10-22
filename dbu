@@ -1,12 +1,3 @@
---Anti AFK
-local vu = game:GetService("VirtualUser")
-game:GetService("Players").LocalPlayer.Idled:connect(function()
-   vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-   wait(1)
-   vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-end)
-
---Variable
 transform = false
 local player = game:GetService("Players").LocalPlayer
 local events = game:GetService("ReplicatedStorage").Package.Events
@@ -14,6 +5,16 @@ local rs = game:GetService("RunService")
 local data = game.ReplicatedStorage.Datas[player.UserId]
 local skills = game.ReplicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
+
+local key = (function()
+    for i,v in pairs(getgc()) do
+        if type(v) == "function" and islclosure(v) and table.find(getconstants(v),"ShakeOnce") and getconstant(v,1) == "_G" then
+            local c = getconstants(v)
+            return c[table.find(c,"InvokeServer")-1]
+        end
+    end
+    return nil
+end)()
 
 local Quest = {
     "Top X Fighter",
@@ -66,7 +67,7 @@ end
 function recharge()
     repeat
         spawn(function()
-            events.cha:InvokeServer()
+            events.cha:InvokeServer(key)
         end)
         wait()
     until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
@@ -128,7 +129,7 @@ function transformation()
         until player.Character.Status.SelectedTransformation.Value == form
         repeat
             spawn(function()
-                events.cha:InvokeServer()
+                events.cha:InvokeServer(key)
             end)
             wait()
         until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
