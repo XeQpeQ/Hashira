@@ -1,3 +1,12 @@
+--Anti AFK
+local vu = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:connect(function()
+   vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+   wait(1)
+   vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end)
+--Variable
+
 transform = false
 local player = game:GetService("Players").LocalPlayer
 local events = game:GetService("ReplicatedStorage").Package.Events
@@ -147,75 +156,33 @@ function transformation()
 end
 
 -- Ui Lib Section
-local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/turtle"))()
 
-local w = library:MakeWindow({Name = "Hashira Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "HashiraTest"})
+local w = library:Window("Hashira Hub")
 
-local farm = w:MakeTab({
-	Name = "AutoFarm",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-local trans = w:MakeTab({
-	Name = "Transformation",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
+w:Toggle("On/Off Toggle", true, function(Value)
+    Autofarm = Value
+end)
 
-farm:AddToggle({
-	Name = "On/Off Toggle",
-	Default = false,
-	Callback = function(Value)
-		Autofarm = Value
-	end    
-})
+local dropdown = w:Dropdown("Select Mob", MobTable, function(Option)
+   SelectedMob = Option
+end)
 
-farm:AddDropdown({
-	Name = "Select Mob",
-	Default = "None",
-	Options = MobTable,
-	Callback = function(Option)
-		SelectedMob = Option
-	end    
-})
+local dropdown = w:Dropdown("Select Quest", Quest, function(Option)
+   SelectedQuest = Option
+end)
 
-farm:AddDropdown({
-	Name = "Select Quest",
-	Default = "None",
-	Options = Quest,
-	Callback = function(Option)
-		SelectedQuest = Option
-	end    
-})
+w:Slider("Tp Distance",0,10,5, function(value)
+   TpDistance = value
+end)
 
-farm:AddSlider({
-	Name = "Tp Distancce",
-	Min = 0,
-	Max = 10,
-	Default = 5,
-	Color = Color3.fromRGB(255,255,255),
-	Increment = 1,
-	ValueName = "Distance",
-	Callback = function(Value)
-	     TpDistance = Value
-	end    
-})
+w:Toggle("AutoTransform", true, function(Value)
+    Transform = Value
+end)
 
-trans:AddToggle({
-	Name = "Auto Transform",
-	Default = false,
-	Callback = function(Value)
-	Transform = Value
-   end    
-})
-
-trans:AddToggle({
-	Name = "No Energy Drain",
-	Default = false,
-	Callback = function(Value)
-	energy = Value
-   end    
-})
+w:Toggle("No Energy Drain", true, function(Value)
+    energy = Value
+end)
 
 Stepped = game:GetService('RunService').Stepped:Connect(function()
     if player.Character and player.Character:FindFirstChild("Humanoid") then 
