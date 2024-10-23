@@ -197,7 +197,7 @@ end)
 
 -- Auto Transformation Loop
 spawn(function()
-    while true do
+    while wait() do
         if transform then
             transformation()
             wait(1)
