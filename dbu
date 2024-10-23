@@ -1,98 +1,58 @@
-local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local VirtualInputManager = game:GetService("VirtualInputManager")
-local gui, mainFrame, originalSize, isExpanded
-local energy = workspace[player.Name].State.Energy.Value
-local maxEnergy = workspace[player.Name].State.MaxEnergy.Value
 
--- Function to toggle GUI visibility
-local function toggleGUIVisibility(visible)
-    if gui then
-        gui.Enabled = visible
+-- Argumentos para el coche que se va a spawnear
+local args = {
+    [1] = "Ferarri_4",       -- Nombre del coche
+    [2] = "Dealership"  -- Ubicación donde se va a spawnear
+}
+
+-- Función para spawnear el coche
+local function spawnCar()
+    game:GetService("ReplicatedStorage"):WaitForChild("rF"):WaitForChild("SpawnVehicle"):InvokeServer(unpack(args))
+    local car = workspace:WaitForChild("CarCollection"):WaitForChild(player.Name):WaitForChild("Car")
+    
+    -- Verificar si el coche ha sido spawneado correctamente
+    if not car then
+        warn("Coche no encontrado después del spawn")
+        return nil
     end
+
+    return car
 end
 
--- Function to toggle GUI size
-local function toggleGUISize(expand)
-    if mainFrame and originalSize then
-        if expand then
-            mainFrame.Size = originalSize
-        else
-            mainFrame.Size = UDim2.new(0, 150, 0, 100) -- Modify the size as needed
-        end
-        isExpanded = expand
-    end
-end
-
-    local bb = game:GetService('VirtualUser')
-
-    game:GetService('Players').LocalPlayer.Idled:connect(function()
-        bb:CaptureController()
-        bb:ClickButton2(Vector2.new())
-        ab.Text = "Roblox intentó expulsarte, pero lo evité"
-        wait(2)
-        ab.Text = "Estado: Activo"
-    end)
-
-    local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
-    local win = HashiraUI:Create({
-        Name = "Hashira Hub",
-        StartupSound = {
-            Toggle = false,
-            SoundID = "rbxassetid://6958727243",
-            TimePosition = 1
-        }
-    })
-    local maintab = win:Tab('Main')
-    local AutoFarm = win:Tab('AutoFarm')
-    local uitab = win:Tab('UI')
-
-    uitab:Button('Destroy GUI', function()
-        win:Exit()
-    end)
-
-maintab:Toggle('Auto Farm Up', function(v)
-getgenv().AutoFarm = v
-end)
-
-task.spawn(function()
-	while task.wait() do
-		pcall(function()
-			if getgenv().AutoFarm then
-local car = workspace:WaitForChild("CarCollection"):WaitForChild(player.Name):WaitForChild("Car")
-
-repeat wait() until player and player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-
-if not car then
-    warn("Coche no encontrado")
-    return
-end
-
-local SPEED_UP = 150 
-local SPEED_DOWN = 50 
+-- Variables de control del vuelo
+local SPEED_UP = 150 -- Velocidad de elevación
+local SPEED_DOWN = 50 -- Velocidad de descenso
 local FLYING = false
 
-local function FLY()
+-- Función para hacer volar el coche
+local function FLY(car)
+    -- Verificar si ya está volando
+    if FLYING then
+        return -- Si ya está volando, salir de la función para evitar volver a volar
+    end
+
     FLYING = true
     local BG = Instance.new('BodyGyro')
     local BV = Instance.new('BodyVelocity')
     BG.P = 9e4
-    BG.Parent = car.PrimaryPart 
+    BG.Parent = car.PrimaryPart -- Asegúrate de que el coche tenga una parte primaria
     BV.Parent = car.PrimaryPart
     BG.maxTorque = Vector3.new(9e9, 9e9, 9e9)
     BV.maxForce = Vector3.new(9e9, 9e9, 9e9)
 
-    BV.velocity = Vector3.new(0, SPEED_UP, 0) 
-    task.wait(4) 
+    -- Elevar el coche rápidamente
+    BV.velocity = Vector3.new(0, SPEED_UP, 0) -- Velocidad hacia arriba
+    task.wait(4) -- Mantener elevado durante 2 segundos
 
     -- Bajar un poco
-    BV.velocity = Vector3.new(0, -SPEED_DOWN, 0)
-    task.wait(1) 
+    BV.velocity = Vector3.new(0, -SPEED_DOWN, 0) -- Velocidad hacia abajo
+    task.wait(1) -- Mantener hacia abajo durante 1 segundo
 
     -- Elevar el coche nuevamente rápidamente
-    BV.velocity = Vector3.new(0, SPEED_UP, 0) 
-    task.wait(2) 
+    BV.velocity = Vector3.new(0, SPEED_UP, 0) -- Velocidad hacia arriba
+    task.wait(2) -- Mantener elevado durante 2 segundos
 
     -- Detener el vuelo
     FLYING = false
@@ -101,15 +61,22 @@ local function FLY()
     BV:Destroy()
 end
 
-local function startFlying()
-    while true do
-        FLY() 
-        task.wait(20) 
+-- Ciclo principal
+while true do
+    -- 1. Spawnear el coche
+    local car = spawnCar()
+    
+    -- Verificar si el coche fue spawneado correctamente
+    if car then
+        -- 2. Esperar unos segundos antes de iniciar el vuelo (por ejemplo, 5 segundos)
+        task.wait(5)
+        
+        -- 3. Ejecutar el vuelo mientras el coche está spawneado
+        if not FLYING then
+            FLY(car)
+        end
     end
+
+    -- 4. Esperar 20 segundos antes de repetir el ciclo (esto incluye el tiempo de vuelo)
+    task.wait(9)
 end
-
-startFlying()
-
-		end)
-	end
-end)
