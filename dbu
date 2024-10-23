@@ -310,3 +310,4 @@ spawn(function()
         wait(.7)
     end
 end)
+print("Work")
