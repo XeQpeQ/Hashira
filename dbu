@@ -124,50 +124,36 @@ TpSlider.MouseButton1Click:Connect(function()
     SliderLabel.Text = "Teleport Distance: " .. TpDistance
 end)
 
--- Functions (recharge, transformation, quest, etc.)
+-- Recharge function
 function recharge()
     repeat
         spawn(function()
-            events.cha:InvokeServer(key)
+            events.cha:InvokeServer()
         end)
         wait()
     until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
 end
 
+-- Transformation logic
 function transformation()
-    local form = trans()
-    if typeof(form) == "string" then
-        print(form)
+    local form = trans() -- Assuming trans() checks and returns the form
+    if form then
         if player.Character.Status.Transformation.Value ~= "None" then
             spawn(function()
-                events.ta:InvokeServer()
+                events.ta:InvokeServer() -- Assuming this reverts transformation
             end)
         end
         repeat
             spawn(function()
-                events.equipskill:InvokeServer(form)
+                events.equipskill:InvokeServer(form) -- Equipping the transformation
             end)
-            wait(.25)
+            wait(0.25)
         until player.Character.Status.SelectedTransformation.Value == form
-        repeat
-            spawn(function()
-                events.cha:InvokeServer(key)
-            end)
-            wait()
-        until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
-        local max = player.Character.Stats.Ki.MaxValue
-        repeat
-            wait(.25)
-            spawn(function()
-                events.ta:InvokeServer()
-            end)
-        until max < player.Character.Stats.Ki.MaxValue
-        if not energy then
-            recharge()
-        end
+        recharge() -- Refill energy after transformation
     end
 end
 
+-- Quest function
 function quest()
     if game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value ~= SelectedQuest then
         player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
@@ -181,26 +167,28 @@ end
 -- Autofarm Loop
 spawn(function()
     while true do
-        if Autofarm and player.Character:FindFirstChild("HumanoidRootPart") then
-            for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+        wait(0.1)
+        if Autofarm and SelectedMob and player.Character:FindFirstChild("HumanoidRootPart") then
+            for _, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
                 if v.Name:lower() == SelectedMob:lower() and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                    -- Move to quest NPC first
                     quest()
-                    player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + v.HumanoidRootPart.CFrame.lookVector * TpDistance
-                    wait()
-                    events.p:FireServer("Blacknwhite27", 1)
+                    -- Move to Mob
+                    player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + (v.HumanoidRootPart.CFrame.lookVector * TpDistance)
+                    wait(0.5)
+                    events.p:FireServer("Blacknwhite27", 1) -- Attack or skill firing
                 end
             end
         end
-        wait()
     end
 end)
 
 -- Auto Transformation Loop
 spawn(function()
-    while wait() do
+    while true do
+        wait(1)
         if transform then
             transformation()
-            wait(1)
         end
     end
 end)
@@ -208,13 +196,12 @@ end)
 -- Energy Toggle Logic
 spawn(function()
     while true do
-        if energy and drain.Name == "drain" then
-            drain.Name = "drain2"
-            drain2.Name = "drain"
-        elseif not energy and drain.Name == "drain2" then
-            drain.Name = "drain"
-            drain2.Name = "drain2"
+        wait(0.7)
+        local drain = player.Character.Status:FindFirstChild("drain")
+        if drain and energy then
+            drain.Name = "drain2" -- Rename to prevent drain
+        elseif not energy and player.Character.Status:FindFirstChild("drain2") then
+            player.Character.Status.drain2.Name = "drain" -- Restore drain if energy toggle is off
         end
-        wait(.7)
     end
 end)
