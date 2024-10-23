@@ -26,7 +26,7 @@ local key = (function()
             return c[table.find(c,"InvokeServer")-1]
         end
     end
-    return game.Players.LocalPlayer:Kick("Patched!")
+    return nil
 end)()
 local Quest = {
     "Top X Fighter",
