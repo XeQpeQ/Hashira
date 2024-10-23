@@ -1,159 +1,232 @@
+--Anti AFK
+local vu = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:connect(function()
+   vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+   wait(1)
+   vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end)
+
 -- Variables
-local transform = false
-local energy = false
-local Autofarm = false
-local TpDistance = 5
-local SelectedMob = nil
-local SelectedQuest = nil
+transform = false
 local player = game:GetService("Players").LocalPlayer
 local events = game:GetService("ReplicatedStorage").Package.Events
 local rs = game:GetService("RunService")
 local data = game.ReplicatedStorage.Datas[player.UserId]
 local skills = game.ReplicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
-local MobTable = {}
+local Autofarm = false
+local energy = false
+local Transform = false
+local SelectedMob = nil
+local SelectedQuest = nil
+local TpDistance = 5 -- valor inicial
+local key = (function()
+    for i,v in pairs(getgc()) do
+        if type(v) == "function" and islclosure(v) and table.find(getconstants(v),"ShakeOnce") and getconstant(v,1) == "_G" then
+            local c = getconstants(v)
+            return c[table.find(c,"InvokeServer")-1]
+        end
+    end
+    return nil
+end)()
+-- Shitty Tables
 local Quest = {
-    "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly",
-    "X Fighter Trainer", "Super Vegetable", "Klirin", "SSJ2 Wukong",
-    "Perfect Atom", "Radish", "Mapa", "Broccoli", "SSJG Kakata",
-    "Kai-fist Master", "Kaio Student", "Turtle Student"
+    "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly", "X Fighter Trainer", 
+    "Super Vegetable", "Klirin", "SSJ2 Wukong", "Perfect Atom", "Radish", "Mapa", "Broccoli", 
+    "SSJG Kakata", "Kai-fist Master", "Kaio Student", "Turtle Student"
 }
 
--- Anti-AFK
-local vu = game:GetService("VirtualUser")
-game:GetService("Players").LocalPlayer.Idled:connect(function()
-    vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-    wait(1)
-    vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-end)
-
--- Fill MobTable
-for i, v in pairs(game:GetService("Workspace").Living:GetChildren()) do
+local MobTable = {}
+for i,v in pairs(game:GetService("Workspace").Living:GetChildren()) do
     table.insert(MobTable, v.Name)
 end
 
--- Create UI
-local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local ToggleAutofarm = Instance.new("TextButton")
-local TransformToggle = Instance.new("TextButton")
-local NoEnergyDrainToggle = Instance.new("TextButton")
-local MobDropdown = Instance.new("TextButton")
-local QuestDropdown = Instance.new("TextButton")
-local SliderLabel = Instance.new("TextLabel")
-local TpSlider = Instance.new("TextButton")
+local drain = events.drain
+local drain2 = drain:Clone()
+drain2.Parent = events
 
-ScreenGui.Parent = game.CoreGui
-Frame.Parent = ScreenGui
-Frame.Size = UDim2.new(0, 300, 0, 400)
-Frame.Position = UDim2.new(0.5, -150, 0.5, -200)
-Frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+-- Grab Gamepasses
+function gamepass(gamepassid)
+    local s,res = pcall(market.UserOwnsGamePassAsync,market,player.UserId,gamepassid)
+    if not s then
+        res = false
+    end
+    return res
+end
+local gamepasses = {}
+for i,v in pairs(skills:GetChildren()) do
+    if v:FindFirstChild("Gamepass") then
+        gamepasses[v.Gamepass.Value] = gamepass(v.Gamepass.Value)
+    end
+end
 
--- Autofarm Toggle Button
-ToggleAutofarm.Parent = Frame
-ToggleAutofarm.Size = UDim2.new(0, 280, 0, 40)
-ToggleAutofarm.Position = UDim2.new(0, 10, 0, 10)
-ToggleAutofarm.BackgroundColor3 = Color3.new(1, 0, 0)
-ToggleAutofarm.Text = "Autofarm: Off"
-ToggleAutofarm.MouseButton1Click:Connect(function()
-    Autofarm = not Autofarm
-    ToggleAutofarm.Text = "Autofarm: " .. (Autofarm and "On" or "Off")
-    ToggleAutofarm.BackgroundColor3 = Autofarm and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
-end)
-
--- Transform Toggle Button
-TransformToggle.Parent = Frame
-TransformToggle.Size = UDim2.new(0, 280, 0, 40)
-TransformToggle.Position = UDim2.new(0, 10, 0, 60)
-TransformToggle.BackgroundColor3 = Color3.new(1, 0, 0)
-TransformToggle.Text = "Auto Transform: Off"
-TransformToggle.MouseButton1Click:Connect(function()
-    transform = not transform
-    TransformToggle.Text = "Auto Transform: " .. (transform and "On" or "Off")
-    TransformToggle.BackgroundColor3 = transform and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
-end)
-
--- No Energy Drain Toggle Button
-NoEnergyDrainToggle.Parent = Frame
-NoEnergyDrainToggle.Size = UDim2.new(0, 280, 0, 40)
-NoEnergyDrainToggle.Position = UDim2.new(0, 10, 0, 110)
-NoEnergyDrainToggle.BackgroundColor3 = Color3.new(1, 0, 0)
-NoEnergyDrainToggle.Text = "No Energy Drain: Off"
-NoEnergyDrainToggle.MouseButton1Click:Connect(function()
-    energy = not energy
-    NoEnergyDrainToggle.Text = "No Energy Drain: " .. (energy and "On" or "Off")
-    NoEnergyDrainToggle.BackgroundColor3 = energy and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
-end)
-
--- Mob Dropdown Button
-MobDropdown.Parent = Frame
-MobDropdown.Size = UDim2.new(0, 280, 0, 40)
-MobDropdown.Position = UDim2.new(0, 10, 0, 160)
-MobDropdown.BackgroundColor3 = Color3.new(0.6, 0.6, 0.6)
-MobDropdown.Text = "Select Mob"
-MobDropdown.MouseButton1Click:Connect(function()
-    SelectedMob = MobTable[math.random(1, #MobTable)] -- Simulating Dropdown
-    MobDropdown.Text = "Mob: " .. SelectedMob
-end)
-
--- Quest Dropdown Button
-QuestDropdown.Parent = Frame
-QuestDropdown.Size = UDim2.new(0, 280, 0, 40)
-QuestDropdown.Position = UDim2.new(0, 10, 0, 210)
-QuestDropdown.BackgroundColor3 = Color3.new(0.6, 0.6, 0.6)
-QuestDropdown.Text = "Select Quest"
-QuestDropdown.MouseButton1Click:Connect(function()
-    SelectedQuest = Quest[math.random(1, #Quest)] -- Simulating Dropdown
-    QuestDropdown.Text = "Quest: " .. SelectedQuest
-end)
-
--- Slider Label
-SliderLabel.Parent = Frame
-SliderLabel.Size = UDim2.new(0, 280, 0, 20)
-SliderLabel.Position = UDim2.new(0, 10, 0, 260)
-SliderLabel.Text = "Teleport Distance: " .. TpDistance
-
--- Teleport Slider (Simulated)
-TpSlider.Parent = Frame
-TpSlider.Size = UDim2.new(0, 280, 0, 40)
-TpSlider.Position = UDim2.new(0, 10, 0, 290)
-TpSlider.BackgroundColor3 = Color3.new(0.6, 0.6, 0.6)
-TpSlider.Text = "Adjust TP Distance"
-TpSlider.MouseButton1Click:Connect(function()
-    TpDistance = math.random(1, 10) -- Simulating slider adjustment
-    SliderLabel.Text = "Teleport Distance: " .. TpDistance
-end)
-
--- Recharge function
+--Recharge
 function recharge()
     repeat
         spawn(function()
-            events.cha:InvokeServer()
+            events.cha:InvokeServer(key)
         end)
         wait()
     until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
 end
 
--- Transformation logic
+
+-- Check Tranformations
+function trans()
+	local unlocked = {}
+    if pcall(function() return player.Character.Status.Transformation,player.Character.Status.SelectedTransformation,player.Character.Stats.Ki end) then
+		local shit = skills:GetChildren()
+		for i = 1, #shit do local v = shit[i]
+			if v:FindFirstChild("Time") then
+				local un = true
+                local shit2 = v.Requirements:GetChildren()
+                local al = v:FindFirstChild("Allignment")
+				for i2 = 1, #shit2 do local v2 = shit2[i2]
+					if data[v2.Name].Value < v2.Value then
+						un = false
+					end
+				end
+				if al and al.Value ~= data.Allignment.Value then
+				    un = false
+                end
+                if v:FindFirstChild("Gamepass") and not gamepasses[v.Gamepass.Value] then
+                    un = false
+                end
+				if un then
+					table.insert(unlocked, v.Name)
+				end
+            end
+		end
+		if #unlocked > 1 then
+			table.sort(unlocked, function(a,b)
+				return skills[a].Requirements.Strength.Value > skills[b].Requirements.Strength.Value
+            end)
+            if unlocked[1] ~= player.Character.Status.Transformation.Value then
+    			return unlocked[1]
+            end
+        end
+		return false
+	end
+end
+
+-- Transformation
 function transformation()
-    local form = trans() -- Assuming trans() checks and returns the form
-    if form then
+    local form = trans()
+    if typeof(form) == "string" then
+        print(form)
         if player.Character.Status.Transformation.Value ~= "None" then
             spawn(function()
-                events.ta:InvokeServer() -- Assuming this reverts transformation
+                events.ta:InvokeServer()
             end)
         end
         repeat
             spawn(function()
-                events.equipskill:InvokeServer(form) -- Equipping the transformation
+                events.equipskill:InvokeServer(form)
             end)
-            wait(0.25)
+            wait(.25)
         until player.Character.Status.SelectedTransformation.Value == form
-        recharge() -- Refill energy after transformation
+        repeat
+            spawn(function()
+                events.cha:InvokeServer(key)
+            end)
+            wait()
+        until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
+        local max = player.Character.Stats.Ki.MaxValue
+        repeat
+            wait(.25)
+            spawn(function()
+                events.ta:InvokeServer()
+            end)
+        until max < player.Character.Stats.Ki.MaxValue
+        if not energy then
+            recharge()
+        end
     end
 end
 
--- Quest function
+-- Función para crear la GUI
+local function createUI()
+    local ScreenGui = Instance.new("ScreenGui")
+    local Frame = Instance.new("Frame")
+    local ToggleButton = Instance.new("TextButton")
+    local DropdownMob = Instance.new("TextButton")
+    local DropdownQuest = Instance.new("TextButton")
+    local Slider = Instance.new("TextLabel")
+    local SliderInput = Instance.new("TextBox")
+
+    -- Propiedades de la GUI
+    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    Frame.Parent = ScreenGui
+    Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Frame.Size = UDim2.new(0, 300, 0, 400)
+    Frame.Position = UDim2.new(0.5, -150, 0.5, -200)
+
+    -- Botón de Toggle para Autofarm
+    ToggleButton.Parent = Frame
+    ToggleButton.Text = "Autofarm: Off"
+    ToggleButton.Size = UDim2.new(0, 200, 0, 50)
+    ToggleButton.Position = UDim2.new(0.5, -100, 0, 10)
+    ToggleButton.MouseButton1Click:Connect(function()
+        Autofarm = not Autofarm
+        ToggleButton.Text = Autofarm and "Autofarm: On" or "Autofarm: Off"
+    end)
+
+    -- Dropdown para seleccionar Mob
+    DropdownMob.Parent = Frame
+    DropdownMob.Text = "Select Mob"
+    DropdownMob.Size = UDim2.new(0, 200, 0, 50)
+    DropdownMob.Position = UDim2.new(0.5, -100, 0, 70)
+    DropdownMob.MouseButton1Click:Connect(function()
+        -- Ciclo para mostrar el Dropdown
+        local randomMob = MobTable[math.random(1, #MobTable)]
+        SelectedMob = randomMob
+        DropdownMob.Text = "Mob: " .. randomMob
+    end)
+
+    -- Dropdown para seleccionar Quest
+    DropdownQuest.Parent = Frame
+    DropdownQuest.Text = "Select Quest"
+    DropdownQuest.Size = UDim2.new(0, 200, 0, 50)
+    DropdownQuest.Position = UDim2.new(0.5, -100, 0, 130)
+    DropdownQuest.MouseButton1Click:Connect(function()
+        -- Ciclo para mostrar el Dropdown
+        local randomQuest = Quest[math.random(1, #Quest)]
+        SelectedQuest = randomQuest
+        DropdownQuest.Text = "Quest: " .. randomQuest
+    end)
+
+    -- Slider para la distancia de teletransporte
+    Slider.Parent = Frame
+    Slider.Text = "TP Distance: " .. TpDistance
+    Slider.Size = UDim2.new(0, 200, 0, 50)
+    Slider.Position = UDim2.new(0.5, -100, 0, 190)
+
+    SliderInput.Parent = Frame
+    SliderInput.Size = UDim2.new(0, 100, 0, 30)
+    SliderInput.Position = UDim2.new(0.5, -50, 0, 250)
+    SliderInput.Text = tostring(TpDistance)
+    SliderInput.FocusLost:Connect(function()
+        local newValue = tonumber(SliderInput.Text)
+        if newValue then
+            TpDistance = math.clamp(newValue, 0, 10)
+            Slider.Text = "TP Distance: " .. TpDistance
+        else
+            SliderInput.Text = tostring(TpDistance)
+        end
+    end)
+end
+
+-- Llama a la función de UI
+createUI()
+Stepped = game:GetService('RunService').Stepped:Connect(function()
+    if player.Character and player.Character:FindFirstChild("Humanoid") then 
+        player.Character.Humanoid:ChangeState(11)
+    end
+    if Autofarm == false then 
+        Stepped:Disconnect()
+    end
+end)
+-- Funciones adicionales del juego (idénticas a las del script original)
 function quest()
     if game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value ~= SelectedQuest then
         player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
@@ -164,44 +237,44 @@ function quest()
     end
 end
 
--- Autofarm Loop
+--Loop de Autofarm
 spawn(function()
     while true do
-        wait(0.1)
-        if Autofarm and SelectedMob and player.Character:FindFirstChild("HumanoidRootPart") then
-            for _, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-                if v.Name:lower() == SelectedMob:lower() and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                    -- Move to quest NPC first
-                    quest()
-                    -- Move to Mob
-                    player.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame + (v.HumanoidRootPart.CFrame.lookVector * TpDistance)
-                    wait(0.5)
-                    events.p:FireServer("Blacknwhite27", 1) -- Attack or skill firing
+        wait()
+        if Autofarm and player.Character:FindFirstChild("HumanoidRootPart") then
+            for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+                if mob.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
+                    repeat
+                        quest()
+                        player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame + mob.HumanoidRootPart.CFrame.lookVector * TpDistance
+                        wait()
+                        events.p:FireServer("Blacknwhite27", 1)
+                    until not Autofarm or mob == nil or mob.Humanoid.Health <= 0
                 end
             end
         end
     end
 end)
 
--- Auto Transformation Loop
+--Loop de Transformación automática
 spawn(function()
-    while true do
-        wait(1)
-        if transform then
+    while true do wait()
+        if Transform then
             transformation()
+            wait(1)
         end
     end
 end)
 
--- Energy Toggle Logic
 spawn(function()
     while true do
-        wait(0.7)
-        local drain = player.Character.Status:FindFirstChild("drain")
-        if drain and energy then
-            drain.Name = "drain2" -- Rename to prevent drain
-        elseif not energy and player.Character.Status:FindFirstChild("drain2") then
-            player.Character.Status.drain2.Name = "drain" -- Restore drain if energy toggle is off
+        if energy and drain.Name == "drain" then
+            drain.Name = "drain2"
+            drain2.Name = "drain"
+        elseif not energy and drain.Name == "drain2" then
+            drain.Name = "drain"
+            drain2.Name = "drain2"
         end
+        wait(0.7)
     end
 end)
