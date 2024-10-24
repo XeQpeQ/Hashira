@@ -3,7 +3,7 @@ local player = Players.LocalPlayer
 
 -- Argumentos para el coche que se va a spawnear
 local args = {
-    [1] = "SuperMobile", -- Nombre del coche
+    [1] = "EXR_3", -- Nombre del coche
     [2] = "Dealership"  -- Ubicación donde se va a spawnear
 }
 
