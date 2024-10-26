@@ -1,0 +1,133 @@
+local bb = game:GetService('VirtualUser')
+
+    game:GetService('Players').LocalPlayer.Idled:connect(function()
+        bb:CaptureController()
+        bb:ClickButton2(Vector2.new())
+        ab.Text = "Roblox intentó expulsarte, pero lo evité"
+        wait(2)
+        ab.Text = "Estado: Activo"
+    end)
+
+    local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+    local win = HashiraUI:Create({
+        Name = "Hashira Hub",
+        StartupSound = {
+            Toggle = false,
+            SoundID = "rbxassetid://6958727243",
+            TimePosition = 1
+        }
+    })
+    local maintab = win:Tab('Main')
+    local uitab = win:Tab('UI')
+
+  uitab:Button('Destroy GUI', function()
+      win:Exit()
+    end)
+
+maintab:Toggle('Auto Farm', function(v)
+  getgenv().AutoFarm = v
+end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = Players.LocalPlayer
+
+-- Variables de control del movimiento
+local MOVEMENT_SPEED = 250 -- Velocidad de movimiento predeterminada del coche
+local MOVING = false
+local ROAD_LENGTH = 2000 -- Longitud de cada sección de la carretera
+local ROAD_WIDTH = 1000 -- Ancho de la carretera
+local roadSections = {} -- Tabla para almacenar las secciones de la carretera
+
+-- Función para obtener la velocidad máxima desde publicVehicleData
+local function getTopSpeed(vehicleType)
+    local vehicleData = ReplicatedStorage.Storage.publicVehicleData:FindFirstChild(vehicleType)
+    if vehicleData then
+        local topSpeedValue = vehicleData:FindFirstChild("topSpeed")
+        if topSpeedValue and topSpeedValue:IsA("IntValue") then
+            return topSpeedValue.Value
+        end
+    end
+    return MOVEMENT_SPEED -- Si no se encuentra, se usa la velocidad predeterminada
+end
+
+-- Crear carretera infinita
+local function createRoad(position)
+    local road = Instance.new("Part")
+    road.Size = Vector3.new(ROAD_WIDTH, 1, ROAD_LENGTH) -- Tamaño de la carretera
+    road.Position = position -- Posición inicial
+    road.Anchored = true -- Anclar la carretera
+    road.BrickColor = BrickColor.new("Dark stone grey") -- Color de la carretera
+    road.Material = Enum.Material.SmoothPlastic -- Material de la carretera
+    road.Parent = workspace
+    
+    table.insert(roadSections, road) -- Guardar la sección de la carretera en la tabla
+end
+
+-- Teletransportar el coche a la carretera
+local function teleportCarToRoad(car)
+    local roadPosition = Vector3.new(0, -4.5, 0) -- Posición de inicio en la carretera
+    car:SetPrimaryPartCFrame(CFrame.new(roadPosition)) -- Teletransportar el coche
+end
+
+-- Función para hacer que el coche corra
+local function RUN(car, speed)
+    if MOVING then
+        return -- Si ya está en movimiento, salir de la función
+    end
+
+    MOVING = true
+    
+    -- Mover el coche en línea recta
+    local bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.Velocity = car.PrimaryPart.CFrame.LookVector * speed
+    bodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9) -- Asegúrate de que puede mover el coche
+    bodyVelocity.Parent = car.PrimaryPart -- Asegúrate de que el coche tenga una parte primaria
+
+    -- Mantener el coche en movimiento por un tiempo determinado
+    task.wait(2) -- Ajusta el tiempo según lo que necesites
+
+    -- Detener el movimiento
+    bodyVelocity:Destroy()
+    MOVING = false
+end
+
+-- Crear la carretera al inicio
+createRoad(Vector3.new(0, -4.5, 0)) -- Sección inicial
+
+-- Ciclo principal
+while getgenv().AutoFarm do -- Verifica si AutoFarm está activado
+    -- 1. Obtener el coche existente
+    local carName = player.Name .. "'s Car"
+    local car = workspace.Vehicles:FindFirstChild(carName)
+    
+    -- Verificar si el coche fue encontrado
+    if car then
+        -- Obtener el tipo de vehículo y su velocidad máxima
+        local vehicleType = car:FindFirstChild("vehicleType")
+        local speed = MOVEMENT_SPEED -- Velocidad predeterminada
+
+        if vehicleType and vehicleType:IsA("StringValue") then
+            speed = getTopSpeed(vehicleType.Value) -- Obtener velocidad máxima desde publicVehicleData
+        end
+
+        -- Teletransportar el coche a la carretera
+        teleportCarToRoad(car)
+        
+        if not MOVING then
+            RUN(car, speed)
+        end
+        
+        -- Comprobar si el coche ha llegado al final de la carretera
+        local carPosition = car.PrimaryPart.Position
+        local lastRoadSection = roadSections[#roadSections]
+        local roadEndPosition = lastRoadSection.Position.Z + (ROAD_LENGTH / 2)
+
+        -- Si el coche alcanza el borde de la carretera, crear una nueva sección
+        if carPosition.Z > roadEndPosition then
+            createRoad(Vector3.new(0, -4.5, lastRoadSection.Position.Z + ROAD_LENGTH))
+        end
+    end
+
+end
+print("AutoFarm desactivado")
