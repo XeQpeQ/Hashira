@@ -99,7 +99,7 @@ end)
 getgenv().AutoFarm = true
 game.Players.LocalPlayer.PlayerGui.ScreenGui.ClientScript.Disabled = true
 while getgenv().AutoFarm do
-	task.wait(.5)
+	wait()
 	Amount.Text = "Eggs Opened: "..game.Players.LocalPlayer.leaderstats["Eggs Opened"].Value
 	local args = {
 		[1] = "PurchaseEgg",
