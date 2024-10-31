@@ -88,10 +88,18 @@ UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.from
 UIGradient.Rotation = 90
 UIGradient.Parent = Decore
 
+local originalTaskWait = hookfunction(task.wait, function(seconds)
+    return originalTaskWait(0)
+end)
+
+local originalWait = hookfunction(wait, function(seconds)
+    return originalWait(0)
+end)
+
 getgenv().AutoFarm = true
 game.Players.LocalPlayer.PlayerGui.ScreenGui.ClientScript.Disabled = true
 while getgenv().AutoFarm do
-	task.wait()
+	task.wait(.5)
 	Amount.Text = "Eggs Opened: "..game.Players.LocalPlayer.leaderstats["Eggs Opened"].Value
 	local args = {
 		[1] = "PurchaseEgg",
