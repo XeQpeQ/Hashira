@@ -1,0 +1,103 @@
+local EggsOpened = Instance.new("Frame")
+local Icon = Instance.new("ImageLabel")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local Amount = Instance.new("TextLabel")
+local More = Instance.new("TextButton")
+local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+local Decore = Instance.new("ImageLabel")
+local UIGradient = Instance.new("UIGradient")
+local VirtualUser = game:GetService('VirtualUser')
+
+game:GetService('Players').LocalPlayer.Idled:connect(function()
+	VirtualUser:CaptureController()
+	VirtualUser:ClickButton2(Vector2.new())
+end)
+
+EggsOpened.Name = "EggsOpened"
+EggsOpened.Parent = game.Players.LocalPlayer.PlayerGui.ScreenGui.StatsFrame.Stats
+EggsOpened.BackgroundColor3 = Color3.fromRGB(0, 179, 255)
+EggsOpened.BackgroundTransparency = 1.000
+EggsOpened.BorderColor3 = Color3.fromRGB(0, 91, 148)
+EggsOpened.BorderSizePixel = 3
+EggsOpened.Position = UDim2.new(0, 0, 0.949999988, 0)
+EggsOpened.Size = UDim2.new(1, 0, 0.400000006, 0)
+EggsOpened.ZIndex = 10
+
+Icon.Name = "Icon"
+Icon.Parent = EggsOpened
+Icon.AnchorPoint = Vector2.new(0, 0.5)
+Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Icon.BackgroundTransparency = 1.000
+Icon.BorderColor3 = Color3.fromRGB(27, 42, 53)
+Icon.Position = UDim2.new(0.0199999996, 0, 0.5, 0)
+Icon.Rotation = -7.000
+Icon.Size = UDim2.new(1, 0, 0.899999976, 0)
+Icon.ZIndex = 12
+Icon.Image = "rbxassetid://16884178261"
+Icon.ImageRectOffset = Vector2.new(418, 0)
+Icon.ImageRectSize = Vector2.new(36, 36)
+
+UIAspectRatioConstraint.Parent = Icon
+
+Amount.Name = "Amount"
+Amount.Parent = EggsOpened
+Amount.AnchorPoint = Vector2.new(0, 0.5)
+Amount.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Amount.BackgroundTransparency = 1.000
+Amount.BorderColor3 = Color3.fromRGB(27, 42, 53)
+Amount.Position = UDim2.new(0.210526317, 0, 0.5, 0)
+Amount.Size = UDim2.new(0.707236826, 0, 0.901639342, 0)
+Amount.ZIndex = 12
+Amount.Font = Enum.Font.FredokaOne
+Amount.TextColor3 = Color3.fromRGB(255, 170, 0)
+Amount.TextScaled = true
+Amount.TextSize = 14.000
+Amount.TextStrokeTransparency = 0.000
+Amount.TextWrapped = true
+Amount.TextXAlignment = Enum.TextXAlignment.Left
+
+More.Name = "More"
+More.Parent = EggsOpened
+More.AnchorPoint = Vector2.new(0, 0.5)
+More.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+More.BackgroundTransparency = 1.000
+More.BorderColor3 = Color3.fromRGB(125, 121, 0)
+More.BorderSizePixel = 3
+More.Position = UDim2.new(0.920000017, 0, 0.5, 0)
+More.Size = UDim2.new(0.150000006, 0, 0.600000024, 0)
+More.ZIndex = 12
+More.Font = Enum.Font.FredokaOne
+More.Text = ""
+More.TextColor3 = Color3.fromRGB(0, 0, 0)
+More.TextSize = 14.000
+
+UIAspectRatioConstraint_2.Parent = More
+
+Decore.Name = "Decore"
+Decore.Parent = EggsOpened
+Decore.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Decore.BackgroundTransparency = 1.000
+Decore.BorderColor3 = Color3.fromRGB(27, 42, 53)
+Decore.Size = UDim2.new(1, 0, 1, 4)
+Decore.ZIndex = 10
+Decore.Image = "rbxassetid://13767536840"
+Decore.ScaleType = Enum.ScaleType.Slice
+Decore.SliceCenter = Rect.new(9, 11, 91, 89)
+
+UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 85, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 150, 2))}
+UIGradient.Rotation = 90
+UIGradient.Parent = Decore
+
+getgenv().AutoFarm = true
+game.Players.LocalPlayer.PlayerGui.ScreenGui.ClientScript.Disabled = true
+while getgenv().AutoFarm do
+	task.wait()
+	Amount.Text = "Eggs Opened: "..game.Players.LocalPlayer.leaderstats["Eggs Opened"].Value
+	local args = {
+		[1] = "PurchaseEgg",
+		[2] = "Cauldron Egg",
+		[3] = "Multi"
+	}
+
+	game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+end
