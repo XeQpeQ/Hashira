@@ -1,10 +1,7 @@
 local player = game:GetService("Players").LocalPlayer
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local events = replicatedStorage.Package.Events
-local runService = game:GetService("RunService")
 local data = replicatedStorage.Datas[player.UserId]
-local skills = replicatedStorage.Package.Skills
-local market = game:GetService("MarketplaceService")
 
 local Quest = {
     "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly", "X Fighter Trainer",
@@ -28,8 +25,8 @@ local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 screenGui.Name = "AutoFarmGUI"
 
 local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 300, 0, 200)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+mainFrame.Size = UDim2.new(0, 300, 0, 250)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -125)
 mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 mainFrame.BorderSizePixel = 0
 
@@ -52,7 +49,8 @@ autofarmToggle.TextScaled = true
 local selectedMob = MobTable[1] or "None"
 local selectedQuest = Quest[1] or "None"
 
-local function createDropdown(labelText, options, initialSelection, positionY)
+-- Función para crear menú desplegable
+local function createDropdown(labelText, options, initialSelection, positionY, callback)
     local label = Instance.new("TextLabel", mainFrame)
     label.Size = UDim2.new(1, -20, 0, 20)
     label.Position = UDim2.new(0, 10, 0, positionY)
@@ -70,18 +68,45 @@ local function createDropdown(labelText, options, initialSelection, positionY)
     dropdown.BorderSizePixel = 0
     dropdown.TextScaled = true
 
-    local selectedOption = initialSelection
+    local dropdownFrame = Instance.new("Frame", mainFrame)
+    dropdownFrame.Size = UDim2.new(1, -20, 0, #options * 30)
+    dropdownFrame.Position = UDim2.new(0, 10, 0, positionY + 60)
+    dropdownFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    dropdownFrame.BorderSizePixel = 0
+    dropdownFrame.Visible = false
+
+    for i, option in ipairs(options) do
+        local optionButton = Instance.new("TextButton", dropdownFrame)
+        optionButton.Size = UDim2.new(1, 0, 0, 30)
+        optionButton.Position = UDim2.new(0, 0, 0, (i - 1) * 30)
+        optionButton.Text = option
+        optionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        optionButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+        optionButton.BorderSizePixel = 0
+        optionButton.TextScaled = true
+
+        optionButton.MouseButton1Click:Connect(function()
+            dropdown.Text = option
+            dropdownFrame.Visible = false
+            callback(option)
+        end)
+    end
+
     dropdown.MouseButton1Click:Connect(function()
-        selectedOption = selectedOption == options[1] and options[2] or options[1]  -- Alterna entre las opciones
-        dropdown.Text = selectedOption
+        dropdownFrame.Visible = not dropdownFrame.Visible
     end)
-    
-    return dropdown, selectedOption
+
+    return dropdown
 end
 
 -- Crear dropdowns
-local mobDropdown, selectedMob = createDropdown("Select Mob", MobTable, selectedMob, 100)
-local questDropdown, selectedQuest = createDropdown("Select Quest", Quest, selectedQuest, 150)
+local mobDropdown = createDropdown("Select Mob", MobTable, selectedMob, 100, function(selected)
+    selectedMob = selected
+end)
+
+local questDropdown = createDropdown("Select Quest", Quest, selectedQuest, 150, function(selected)
+    selectedQuest = selected
+end)
 
 -- Toggle de AutoFarm
 local autofarmEnabled = false
