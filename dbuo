@@ -218,11 +218,12 @@ local function quest()
         end
     end
 end
-
--- Bucle para activar el AutoFarm
+player.CharacterAdded:Connect(function(character)
 task.spawn(function()
     while task.wait() do
-        if getgenv().AutoFarm and isPlayerAlive() then
+
+        if getgenv().AutoFarm  then
+           
             -- Añadiendo BodyVelocity para evitar caídas
             local antifall3 = Instance.new("BodyVelocity", player.Character.HumanoidRootPart)
             antifall3.Velocity = Vector3.new(0, 0, 0)
@@ -246,13 +247,15 @@ task.spawn(function()
         end
     end
 end)
-
+end)
+player.CharacterAdded:Connect(function(character)
 task.spawn(function()
     while task.wait() do
         if getgenv().AutoRebirth then
             game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("reb"):InvokeServer()
         end
     end
+end)
 end)
 
 spawn(function()
@@ -275,10 +278,4 @@ spawn(function()
         end
         wait(0.7)
     end
-end)
-
--- Conectar al evento de respawn para reiniciar el script cuando el jugador muere
-player.CharacterAdded:Connect(function(character)
-    print("El jugador ha respawneado, reiniciando conexiones...")
-    -- Aquí puedes reiniciar conexiones o variables que necesiten ser restablecidas
 end)
