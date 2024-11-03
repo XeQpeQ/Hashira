@@ -1,151 +1,203 @@
--- Get services
-local player = game:GetService("Players").LocalPlayer
-local replicatedStorage = game:GetService("ReplicatedStorage")
-local runService = game:GetService("RunService")
-local marketService = game:GetService("MarketplaceService")
-local virtualUser = game:GetService("VirtualUser")
-
--- Player data and assets
-local data = replicatedStorage.Datas[player.UserId]
-local skills = replicatedStorage.Package.Skills
-local events = replicatedStorage.Package.Events
-
--- Anti-AFK script
-player.Idled:Connect(function()
-    virtualUser:CaptureController()
-    virtualUser:ClickButton2(Vector2.new())
-    print("Roblox intentó expulsarte, pero lo evité")
-    wait(2)
-    print("Estado: Activo")
-end)
-
--- Initialize tables
-local MobTable = {}
-local mobNamesAdded = {}
-
--- Fill MobTable with unique mob names
-for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
-    if not player:FindFirstChild(mob.Name) and not mobNamesAdded[mob.Name] then
-        table.insert(MobTable, mob.Name)
-        mobNamesAdded[mob.Name] = true
-    end
-end
-
--- Quest list
+local LP = game.Players.LocalPlayer
+local client = game.Players.LocalPlayer
+local FarmMethod = "Behind"
+local tweenspeed = 400
+local Distance = 10
+local events = game:GetService("ReplicatedStorage").Package.Events
+local rs = game:GetService("RunService")
+local data = game.ReplicatedStorage.Datas[LP.UserId]
+local skills = game.ReplicatedStorage.Package.Skills
+local events = game.ReplicatedStorage.Package.Events
+local market = game:GetService("MarketplaceService")
 local Quest = {
-    "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly",
-    "X Fighter Trainer", "Super Vegetable", "Klirin", "SSJ2 Wukong",
-    "Perfect Atom", "Radish", "Mapa", "Broccoli", "SSJG Kakata",
-    "Kai-fist Master", "Kaio Student", "Turtle Student"
+    "Top X Fighter",
+    "SSJB Wukong",
+    "Citizen",
+    "Kid Nohag",
+    "Chilly",
+    "X Fighter Trainer",
+    "Super Vegetable",
+    "Klirin",
+    "SSJ2 Wukong",
+    "Perfect Atom",
+    "Radish",
+    "Mapa",
+    "Broccoli",
+    "SSJG Kakata",
+    "Kai-fist Master",
+    "Kaio Student",
+    "Turtle Student"
 }
 
--- Load library and create interface
+    local bb = game:GetService('VirtualUser')
+
+    game:GetService('Players').LocalPlayer.Idled:connect(function()
+        bb:CaptureController()
+        bb:ClickButton2(Vector2.new())
+        ab.Text = "Roblox intentó expulsarte, pero lo evité"
+        wait(2)
+        ab.Text = "Estado: Activo"
+    end)
+
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "Hashira Hub",
-    LoadingTitle = "Loading",
-    LoadingSubtitle = "",
-    ConfigurationSaving = {
-        Enabled = true,
-        FolderName = nil, -- Create a custom folder for the hub/game
-        FileName = "Big Hub"
-    },
-    Discord = {
-        Enabled = false,
-        Invite = "noinvitelink", -- Discord invite code
-        RememberJoins = true
-    },
-    KeySystem = false,
-    KeySettings = {
-        Title = "Untitled",
-        Subtitle = "Key System",
-        Note = "No se proporciona método para obtener la clave",
-        FileName = "Key",
-        SaveKey = true,
-        GrabKeyFromSite = false,
-        Key = {"Hello"}
-    }
+   Name = "Hashira Hub",
+   LoadingTitle = "Loading",
+   LoadingSubtitle = "",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
 })
 
-local Tab = Window:CreateTab("MainTab", 4483362458)
-
--- Toggle for AutoFarm
 local Toggle = Tab:CreateToggle({
-    Name = "On/Off",
-    CurrentValue = false,
-    Flag = "Toggle1",
-    Callback = function(Value)
+   Name = "On/Off",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
         getgenv().AutoFarm = Value
-    end,
+   end,
 })
 
--- Dropdown for Mob selection
-local MobDropdown = Tab:CreateDropdown({
-    Name = "Select Mob",
-    Options = MobTable,
-    CurrentOption = "None",
-    MultipleOptions = false,
-    Flag = "Dropdown1",
-    Callback = function(Option)
+local Dropdown = Tab:CreateDropdown({
+   Name = "Select Mob",
+   Options = MobTable,
+   CurrentOption = {"None"},
+   MultipleOptions = false,
+   Flag = "Dropdown1",
+   Callback = function(Option)
         SelectedMob = Option
-    end,
+   end,
 })
 
--- Dropdown for Quest selection
-local QuestDropdown = Tab:CreateDropdown({
-    Name = "Select Quest",
-    Options = Quest,
-    CurrentOption = "None",
-    MultipleOptions = false,
-    Flag = "Dropdown2",
-    Callback = function(Option)
-        SelectedQuest = Option
-    end,
+local Dropdown = Tab:CreateDropdown({
+   Name = "Select Quest",
+   Options = Quest,
+   CurrentOption = {"None"},
+   MultipleOptions = false,
+   Flag = "Dropdown2", 
+   Callback = function(Option)
+       SelectQuest = Option
+   end,
 })
 
--- Slider for teleport distance
-local Slider = Tab:CreateSlider({
-    Name = "Distance",
-    Range = {0, 10},
-    Increment = 1,
-    Suffix = "",
-    CurrentValue = 1,
-    Flag = "Slider1",
-    Callback = function(Value)
-        TpDistance = Value
-    end,
-})
+local function GetDistance(Endpoint)
+	if typeof(Endpoint) == "Instance" then
+		Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+	elseif typeof(Endpoint) == "CFrame" then
+		Endpoint = Vector3.new(Endpoint.Position.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+	end
+	local Magnitude = (Endpoint - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+	return Magnitude
+end
+function Tween(Endpoint)
+	if typeof(Endpoint) == "Instance" then
+		Endpoint = Endpoint.CFrame
+	end
+	local TweenFunc = {}
+	local Distance = GetDistance(Endpoint)
+	local TweenInfo = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
+	TweenInfo:Play()
+	function TweenFunc:Cancel()
+		TweenInfo:Cancel()
+		return false
+	end
+	if Distance <= 100 then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Endpoint
+		TweenInfo:Cancel()
+		return false
+	end
+	return TweenFunc
+end
+-- Auto Farm Method
+task.spawn(function()
+	while wait() do
+		pcall(function()
+			SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AutoSaibamen and NearestMobs)
+			if FarmMethod == "Above" then
+				FarmModes = CFrame.new(0,Distance,0) * CFrame.Angles(math.rad(-90),0,0) 
+			elseif FarmMethod == "Below" then
+				FarmModes = CFrame.new(0,-Distance,0) * CFrame.Angles(math.rad(90),0,0)
+			elseif FarmMethod == "Behind" then
+				FarmModes = CFrame.new(0,0,Distance)
+			elseif FarmMethod == "Ahead" then
+				FarmModes = CFrame.new(0, 0, -Distance)
+                local rotation = CFrame.Angles(0, math.rad(180), 0)
+                FarmModes = FarmModes * rotation
+			end
+		end)
+	end
+end)
 
--- Function to accept the selected quest
-local function acceptQuest()
-    if data.Quest.Value ~= SelectedQuest then
-        local npc = game:GetService("Workspace").Others.NPCs[SelectedQuest]
-        player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame
-        repeat
-            wait()
-            events.Qaction:InvokeServer(npc)
-        until data.Quest.Value == SelectedQuest
-    end
+local function quest()
+    if game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value ~= SelectedQuest then
+        player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
+		repeat
+			wait()
+			events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[SelectedQuest])
+		until game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value == SelectedQuest
+	end
 end
 
--- Main loop for AutoFarm
 task.spawn(function()
     while task.wait() do
         pcall(function()
-            if getgenv().AutoFarm and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-                    if mob.Name:lower() == SelectedMob:lower() and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
-                        repeat
-                            acceptQuest()
-                            player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame + mob.HumanoidRootPart.CFrame.LookVector * TpDistance
-                            wait()
-                            local attackString = "Blacknwhite27" -- Change as needed
-                            local attackNumber = 1 -- Change as needed
-                            events.p:FireServer(attackString, attackNumber)
-                        until not getgenv().AutoFarm or not mob or mob.Humanoid.Health <= 0
+            if getgenv().AutoFarm then
+                if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                    antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+                    antifall3.Velocity = Vector3.new(0, 0, 0)
+                    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                elseif LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                    for i, v in pairs(game:GetService("Workspace").Living:GetChildren()) do
+                        if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:lower() == SelectedMob:lower() then
+                            if v.Humanoid.Health > 0 then
+                                local distance = GetDistance(v:GetModelCFrame() * FarmModes)
+                                repeat
+                                quest()
+                local ohString1 = "Blacknwhite27"
+                local ohNumber2 = 1
+                game:GetService("ReplicatedStorage").Package.Events.p:FireServer(ohString1, ohNumber2)
+                                    task.wait()
+                                    if distance < 25 and distance < 150 then
+                                        if TweenFa then
+                                            TweenFa:Cancel()
+                                            wait(.1)
+                                        end
+                                        LP.Character.HumanoidRootPart.CFrame = v:GetModelCFrame()
+                                    else
+                                        TweenFa = Tween(v:GetModelCFrame() * FarmModes)
+                                    end
+                                    if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
+                                        NearestMobs = true
+                                    elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
+                                        NearestMobs = false
+                                    end
+                                until not getgenv().AutoFarm or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
+                                NearestMobs = false
+                            end
+                        end
                     end
                 end
+            end
+            if getgenv().AutoFarm == false and TweenFa then
+                TweenFa:Cancel()
             end
         end)
     end
