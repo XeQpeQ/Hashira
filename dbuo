@@ -1,4 +1,3 @@
-transform = false
 local player = game:GetService("Players").LocalPlayer
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local events = replicatedStorage.Package.Events
@@ -8,20 +7,26 @@ local skills = replicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
 
 function gamepass(gamepassid)
-    local s,res = pcall(market.UserOwnsGamePassAsync,market,player.UserId,gamepassid)
+    local s, res = pcall(market.UserOwnsGamePassAsync, market, player.UserId, gamepassid)
     if not s then
         res = false
     end
     return res
 end
+
 local gamepasses = {}
-for i,v in pairs(skills:GetChildren()) do
+for i, v in pairs(skills:GetChildren()) do
     if v:FindFirstChild("Gamepass") then
         gamepasses[v.Gamepass.Value] = gamepass(v.Gamepass.Value)
     end
 end
 
 function recharge()
+    if not isPlayerAlive() then
+        print("El jugador está muerto, no se puede recargar.")
+        return
+    end
+
     repeat
         spawn(function()
             events.cha:InvokeServer(key)
@@ -30,44 +35,55 @@ function recharge()
     until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
 end
 
+function isPlayerAlive()
+    return player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0
+end
+
 function trans()
-	local unlocked = {}
-    if pcall(function() return player.Character.Status.Transformation,player.Character.Status.SelectedTransformation,player.Character.Stats.Ki end) then
-		local shit = skills:GetChildren()
-		for i = 1, #shit do local v = shit[i]
-			if v:FindFirstChild("Time") then
-				local un = true
+    local unlocked = {}
+    if pcall(function() return player.Character.Status.Transformation, player.Character.Status.SelectedTransformation, player.Character.Stats.Ki end) then
+        local shit = skills:GetChildren()
+        for i = 1, #shit do
+            local v = shit[i]
+            if v:FindFirstChild("Time") then
+                local un = true
                 local shit2 = v.Requirements:GetChildren()
                 local al = v:FindFirstChild("Allignment")
-				for i2 = 1, #shit2 do local v2 = shit2[i2]
-					if data[v2.Name].Value < v2.Value then
-						un = false
-					end
-				end
-				if al and al.Value ~= data.Allignment.Value then
-				    un = false
+                for i2 = 1, #shit2 do
+                    local v2 = shit2[i2]
+                    if data[v2.Name].Value < v2.Value then
+                        un = false
+                    end
+                end
+                if al and al.Value ~= data.Allignment.Value then
+                    un = false
                 end
                 if v:FindFirstChild("Gamepass") and not gamepasses[v.Gamepass.Value] then
                     un = false
                 end
-				if un then
-					table.insert(unlocked, v.Name)
-				end
-            end
-		end
-		if #unlocked > 1 then
-			table.sort(unlocked, function(a,b)
-				return skills[a].Requirements.Strength.Value > skills[b].Requirements.Strength.Value
-            end)
-            if unlocked[1] ~= player.Character.Status.Transformation.Value then
-    			return unlocked[1]
+                if un then
+                    table.insert(unlocked, v.Name)
+                end
             end
         end
-		return false
-	end
+        if #unlocked > 1 then
+            table.sort(unlocked, function(a, b)
+                return skills[a].Requirements.Strength.Value > skills[b].Requirements.Strength.Value
+            end)
+            if unlocked[1] ~= player.Character.Status.Transformation.Value then
+                return unlocked[1]
+            end
+        end
+        return false
+    end
 end
 
 function transformation()
+    if not isPlayerAlive() then
+        print("El jugador está muerto, no se puede transformar.")
+        return
+    end
+
     local form = trans()
     if typeof(form) == "string" then
         print(form)
@@ -80,7 +96,7 @@ function transformation()
             spawn(function()
                 events.equipskill:InvokeServer(form)
             end)
-            wait(.25)
+            wait(0.25)
         until player.Character.Status.SelectedTransformation.Value == form
         repeat
             spawn(function()
@@ -90,7 +106,7 @@ function transformation()
         until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
         local max = player.Character.Stats.Ki.MaxValue
         repeat
-            wait(.25)
+            wait(0.25)
             spawn(function()
                 events.ta:InvokeServer()
             end)
@@ -101,8 +117,8 @@ function transformation()
     end
 end
 
-Stepped = game:GetService('RunService').Stepped:Connect(function()
-    if player.Character and player.Character:FindFirstChild("Humanoid") then 
+local Stepped = runService.Stepped:Connect(function()
+    if isPlayerAlive() then
         player.Character.Humanoid:ChangeState(11)
     end
     if Autofarm == false then 
@@ -132,71 +148,73 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shl
 local Window = OrionLib:MakeWindow({Name = "Hashira Hub", HidePremium = false, SaveConfig = false, ConfigFolder = "Orion"})
 
 local PlayerTab = Window:MakeTab({
-	Name = "MainTab",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
+    Name = "MainTab",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
 })
 
 PlayerTab:AddToggle({
-	Name = "On/Off",
-	Default = false,
-	Callback = function(Value)
-		getgenv().AutoFarm = Value
-	end    
+    Name = "On/Off",
+    Default = false,
+    Callback = function(Value)
+        getgenv().AutoFarm = Value
+    end    
 })
 
 PlayerTab:AddToggle({
-	Name = "Auto Rebirth",
-	Default = false,
-	Callback = function(Value)
-		getgenv().AutoRebirth = Value
-	end    
+    Name = "Auto Rebirth",
+    Default = false,
+    Callback = function(Value)
+        getgenv().AutoRebirth = Value
+    end    
 })
 
 PlayerTab:AddToggle({
-	Name = "Auto Transform",
-	Default = false,
-	Callback = function(Value)
-		Transform = Value
-	end    
+    Name = "Auto Transform",
+    Default = false,
+    Callback = function(Value)
+        Transform = Value
+    end    
 })
 
 PlayerTab:AddToggle({
-	Name = "Energy Drain",
-	Default = false,
-	Callback = function(Value)
-		energy = Value
-	end    
+    Name = "Energy Drain",
+    Default = false,
+    Callback = function(Value)
+        energy = Value
+    end    
 })
 
 PlayerTab:AddDropdown({
-	Name = "Select Mob",
-	Default = "None",
-	Options = MobTable,
-	Callback = function(Value)
-		SelectedMob = Value
-	end    
+    Name = "Select Mob",
+    Default = "None",
+    Options = MobTable,
+    Callback = function(Value)
+        SelectedMob = Value
+    end    
 })
 
 PlayerTab:AddDropdown({
-	Name = "Select Quest",
-	Default = "None",
-	Options = Quest,
-	Callback = function(Value)
-		SelectedQuest = Value
-	end    
+    Name = "Select Quest",
+    Default = "None",
+    Options = Quest,
+    Callback = function(Value)
+        SelectedQuest = Value
+    end    
 })
 
 -- Función de búsqueda de Quest
 local function quest()
-    if replicatedStorage.Datas[player.UserId].Quest.Value ~= SelectedQuest then
-        local questNPC = game:GetService("Workspace").Others.NPCs:FindFirstChild(SelectedQuest)
-        if questNPC then
-            player.Character.HumanoidRootPart.CFrame = questNPC.HumanoidRootPart.CFrame
-            repeat
-                wait()
-                events.Qaction:InvokeServer(questNPC)
-            until replicatedStorage.Datas[player.UserId].Quest.Value == SelectedQuest
+    if isPlayerAlive() then
+        if replicatedStorage.Datas[player.UserId].Quest.Value ~= SelectedQuest then
+            local questNPC = game:GetService("Workspace").Others.NPCs:FindFirstChild(SelectedQuest)
+            if questNPC then
+                player.Character.HumanoidRootPart.CFrame = questNPC.HumanoidRootPart.CFrame
+                repeat
+                    wait()
+                    events.Qaction:InvokeServer(questNPC)
+                until replicatedStorage.Datas[player.UserId].Quest.Value == SelectedQuest
+            end
         end
     end
 end
@@ -204,12 +222,12 @@ end
 -- Bucle para activar el AutoFarm
 task.spawn(function()
     while task.wait() do
-        if getgenv().AutoFarm then
+        if getgenv().AutoFarm and isPlayerAlive() then
             -- Añadiendo BodyVelocity para evitar caídas
             local antifall3 = Instance.new("BodyVelocity", player.Character.HumanoidRootPart)
             antifall3.Velocity = Vector3.new(0, 0, 0)
             antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-            
+
             pcall(function()
                 for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
                     if mob.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
@@ -255,6 +273,12 @@ spawn(function()
             drain.Name = "drain"
             drain2.Name = "drain2"
         end
-        wait(.7)
+        wait(0.7)
     end
+end)
+
+-- Conectar al evento de respawn para reiniciar el script cuando el jugador muere
+player.CharacterAdded:Connect(function(character)
+    print("El jugador ha respawneado, reiniciando conexiones...")
+    -- Aquí puedes reiniciar conexiones o variables que necesiten ser restablecidas
 end)
