@@ -23,61 +23,48 @@ for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     end
 end
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/drillygzzly/Roblox-UI-Libs/main/1%20Tokyo%20Lib%20(FIXED)/Tokyo%20Lib%20Source.lua"))({
-    cheatname = "Hashira Hub", -- watermark text
-    gamename = game.PlaceId, -- watermark text
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Hashira Hub", HidePremium = false, SaveConfig = false, ConfigFolder = "Orion"})
+
+local PlayerTab = Window:MakeTab({
+	Name = "MainTab",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
 })
 
-library:init()
-
-local Window1  = library.NewWindow({
-    title = "Hashira Hub",
-    size = UDim2.new(0, 510, 0.6, 6
-)})
-
-local Tab1 = Window1:AddTab("  MainTab  ")
-local SettingsTab = library:CreateSettingsTab(Window1)
-local Section1 = Tab1:AddSection("Section 1", 1)
-
-Section1:AddToggle({
-    text = "AutoFarm",
-    state = false,
-    risky = false,
-    tooltip = "tooltip1",
-    flag = "Toggle_1",
-    risky = false,
-    callback = function(v)
-        getgenv().AutoFarm = v
-    end
-
-Section1:AddList({
-    enabled = true,
-    text = "Select Mob", 
-    tooltip = "tooltip1",
-    selected = "",
-    multi = false,
-    open = false,
-    max = 4,
-    values = MobTable,
-    risky = false,
-    callback = function(v)
-        SelectedMob = v
-    end
+PlayerTab:AddToggle({
+	Name = "On/Off",
+	Default = false,
+	Callback = function(Value)
+		getgenv().AutoFarm = Value
+	end    
 })
 
-Section1:AddList({
-    enabled = true,
-    text = "Select Quest", 
-    tooltip = "tooltip1",
-    selected = "",
-    multi = false,
-    open = false,
-    max = 4,
-    values = Quest,
-    risky = false,
-    callback = function(v)
-        SelectedQuest = v
-    end
+PlayerTab:AddToggle({
+	Name = "Auto Rebirth",
+	Default = false,
+	Callback = function(Value)
+		getgenv().AutoRebirth = Value
+	end    
+})
+
+PlayerTab:AddDropdown({
+	Name = "Select Mob",
+	Default = "None",
+	Options = MobTable,
+	Callback = function(Value)
+		SelectedMob = Value
+	end    
+})
+
+PlayerTab:AddDropdown({
+	Name = "Select Quest",
+	Default = "None",
+	Options = Quest,
+	Callback = function(Value)
+		SelectedQuest = Value
+	end    
 })
 
 -- Función de búsqueda de Quest
@@ -110,6 +97,14 @@ task.spawn(function()
                     end
                 end
             end)
+        end
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        if getgenv().AutoRebirth then
+            game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("reb"):InvokeServer()
         end
     end
 end)
