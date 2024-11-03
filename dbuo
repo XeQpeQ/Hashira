@@ -28,14 +28,12 @@ local SelectedMob = "None"
 local SelectedQuest = "None"
 getgenv().AutoFarm = false
 
--- Crear la interfaz de usuario (igual que en la respuesta anterior)
+-- Crear la interfaz de usuario
 local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 local MainFrame = Instance.new("Frame", ScreenGui)
 MainFrame.Size = UDim2.new(0, 300, 0, 400)
 MainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
 MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.BorderSizePixel = 0
-MainFrame.BackgroundTransparency = 0.1
 
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Text = "AutoFarm Interface"
@@ -44,7 +42,6 @@ Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Title.TextColor3 = Color3.new(1, 1, 1)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 24
-Title.BorderSizePixel = 0
 
 -- Botón de activación de AutoFarm
 local AutoFarmButton = Instance.new("TextButton", MainFrame)
@@ -55,15 +52,59 @@ AutoFarmButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 AutoFarmButton.TextColor3 = Color3.new(1, 1, 1)
 AutoFarmButton.Font = Enum.Font.SourceSans
 AutoFarmButton.TextSize = 20
-AutoFarmButton.BorderSizePixel = 0
 
 AutoFarmButton.MouseButton1Click:Connect(function()
     getgenv().AutoFarm = not getgenv().AutoFarm
     AutoFarmButton.Text = "AutoFarm: " .. (getgenv().AutoFarm and "ON" or "OFF")
 end)
 
--- Dropdowns para seleccionar Mob y Quest
--- (mantenemos los dropdowns con ScrollingFrame como en la respuesta anterior)
+-- Dropdown para seleccionar Mob
+local MobDropdown = Instance.new("TextLabel", MainFrame)
+MobDropdown.Text = "Select Mob:"
+MobDropdown.Size = UDim2.new(0.8, 0, 0, 30)
+MobDropdown.Position = UDim2.new(0.1, 0, 0.35, 0)
+MobDropdown.TextColor3 = Color3.new(1, 1, 1)
+MobDropdown.Font = Enum.Font.SourceSans
+MobDropdown.TextSize = 18
+MobDropdown.BackgroundTransparency = 1
+
+local MobSelectButton = Instance.new("TextButton", MainFrame)
+MobSelectButton.Size = UDim2.new(0.8, 0, 0, 40)
+MobSelectButton.Position = UDim2.new(0.1, 0, 0.4, 0)
+MobSelectButton.Text = "None"
+MobSelectButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+MobSelectButton.TextColor3 = Color3.new(1, 1, 1)
+MobSelectButton.Font = Enum.Font.SourceSans
+MobSelectButton.TextSize = 20
+
+MobSelectButton.MouseButton1Click:Connect(function()
+    SelectedMob = MobTable[math.random(1, #MobTable)]
+    MobSelectButton.Text = SelectedMob
+end)
+
+-- Dropdown para seleccionar Quest
+local QuestDropdown = Instance.new("TextLabel", MainFrame)
+QuestDropdown.Text = "Select Quest:"
+QuestDropdown.Size = UDim2.new(0.8, 0, 0, 30)
+QuestDropdown.Position = UDim2.new(0.1, 0, 0.55, 0)
+QuestDropdown.TextColor3 = Color3.new(1, 1, 1)
+QuestDropdown.Font = Enum.Font.SourceSans
+QuestDropdown.TextSize = 18
+QuestDropdown.BackgroundTransparency = 1
+
+local QuestSelectButton = Instance.new("TextButton", MainFrame)
+QuestSelectButton.Size = UDim2.new(0.8, 0, 0, 40)
+QuestSelectButton.Position = UDim2.new(0.1, 0, 0.6, 0)
+QuestSelectButton.Text = "None"
+QuestSelectButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+QuestSelectButton.TextColor3 = Color3.new(1, 1, 1)
+QuestSelectButton.Font = Enum.Font.SourceSans
+QuestSelectButton.TextSize = 20
+
+QuestSelectButton.MouseButton1Click:Connect(function()
+    SelectedQuest = Quest[math.random(1, #Quest)]
+    QuestSelectButton.Text = SelectedQuest
+end)
 
 -- Función de búsqueda de Quest
 local function quest()
@@ -83,19 +124,15 @@ end
 task.spawn(function()
     while task.wait() do
         if getgenv().AutoFarm then
+            -- Añadir BodyVelocity para evitar caídas
+            local antifall3 = Instance.new("BodyVelocity")
+            antifall3.Velocity = Vector3.new(0, 0, 0)
+            antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+            antifall3.Parent = player.Character.HumanoidRootPart
+            
             pcall(function()
-                -- Agregar BodyVelocity al jugador
-                local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-                if humanoidRootPart then
-                    local bodyVelocity = humanoidRootPart:FindFirstChild("AutoFarmBodyVelocity") or Instance.new("BodyVelocity")
-                    bodyVelocity.Name = "AutoFarmBodyVelocity"
-                    bodyVelocity.MaxForce = Vector3.new(0, math.huge, 0)  -- Fuerza solo en la dirección Y (vertical)
-                    bodyVelocity.Velocity = Vector3.new(0, 0, 0)  -- Mantener al personaje en el mismo lugar verticalmente
-                    bodyVelocity.Parent = humanoidRootPart
-                end
-
                 for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-                    if mob.Name:lower() == SelectedMob:lower() and player.Character and humanoidRootPart and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
+                    if mob.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
                         repeat
                             quest()
                             player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
@@ -105,14 +142,9 @@ task.spawn(function()
                     end
                 end
             end)
-        else
-            -- Eliminar BodyVelocity cuando AutoFarm está desactivado
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                local existingVelocity = player.Character.HumanoidRootPart:FindFirstChild("AutoFarmBodyVelocity")
-                if existingVelocity then
-                    existingVelocity:Destroy()
-                end
-            end
+
+            -- Eliminar BodyVelocity al terminar
+            antifall3:Destroy()
         end
     end
 end)
