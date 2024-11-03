@@ -1,9 +1,11 @@
+-- Get services
 local player = game:GetService("Players").LocalPlayer
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
 local marketService = game:GetService("MarketplaceService")
 local virtualUser = game:GetService("VirtualUser")
 
+-- Player data and assets
 local data = replicatedStorage.Datas[player.UserId]
 local skills = replicatedStorage.Package.Skills
 local events = replicatedStorage.Package.Events
@@ -17,11 +19,11 @@ player.Idled:Connect(function()
     print("Estado: Activo")
 end)
 
--- Inicialización de tablas
+-- Initialize tables
 local MobTable = {}
 local mobNamesAdded = {}
 
--- Rellenar MobTable con los nombres de los mobs únicos
+-- Fill MobTable with unique mob names
 for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     if not player:FindFirstChild(mob.Name) and not mobNamesAdded[mob.Name] then
         table.insert(MobTable, mob.Name)
@@ -29,6 +31,7 @@ for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     end
 end
 
+-- Quest list
 local Quest = {
     "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly",
     "X Fighter Trainer", "Super Vegetable", "Klirin", "SSJ2 Wukong",
@@ -36,7 +39,7 @@ local Quest = {
     "Kai-fist Master", "Kaio Student", "Turtle Student"
 }
 
--- Cargar la librería y crear la interfaz
+-- Load library and create interface
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
@@ -45,12 +48,12 @@ local Window = Rayfield:CreateWindow({
     LoadingSubtitle = "",
     ConfigurationSaving = {
         Enabled = true,
-        FolderName = nil, -- Crear una carpeta personalizada para el hub/juego
+        FolderName = nil, -- Create a custom folder for the hub/game
         FileName = "Big Hub"
     },
     Discord = {
         Enabled = false,
-        Invite = "noinvitelink", -- Código de invitación de Discord
+        Invite = "noinvitelink", -- Discord invite code
         RememberJoins = true
     },
     KeySystem = false,
@@ -67,7 +70,7 @@ local Window = Rayfield:CreateWindow({
 
 local Tab = Window:CreateTab("MainTab", 4483362458)
 
--- Toggle para activar/desactivar el AutoFarm
+-- Toggle for AutoFarm
 local Toggle = Tab:CreateToggle({
     Name = "On/Off",
     CurrentValue = false,
@@ -77,7 +80,7 @@ local Toggle = Tab:CreateToggle({
     end,
 })
 
--- Dropdown para seleccionar Mob
+-- Dropdown for Mob selection
 local MobDropdown = Tab:CreateDropdown({
     Name = "Select Mob",
     Options = MobTable,
@@ -89,7 +92,7 @@ local MobDropdown = Tab:CreateDropdown({
     end,
 })
 
--- Dropdown para seleccionar Quest
+-- Dropdown for Quest selection
 local QuestDropdown = Tab:CreateDropdown({
     Name = "Select Quest",
     Options = Quest,
@@ -101,7 +104,7 @@ local QuestDropdown = Tab:CreateDropdown({
     end,
 })
 
--- Slider para seleccionar la distancia de teletransporte
+-- Slider for teleport distance
 local Slider = Tab:CreateSlider({
     Name = "Distance",
     Range = {0, 10},
@@ -114,8 +117,8 @@ local Slider = Tab:CreateSlider({
     end,
 })
 
--- Función para aceptar la misión seleccionada
-local function quest()
+-- Function to accept the selected quest
+local function acceptQuest()
     if data.Quest.Value ~= SelectedQuest then
         local npc = game:GetService("Workspace").Others.NPCs[SelectedQuest]
         player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame
@@ -126,7 +129,7 @@ local function quest()
     end
 end
 
--- Loop principal para el AutoFarm
+-- Main loop for AutoFarm
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -134,16 +137,15 @@ task.spawn(function()
                 for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
                     if mob.Name:lower() == SelectedMob:lower() and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
                         repeat
-                            quest()
+                            acceptQuest()
                             player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame + mob.HumanoidRootPart.CFrame.LookVector * TpDistance
                             wait()
-                            local attackString = "Blacknwhite27" -- Cambia según sea necesario
-                            local attackNumber = 1 -- Cambia según sea necesario
+                            local attackString = "Blacknwhite27" -- Change as needed
+                            local attackNumber = 1 -- Change as needed
                             events.p:FireServer(attackString, attackNumber)
                         until not getgenv().AutoFarm or not mob or mob.Humanoid.Health <= 0
                     end
                 end
-            end
             end
         end)
     end
