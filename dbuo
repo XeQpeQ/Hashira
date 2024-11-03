@@ -144,19 +144,6 @@ task.spawn(function()
                     end
                 end
             end
-
-            -- Anti-fall
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                if not player.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                    local antifall = Instance.new("BodyVelocity", player.Character.HumanoidRootPart)
-                    antifall.Velocity = Vector3.new(0, 0, 0)
-                    antifall.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-                elseif not getgenv().AutoFarm then
-                    local bodyVelocity = player.Character.HumanoidRootPart:FindFirstChild("BodyVelocity")
-                    if bodyVelocity then
-                        bodyVelocity:Destroy()
-                    end
-                end
             end
         end)
     end
