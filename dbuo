@@ -80,7 +80,7 @@ local Toggle = Tab:CreateToggle({
 
 local DropdownMob = Tab:CreateDropdown({
    Name = "Select Mob",
-   Options = {},  -- Asegúrate de definir MobTable correctamente
+   Options = MobTable,  -- Asegúrate de definir MobTable correctamente
    CurrentOption = {"None"},
    MultipleOptions = false,
    Flag = "Dropdown1",
