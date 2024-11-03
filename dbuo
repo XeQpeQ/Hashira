@@ -6,6 +6,9 @@ local data = replicatedStorage.Datas[player.UserId]
 local skills = replicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
 
+-- Cargar Tokyo Lib
+local TokyoLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/weakhoes/Roblox-UI-Libs/main/1%20Tokyo%20Lib%20(FIXED)/Tokyo%20Lib.lua'))()
+
 local Quest = {
     "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly", "X Fighter Trainer",
     "Super Vegetable", "Klirin", "SSJ2 Wukong", "Perfect Atom", "Radish", "Mapa",
@@ -23,88 +26,38 @@ for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     end
 end
 
--- Variables de selección
+-- Crear la ventana de Tokyo Lib
+local Window = TokyoLib:CreateWindow("Big Hub")
+
+local MainTab = Window:CreateTab("MainTab")
+
+local AutoFarmToggle = MainTab:CreateToggle({
+    Name = "AutoFarm",
+    Default = false,
+    Callback = function(Value)
+        getgenv().AutoFarm = Value
+    end,
+})
+
 local SelectedMob = "None"
+local MobDropdown = MainTab:CreateDropdown({
+    Name = "Select Mob",
+    Options = MobTable,
+    Default = SelectedMob,
+    Callback = function(Option)
+        SelectedMob = Option
+    end,
+})
+
 local SelectedQuest = "None"
-getgenv().AutoFarm = false
-
--- Crear la interfaz de usuario
-local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 300, 0, 400)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-
-local Title = Instance.new("TextLabel", MainFrame)
-Title.Text = "AutoFarm Interface"
-Title.Size = UDim2.new(1, 0, 0, 50)
-Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Title.TextColor3 = Color3.new(1, 1, 1)
-Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 24
-
--- Botón de activación de AutoFarm
-local AutoFarmButton = Instance.new("TextButton", MainFrame)
-AutoFarmButton.Size = UDim2.new(0.8, 0, 0, 40)
-AutoFarmButton.Position = UDim2.new(0.1, 0, 0.2, 0)
-AutoFarmButton.Text = "AutoFarm: OFF"
-AutoFarmButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-AutoFarmButton.TextColor3 = Color3.new(1, 1, 1)
-AutoFarmButton.Font = Enum.Font.SourceSans
-AutoFarmButton.TextSize = 20
-
-AutoFarmButton.MouseButton1Click:Connect(function()
-    getgenv().AutoFarm = not getgenv().AutoFarm
-    AutoFarmButton.Text = "AutoFarm: " .. (getgenv().AutoFarm and "ON" or "OFF")
-end)
-
--- Dropdown para seleccionar Mob
-local MobDropdown = Instance.new("TextLabel", MainFrame)
-MobDropdown.Text = "Select Mob:"
-MobDropdown.Size = UDim2.new(0.8, 0, 0, 30)
-MobDropdown.Position = UDim2.new(0.1, 0, 0.35, 0)
-MobDropdown.TextColor3 = Color3.new(1, 1, 1)
-MobDropdown.Font = Enum.Font.SourceSans
-MobDropdown.TextSize = 18
-MobDropdown.BackgroundTransparency = 1
-
-local MobSelectButton = Instance.new("TextButton", MainFrame)
-MobSelectButton.Size = UDim2.new(0.8, 0, 0, 40)
-MobSelectButton.Position = UDim2.new(0.1, 0, 0.4, 0)
-MobSelectButton.Text = "None"
-MobSelectButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-MobSelectButton.TextColor3 = Color3.new(1, 1, 1)
-MobSelectButton.Font = Enum.Font.SourceSans
-MobSelectButton.TextSize = 20
-
-MobSelectButton.MouseButton1Click:Connect(function()
-    SelectedMob = MobTable[math.random(1, #MobTable)]
-    MobSelectButton.Text = SelectedMob
-end)
-
--- Dropdown para seleccionar Quest
-local QuestDropdown = Instance.new("TextLabel", MainFrame)
-QuestDropdown.Text = "Select Quest:"
-QuestDropdown.Size = UDim2.new(0.8, 0, 0, 30)
-QuestDropdown.Position = UDim2.new(0.1, 0, 0.55, 0)
-QuestDropdown.TextColor3 = Color3.new(1, 1, 1)
-QuestDropdown.Font = Enum.Font.SourceSans
-QuestDropdown.TextSize = 18
-QuestDropdown.BackgroundTransparency = 1
-
-local QuestSelectButton = Instance.new("TextButton", MainFrame)
-QuestSelectButton.Size = UDim2.new(0.8, 0, 0, 40)
-QuestSelectButton.Position = UDim2.new(0.1, 0, 0.6, 0)
-QuestSelectButton.Text = "None"
-QuestSelectButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-QuestSelectButton.TextColor3 = Color3.new(1, 1, 1)
-QuestSelectButton.Font = Enum.Font.SourceSans
-QuestSelectButton.TextSize = 20
-
-QuestSelectButton.MouseButton1Click:Connect(function()
-    SelectedQuest = Quest[math.random(1, #Quest)]
-    QuestSelectButton.Text = SelectedQuest
-end)
+local QuestDropdown = MainTab:CreateDropdown({
+    Name = "Select Quest",
+    Options = Quest,
+    Default = SelectedQuest,
+    Callback = function(Option)
+        SelectedQuest = Option
+    end,
+})
 
 -- Función de búsqueda de Quest
 local function quest()
