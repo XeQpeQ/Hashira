@@ -16,8 +16,6 @@ local Quest = {
 
 local MobTable = {}
 local mobNamesAdded = {}
-local SelectedMob = nil
-local SelectedQuest = nil
 
 -- Llenar MobTable con nombres únicos de mobs
 for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
@@ -86,17 +84,6 @@ local DropdownQuest = Tab:CreateDropdown({
    end,
 })
 
-local function quest()
-    if replicatedStorage.Datas[player.UserId].Quest.Value ~= SelectedQuest then
-        local questNPC = game:GetService("Workspace").Others.NPCs[SelectedQuest]
-        player.Character.HumanoidRootPart.CFrame = questNPC.HumanoidRootPart.CFrame
-        repeat
-            wait()
-            events.Qaction:InvokeServer(questNPC)
-        until replicatedStorage.Datas[player.UserId].Quest.Value == SelectedQuest
-    end
-end
-
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -115,3 +102,13 @@ task.spawn(function()
         end)
     end
 end)
+local function quest()
+    if replicatedStorage.Datas[player.UserId].Quest.Value ~= SelectedQuest then
+        local questNPC = game:GetService("Workspace").Others.NPCs[SelectedQuest]
+        player.Character.HumanoidRootPart.CFrame = questNPC.HumanoidRootPart.CFrame
+        repeat
+            wait()
+            events.Qaction:InvokeServer(questNPC)
+        until replicatedStorage.Datas[player.UserId].Quest.Value == SelectedQuest
+    end
+end
