@@ -8,8 +8,8 @@ local data = replicatedStorage.Datas[player.UserId]
 local skills = replicatedStorage.Package.Skills
 local events = replicatedStorage.Package.Events
 
--- Anti-afk script
-player.Idled:connect(function()
+-- Anti-AFK script
+player.Idled:Connect(function()
     virtualUser:CaptureController()
     virtualUser:ClickButton2(Vector2.new())
     print("Roblox intentó expulsarte, pero lo evité")
@@ -17,6 +17,7 @@ player.Idled:connect(function()
     print("Estado: Activo")
 end)
 
+-- Inicialización de tablas
 local MobTable = {}
 local mobNamesAdded = {}
 
@@ -35,101 +36,134 @@ local Quest = {
     "Kai-fist Master", "Kaio Student", "Turtle Student"
 }
 
+-- Variables globales para mantener estado de autofarm
+getgenv().AutoFarm = false
+local SelectedMob = nil
+local SelectedQuest = nil
+local TpDistance = 1
+
 -- Cargar la librería y crear la interfaz
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/drillygzzly/Other/main/1"))()
-library:init() -- Inicializar la librería
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-local Window = library.NewWindow({
-	title = "Hashira Hub",
-	size = UDim2.new(0, 525, 0, 650)
+local Window = Rayfield:CreateWindow({
+    Name = "Hashira Hub",
+    LoadingTitle = "Loading",
+    LoadingSubtitle = "",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil, -- Crear una carpeta personalizada para el hub/juego
+        FileName = "Big Hub"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "noinvitelink", -- Código de invitación de Discord
+        RememberJoins = true
+    },
+    KeySystem = false,
+    KeySettings = {
+        Title = "Untitled",
+        Subtitle = "Key System",
+        Note = "No se proporciona método para obtener la clave",
+        FileName = "Key",
+        SaveKey = true,
+        GrabKeyFromSite = false,
+        Key = {"Hello"}
+    }
 })
 
-local tabs = {
-    Tab1 = Window:AddTab("MainTab"),
-	Settings = library:CreateSettingsTab(Window),
-}
+local Tab = Window:CreateTab("MainTab", 4483362458)
 
-local sections = {
-	Section1 = tabs.Tab1:AddSection("Section1", 1),
-	Section2 = tabs.Tab1:AddSection("Section2", 2),
-}
-
-sections.Section1:AddToggle({
-	enabled = true,
-	text = "On/Off",
-	flag = "Toggle_1",
-	tooltip = "Tooltip1",
-	risky = false,
-	callback = function(val)
-	    getgenv().AutoFarm = val
-	end
+-- Toggle para activar/desactivar el AutoFarm
+local Toggle = Tab:CreateToggle({
+    Name = "On/Off",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        getgenv().AutoFarm = Value
+    end,
 })
 
-sections.Section1:AddList({
-	enabled = true,
-	text = "Select Mob",
-	flag = "List_1",
-	multi = false,
-	tooltip = "Tooltip1",
-	value = "None",
-	values = MobTable,
-	callback = function(v)
-	    SelectedMob = v
-	end
+-- Dropdown para seleccionar Mob
+local MobDropdown = Tab:CreateDropdown({
+    Name = "Select Mob",
+    Options = MobTable,
+    CurrentOption = "None",
+    MultipleOptions = false,
+    Flag = "Dropdown1",
+    Callback = function(Option)
+        SelectedMob = Option
+    end,
 })
 
-sections.Section1:AddList({
-	enabled = true,
-	text = "Select Quest",
-	flag = "List_2",
-	multi = false,
-	tooltip = "Tooltip2",
-	value = "None",
-	values = Quest,
-	callback = function(v)
-	    SelectedQuest = v
-	end
+-- Dropdown para seleccionar Quest
+local QuestDropdown = Tab:CreateDropdown({
+    Name = "Select Quest",
+    Options = Quest,
+    CurrentOption = "None",
+    MultipleOptions = false,
+    Flag = "Dropdown2",
+    Callback = function(Option)
+        SelectedQuest = Option
+    end,
 })
 
-sections.Section1:AddSlider({
-	text = "Tp Distance",
-	flag = 'Slider_1',
-	value = 0,
-	min = 0,
-	max = 10,
-	increment = 1,
-	tooltip = "Tooltip1",
-	callback = function(v)
-		TpDistance = v
-	end
+-- Slider para seleccionar la distancia de teletransporte
+local Slider = Tab:CreateSlider({
+    Name = "Distance",
+    Range = {0, 10},
+    Increment = 1,
+    Suffix = "",
+    CurrentValue = 1,
+    Flag = "Slider1",
+    Callback = function(Value)
+        TpDistance = Value
+    end,
 })
 
+-- Función para aceptar la misión seleccionada
 local function quest()
-	if data.Quest.Value ~= SelectedQuest then
-		player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
-		repeat
-			wait()
-			events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[SelectedQuest])
-		until data.Quest.Value == SelectedQuest
-	end
-end       
+    if data.Quest.Value ~= SelectedQuest then
+        local npc = game:GetService("Workspace").Others.NPCs[SelectedQuest]
+        player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame
+        repeat
+            wait()
+            events.Qaction:InvokeServer(npc)
+        until data.Quest.Value == SelectedQuest
+    end
+end
+
+-- Loop principal para el AutoFarm
 task.spawn(function()
-	while task.wait() do
-		pcall(function()
-			if getgenv().AutoFarm and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-				for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-					if mob.Name:lower() == SelectedMob:lower() and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
-						repeat
-							quest()
-							player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame + mob.HumanoidRootPart.CFrame.lookVector * TpDistance
-							wait()
-							local ohString1 = "Blacknwhite27"
-							local ohNumber2 = 1
-							events.p:FireServer(ohString1, ohNumber2)
-						until not getgenv().AutoFarm or not mob or mob.Humanoid.Health <= 0
-					end
-				end
-			end
-		end)
-	end
+    while task.wait() do
+        pcall(function()
+            if getgenv().AutoFarm and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+                    if mob.Name:lower() == SelectedMob:lower() and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
+                        repeat
+                            quest()
+                            player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame + mob.HumanoidRootPart.CFrame.LookVector * TpDistance
+                            wait()
+                            local attackString = "Blacknwhite27" -- Cambia según sea necesario
+                            local attackNumber = 1 -- Cambia según sea necesario
+                            events.p:FireServer(attackString, attackNumber)
+                        until not getgenv().AutoFarm or not mob or mob.Humanoid.Health <= 0
+                    end
+                end
+            end
+
+            -- Anti-fall
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                if not player.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+                    local antifall = Instance.new("BodyVelocity", player.Character.HumanoidRootPart)
+                    antifall.Velocity = Vector3.new(0, 0, 0)
+                    antifall.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                elseif not getgenv().AutoFarm then
+                    local bodyVelocity = player.Character.HumanoidRootPart:FindFirstChild("BodyVelocity")
+                    if bodyVelocity then
+                        bodyVelocity:Destroy()
+                    end
+                end
+            end
+        end)
+    end
 end)
