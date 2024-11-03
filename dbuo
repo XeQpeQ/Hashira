@@ -7,7 +7,7 @@ local skills = replicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
 
 -- Cargar Tokyo Lib
-local TokyoLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/weakhoes/Roblox-UI-Libs/main/1%20Tokyo%20Lib%20(FIXED)/Tokyo%20Lib.lua'))()
+local TokyoLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/drillygzzly/Roblox-UI-Libs/main/1%20Tokyo%20Lib%20(FIXED)/Tokyo%20Lib%20Source.lua'))()
 
 local Quest = {
     "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly", "X Fighter Trainer",
