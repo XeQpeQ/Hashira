@@ -9,6 +9,17 @@ local data = game.ReplicatedStorage.Datas[LP.UserId]
 local skills = game.ReplicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
 
+local MobTable = {}
+local mobNamesAdded = {}
+
+-- Fill MobTable with unique mob names
+for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
+    if not player:FindFirstChild(mob.Name) and not mobNamesAdded[mob.Name] then
+        table.insert(MobTable, mob.Name)
+        mobNamesAdded[mob.Name] = true
+    end
+end
+
 local Quest = {
     "Top X Fighter",
     "SSJB Wukong",
