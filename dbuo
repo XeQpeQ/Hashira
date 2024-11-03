@@ -1,0 +1,135 @@
+local player = game:GetService("Players").LocalPlayer
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local marketService = game:GetService("MarketplaceService")
+local virtualUser = game:GetService("VirtualUser")
+
+local data = replicatedStorage.Datas[player.UserId]
+local skills = replicatedStorage.Package.Skills
+local events = replicatedStorage.Package.Events
+
+-- Anti-afk script
+player.Idled:connect(function()
+    virtualUser:CaptureController()
+    virtualUser:ClickButton2(Vector2.new())
+    print("Roblox intentó expulsarte, pero lo evité")
+    wait(2)
+    print("Estado: Activo")
+end)
+
+local MobTable = {}
+local mobNamesAdded = {}
+
+-- Rellenar MobTable con los nombres de los mobs únicos
+for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
+    if not player:FindFirstChild(mob.Name) and not mobNamesAdded[mob.Name] then
+        table.insert(MobTable, mob.Name)
+        mobNamesAdded[mob.Name] = true
+    end
+end
+
+local Quest = {
+    "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly",
+    "X Fighter Trainer", "Super Vegetable", "Klirin", "SSJ2 Wukong",
+    "Perfect Atom", "Radish", "Mapa", "Broccoli", "SSJG Kakata",
+    "Kai-fist Master", "Kaio Student", "Turtle Student"
+}
+
+-- Cargar la librería y crear la interfaz
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/drillygzzly/Other/main/1"))()
+library:init() -- Inicializar la librería
+
+local Window = library.NewWindow({
+	title = "Hashira Hub",
+	size = UDim2.new(0, 525, 0, 650)
+})
+
+local tabs = {
+    Tab1 = Window:AddTab("MainTab"),
+	Settings = library:CreateSettingsTab(Window),
+}
+
+local sections = {
+	Section1 = tabs.Tab1:AddSection("Section1", 1),
+	Section2 = tabs.Tab1:AddSection("Section2", 2),
+}
+
+sections.Section1:AddToggle({
+	enabled = true,
+	text = "On/Off",
+	flag = "Toggle_1",
+	tooltip = "Tooltip1",
+	risky = false,
+	callback = function(val)
+	    getgenv().AutoFarm = val
+	end
+})
+
+sections.Section1:AddList({
+	enabled = true,
+	text = "Select Mob",
+	flag = "List_1",
+	multi = false,
+	tooltip = "Tooltip1",
+	value = "None",
+	values = MobTable,
+	callback = function(v)
+	    SelectedMob = v
+	end
+})
+
+sections.Section1:AddList({
+	enabled = true,
+	text = "Select Quest",
+	flag = "List_2",
+	multi = false,
+	tooltip = "Tooltip2",
+	value = "None",
+	values = Quest,
+	callback = function(v)
+	    SelectedQuest = v
+	end
+})
+
+sections.Section1:AddSlider({
+	text = "Tp Distance",
+	flag = 'Slider_1',
+	value = 0,
+	min = 0,
+	max = 10,
+	increment = 1,
+	tooltip = "Tooltip1",
+	callback = function(v)
+		TpDistance = v
+	end
+})
+
+local function quest()
+	if data.Quest.Value ~= SelectedQuest then
+		player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
+		repeat
+			wait()
+			events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[SelectedQuest])
+		until data.Quest.Value == SelectedQuest
+	end
+end       
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if getgenv().AutoFarm and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+				for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+					if mob.Name:lower() == SelectedMob:lower() and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
+						repeat
+							quest()
+							player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame + mob.HumanoidRootPart.CFrame.lookVector * TpDistance
+							wait()
+							local ohString1 = "Blacknwhite27"
+							local ohNumber2 = 1
+							events.p:FireServer(ohString1, ohNumber2)
+						until not getgenv().AutoFarm or not mob or mob.Humanoid.Health <= 0
+					end
+				end
+			end
+		end)
+	end
+end)
