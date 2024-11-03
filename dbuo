@@ -111,6 +111,18 @@ local DropdownQuest = Tab:CreateDropdown({
    end,
 })
 
+local Slider = Tab:CreateSlider({
+   Name = "Slider Example",
+   Range = {0, 10},
+   Increment = 1,
+   Suffix = "",
+   CurrentValue = 1,
+   Flag = "Slider1", 
+   Callback = function(Value)
+    TpDistance = Value
+   end,
+})
+
 local function GetDistance(Endpoint)
     if typeof(Endpoint) == "Instance" then
         Endpoint = Vector3.new(Endpoint.Position.X, LP.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
