@@ -1,3 +1,4 @@
+transform = false
 local player = game:GetService("Players").LocalPlayer
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local events = replicatedStorage.Package.Events
@@ -5,6 +6,109 @@ local runService = game:GetService("RunService")
 local data = replicatedStorage.Datas[player.UserId]
 local skills = replicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
+
+function gamepass(gamepassid)
+    local s,res = pcall(market.UserOwnsGamePassAsync,market,player.UserId,gamepassid)
+    if not s then
+        res = false
+    end
+    return res
+end
+local gamepasses = {}
+for i,v in pairs(skills:GetChildren()) do
+    if v:FindFirstChild("Gamepass") then
+        gamepasses[v.Gamepass.Value] = gamepass(v.Gamepass.Value)
+    end
+end
+
+function recharge()
+    repeat
+        spawn(function()
+            events.cha:InvokeServer(key)
+        end)
+        wait()
+    until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
+end
+
+function trans()
+	local unlocked = {}
+    if pcall(function() return player.Character.Status.Transformation,player.Character.Status.SelectedTransformation,player.Character.Stats.Ki end) then
+		local shit = skills:GetChildren()
+		for i = 1, #shit do local v = shit[i]
+			if v:FindFirstChild("Time") then
+				local un = true
+                local shit2 = v.Requirements:GetChildren()
+                local al = v:FindFirstChild("Allignment")
+				for i2 = 1, #shit2 do local v2 = shit2[i2]
+					if data[v2.Name].Value < v2.Value then
+						un = false
+					end
+				end
+				if al and al.Value ~= data.Allignment.Value then
+				    un = false
+                end
+                if v:FindFirstChild("Gamepass") and not gamepasses[v.Gamepass.Value] then
+                    un = false
+                end
+				if un then
+					table.insert(unlocked, v.Name)
+				end
+            end
+		end
+		if #unlocked > 1 then
+			table.sort(unlocked, function(a,b)
+				return skills[a].Requirements.Strength.Value > skills[b].Requirements.Strength.Value
+            end)
+            if unlocked[1] ~= player.Character.Status.Transformation.Value then
+    			return unlocked[1]
+            end
+        end
+		return false
+	end
+end
+
+function transformation()
+    local form = trans()
+    if typeof(form) == "string" then
+        print(form)
+        if player.Character.Status.Transformation.Value ~= "None" then
+            spawn(function()
+                events.ta:InvokeServer()
+            end)
+        end
+        repeat
+            spawn(function()
+                events.equipskill:InvokeServer(form)
+            end)
+            wait(.25)
+        until player.Character.Status.SelectedTransformation.Value == form
+        repeat
+            spawn(function()
+                events.cha:InvokeServer(key)
+            end)
+            wait()
+        until player.Character.Stats.Ki.Value == player.Character.Stats.Ki.MaxValue
+        local max = player.Character.Stats.Ki.MaxValue
+        repeat
+            wait(.25)
+            spawn(function()
+                events.ta:InvokeServer()
+            end)
+        until max < player.Character.Stats.Ki.MaxValue
+        if not energy then
+            recharge()
+        end
+    end
+end
+
+Stepped = game:GetService('RunService').Stepped:Connect(function()
+    if player.Character and player.Character:FindFirstChild("Humanoid") then 
+        player.Character.Humanoid:ChangeState(11)
+    end
+    if Autofarm == false then 
+        Stepped:Disconnect()
+    end
+end)
 
 local Quest = {
     "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly", "X Fighter Trainer",
@@ -46,6 +150,22 @@ PlayerTab:AddToggle({
 	Default = false,
 	Callback = function(Value)
 		getgenv().AutoRebirth = Value
+	end    
+})
+
+PlayerTab:AddToggle({
+	Name = "Auto Transform",
+	Default = false,
+	Callback = function(Value)
+		Transform = Value
+	end    
+})
+
+PlayerTab:AddToggle({
+	Name = "Energy Drain",
+	Default = false,
+	Callback = function(Value)
+		energy = Value
 	end    
 })
 
@@ -114,5 +234,27 @@ task.spawn(function()
         if getgenv().AutoRebirth then
             game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("reb"):InvokeServer()
         end
+    end
+end)
+
+spawn(function()
+    while true do wait()
+        if Transform then
+            transformation()
+            wait(1)
+        end
+    end
+end)
+
+spawn(function()
+    while true do
+        if energy and drain.Name == "drain" then
+            drain.Name = "drain2"
+            drain2.Name = "drain"
+        elseif not energy and drain.Name == "drain2" then
+            drain.Name = "drain"
+            drain2.Name = "drain2"
+        end
+        wait(.7)
     end
 end)
