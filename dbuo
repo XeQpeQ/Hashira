@@ -85,6 +85,11 @@ end
 task.spawn(function()
     while task.wait() do
         if getgenv().AutoFarm then
+            -- Añadiendo BodyVelocity para evitar caídas
+            local antifall3 = Instance.new("BodyVelocity", player.Character.HumanoidRootPart)
+            antifall3.Velocity = Vector3.new(0, 0, 0)
+            antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+            
             pcall(function()
                 for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
                     if mob.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
@@ -97,6 +102,9 @@ task.spawn(function()
                     end
                 end
             end)
+
+            -- Limpiar el BodyVelocity después de terminar el farmeo
+            antifall3:Destroy()
         end
     end
 end)
