@@ -1,71 +1,45 @@
 local LP = game.Players.LocalPlayer
-local client = game.Players.LocalPlayer
-local FarmMethod = "Behind"
-local tweenspeed = 400
-local Distance = 10
 local events = game:GetService("ReplicatedStorage").Package.Events
 local rs = game:GetService("RunService")
 local data = game.ReplicatedStorage.Datas[LP.UserId]
-local skills = game.ReplicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
+local TweenService = game:GetService("TweenService")
 
 local MobTable = {}
 local mobNamesAdded = {}
 
 -- Fill MobTable with unique mob names
 for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
-    if not player:FindFirstChild(mob.Name) and not mobNamesAdded[mob.Name] then
+    if not mobNamesAdded[mob.Name] then
         table.insert(MobTable, mob.Name)
         mobNamesAdded[mob.Name] = true
     end
 end
 
 local Quest = {
-    "Top X Fighter",
-    "SSJB Wukong",
-    "Citizen",
-    "Kid Nohag",
-    "Chilly",
-    "X Fighter Trainer",
-    "Super Vegetable",
-    "Klirin",
-    "SSJ2 Wukong",
-    "Perfect Atom",
-    "Radish",
-    "Mapa",
-    "Broccoli",
-    "SSJG Kakata",
-    "Kai-fist Master",
-    "Kaio Student",
-    "Turtle Student"
+    "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly",
+    "X Fighter Trainer", "Super Vegetable", "Klirin", "SSJ2 Wukong",
+    "Perfect Atom", "Radish", "Mapa", "Broccoli", "SSJG Kakata",
+    "Kai-fist Master", "Kaio Student", "Turtle Student"
 }
 
 local bb = game:GetService('VirtualUser')
+local TweenFa -- Variable to store the tween function
 
-game:GetService('Players').LocalPlayer.Idled:connect(function()
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
     bb:CaptureController()
     bb:ClickButton2(Vector2.new())
-    ab.Text = "Roblox intentó expulsarte, pero lo evité"
+    print("Roblox intentó expulsarte, pero lo evité")
     wait(2)
-    ab.Text = "Estado: Activo"
+    print("Estado: Activo")
 end)
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
 local Window = Rayfield:CreateWindow({
    Name = "Hashira Hub",
    LoadingTitle = "Loading",
-   LoadingSubtitle = "",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Big Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
+   ConfigurationSaving = { Enabled = false },
+   Discord = { Enabled = false },
    KeySystem = false,
    KeySettings = {
       Title = "Untitled",
@@ -91,12 +65,12 @@ local Toggle = Tab:CreateToggle({
 
 local DropdownMob = Tab:CreateDropdown({
    Name = "Select Mob",
-   Options = MobTable,  -- Asegúrate de definir MobTable correctamente
+   Options = MobTable,
    CurrentOption = {"None"},
    MultipleOptions = false,
    Flag = "Dropdown1",
    Callback = function(Option)
-        SelectedMob = Option
+        getgenv().SelectedMob = Option
    end,
 })
 
@@ -107,7 +81,7 @@ local DropdownQuest = Tab:CreateDropdown({
    MultipleOptions = false,
    Flag = "Dropdown2",
    Callback = function(Option)
-       SelectedQuest = Option
+       getgenv().SelectedQuest = Option
    end,
 })
 
@@ -119,38 +93,26 @@ local Slider = Tab:CreateSlider({
    CurrentValue = 1,
    Flag = "Slider1", 
    Callback = function(Value)
-    TpDistance = Value
+       getgenv().TpDistance = Value
    end,
 })
 
 local function GetDistance(Endpoint)
+    local characterPos = LP.Character.HumanoidRootPart.Position
     if typeof(Endpoint) == "Instance" then
-        Endpoint = Vector3.new(Endpoint.Position.X, LP.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+        return (Endpoint.Position - characterPos).Magnitude
     elseif typeof(Endpoint) == "CFrame" then
-        Endpoint = Vector3.new(Endpoint.Position.X, LP.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+        return (Endpoint.Position - characterPos).Magnitude
     end
-    return (Endpoint - LP.Character.HumanoidRootPart.Position).Magnitude
+    return 0
 end
 
 local function Tween(Endpoint)
-    if typeof(Endpoint) == "Instance" then
-        Endpoint = Endpoint.CFrame
-    end
     local Distance = GetDistance(Endpoint)
-    local TweenInfo = TweenInfo.new(Distance / tweenspeed, Enum.EasingStyle.Linear)
-    local TweenFunc = game:GetService("TweenService"):Create(LP.Character.HumanoidRootPart, TweenInfo, {CFrame = Endpoint})
+    local TweenInfo = TweenInfo.new(Distance / 400, Enum.EasingStyle.Linear)
+    local TweenFunc = TweenService:Create(LP.Character.HumanoidRootPart, TweenInfo, {CFrame = Endpoint})
+
     TweenFunc:Play()
-
-    function TweenFunc:Cancel()
-        TweenFunc:Cancel()
-        return false
-    end
-
-    if Distance <= 100 then
-        LP.Character.HumanoidRootPart.CFrame = Endpoint
-        TweenFunc:Cancel()
-        return false
-    end
     return TweenFunc
 end
 
@@ -158,8 +120,9 @@ end
 task.spawn(function()
     while wait() do
         pcall(function()
-            SkillActive = AutoUseSkills and (FarmBoss and NearestMobs) or AutoUseSkills and (FarmQuest and NearestMobs) or AutoUseSkills and (FarmMob and NearestMobs) or AutoUseSkills and (AutoSaibamen and NearestMobs)
             local FarmModes
+            local Distance = getgenv().TpDistance or 10  -- Use the slider value
+            local FarmMethod = getgenv().FarmMethod or "Behind"
 
             if FarmMethod == "Above" then
                 FarmModes = CFrame.new(0, Distance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
@@ -175,12 +138,12 @@ task.spawn(function()
 end)
 
 local function quest()
-    if data.Quest.Value ~= SelectedQuest then
-        LP.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
+    if data.Quest.Value ~= getgenv().SelectedQuest then
+        LP.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[getgenv().SelectedQuest].HumanoidRootPart.CFrame
         repeat
             wait()
-            events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[SelectedQuest])
-        until data.Quest.Value == SelectedQuest
+            events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[getgenv().SelectedQuest])
+        until data.Quest.Value == getgenv().SelectedQuest
     end
 end
 
@@ -189,20 +152,18 @@ task.spawn(function()
         pcall(function()
             if getgenv().AutoFarm then
                 if not LP.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
-                    local antifall3 = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
-                    antifall3.Velocity = Vector3.new(0, 0, 0)
-                    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                    local antifall = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
+                    antifall.Velocity = Vector3.new(0, 0, 0)
+                    antifall.MaxForce = Vector3.new(9e9, 9e9, 9e9)
                 end
 
                 for _, v in pairs(game:GetService("Workspace").Living:GetChildren()) do
-                    if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:lower() == SelectedMob:lower() and v.Humanoid.Health > 0 then
+                    if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:lower() == getgenv().SelectedMob:lower() and v.Humanoid.Health > 0 then
                         local distance = GetDistance(v:GetModelCFrame() * FarmModes)
 
                         repeat
                             quest()
-                            local ohString1 = "Blacknwhite27"
-                            local ohNumber2 = 1
-                            events.p:FireServer(ohString1, ohNumber2)
+                            events.p:FireServer("Blacknwhite27", 1)
                             task.wait()
 
                             if distance < 25 then
@@ -215,16 +176,8 @@ task.spawn(function()
                                 TweenFa = Tween(v:GetModelCFrame() * FarmModes)
                             end
 
-                            if v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and distance < 10 then
-                                NearestMobs = true
-                            elseif v.Humanoid.Health <= 0 or not v:FindFirstChild("Humanoid") and distance > 10 then
-                                NearestMobs = false
-                            end
-
                             distance = GetDistance(v:GetModelCFrame() * FarmModes) -- Actualiza la distancia en cada iteración
                         until not getgenv().AutoFarm or not v.Parent or v.Humanoid.Health <= 0 or not v:IsDescendantOf(workspace)
-
-                        NearestMobs = false
                     end
                 end
             end
