@@ -1,36 +1,25 @@
 local player = game:GetService("Players").LocalPlayer
-local events = game:GetService("ReplicatedStorage").Package.Events
-local player = game.Players.LocalPlayer
-local rs = game:GetService("RunService")
-local data = game.ReplicatedStorage.Datas[player.UserId]
-local skills = game.ReplicatedStorage.Package.Skills
-local events = game.ReplicatedStorage.Package.Events
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local events = replicatedStorage.Package.Events
+local runService = game:GetService("RunService")
+local data = replicatedStorage.Datas[player.UserId]
+local skills = replicatedStorage.Package.Skills
 local market = game:GetService("MarketplaceService")
+
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
 local Quest = {
-    "Top X Fighter",
-    "SSJB Wukong",
-    "Citizen",
-    "Kid Nohag",
-    "Chilly",
-    "X Fighter Trainer",
-    "Super Vegetable",
-    "Klirin",
-    "SSJ2 Wukong",
-    "Perfect Atom",
-    "Radish",
-    "Mapa",
-    "Broccoli",
-    "SSJG Kakata",
-    "Kai-fist Master",
-    "Kaio Student",
-    "Turtle Student"
+    "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly", "X Fighter Trainer",
+    "Super Vegetable", "Klirin", "SSJ2 Wukong", "Perfect Atom", "Radish", "Mapa",
+    "Broccoli", "SSJG Kakata", "Kai-fist Master", "Kaio Student", "Turtle Student"
 }
 
 local MobTable = {}
 local mobNamesAdded = {}
+local SelectedMob = nil
+local SelectedQuest = nil
 
--- Fill MobTable with unique mob names
+-- Llenar MobTable con nombres únicos de mobs
 for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     if not player:FindFirstChild(mob.Name) and not mobNamesAdded[mob.Name] then
         table.insert(MobTable, mob.Name)
@@ -44,23 +33,23 @@ local Window = Rayfield:CreateWindow({
    LoadingSubtitle = "by Sirius",
    ConfigurationSaving = {
       Enabled = true,
-      FolderName = nil, -- Create a custom folder for your hub/game
+      FolderName = nil,
       FileName = "Big Hub"
    },
    Discord = {
       Enabled = false,
-      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+      Invite = "noinvitelink",
+      RememberJoins = true
    },
-   KeySystem = false, -- Set this to true to use our key system
+   KeySystem = false,
    KeySettings = {
       Title = "Untitled",
       Subtitle = "Key System",
       Note = "No method of obtaining the key is provided",
-      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"Hello"}
    }
 })
 
@@ -69,62 +58,60 @@ local Tab = Window:CreateTab("MainTab", 4483362458)
 local Toggle = Tab:CreateToggle({
    Name = "AutoFarm",
    CurrentValue = false,
-   Flag = "Toggle1", 
+   Flag = "Toggle1",
    Callback = function(Value)
        getgenv().AutoFarm = Value
    end,
 })
 
-local Dropdown = Tab:CreateDropdown({
+local DropdownMob = Tab:CreateDropdown({
    Name = "Select Mob",
    Options = MobTable,
    CurrentOption = {"None"},
    MultipleOptions = false,
-   Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Flag = "Dropdown1",
    Callback = function(Option)
-       SelectMob = Option
+       SelectedMob = Option
    end,
 })
 
-local Dropdown = Tab:CreateDropdown({
-   Name = "Dropdown Example",
+local DropdownQuest = Tab:CreateDropdown({
+   Name = "Select Quest",
    Options = Quest,
    CurrentOption = {"None"},
    MultipleOptions = false,
-   Flag = "Dropdown1",
+   Flag = "Dropdown2",
    Callback = function(Option)
-        SelectQuest = Option
+        SelectedQuest = Option
    end,
 })
 
 local function quest()
-    if game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value ~= SelectedQuest then
-        player.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
-		repeat
-			wait()
-			events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[SelectedQuest])
-		until game:GetService("ReplicatedStorage").Datas[player.UserId].Quest.Value == SelectedQuest
-	end
+    if replicatedStorage.Datas[player.UserId].Quest.Value ~= SelectedQuest then
+        local questNPC = game:GetService("Workspace").Others.NPCs[SelectedQuest]
+        player.Character.HumanoidRootPart.CFrame = questNPC.HumanoidRootPart.CFrame
+        repeat
+            wait()
+            events.Qaction:InvokeServer(questNPC)
+        until replicatedStorage.Datas[player.UserId].Quest.Value == SelectedQuest
+    end
 end
 
 task.spawn(function()
     while task.wait() do
         pcall(function()
-            if getgenv().AutoFarm and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-for i, v in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-        if v.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-                repeat
-                quest()
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
-                wait()
-                local ohString1 = "Blacknwhite27"
-                local ohNumber2 = 1
-                game:GetService("ReplicatedStorage").Package.Events.p:FireServer(ohString1, ohNumber2)
-            until getgenv().Autofarm == false or v == nil or v.Humanoid.Health <= 0
+            if getgenv().AutoFarm then
+                for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
+                    if mob.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
+                        repeat
+                            quest()
+                            player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                            wait()
+                            events.p:FireServer("Blacknwhite27", 1)
+                        until not getgenv().AutoFarm or mob == nil or mob.Humanoid.Health <= 0
+                    end
+                end
             end
-           end
-          end
         end)
     end
 end)
-
