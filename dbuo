@@ -40,7 +40,7 @@ local Window = Rayfield:CreateWindow({
    LoadingTitle = "Rayfield Interface Suite",
    LoadingSubtitle = "by Sirius",
    ConfigurationSaving = {
-      Enabled = true,
+      Enabled = false,
       FolderName = nil, -- Create a custom folder for your hub/game
       FileName = "Big Hub"
    },
@@ -79,7 +79,7 @@ local DropdownMob = Tab:CreateDropdown({
    MultipleOptions = false,
    Flag = "Dropdown1",
    Callback = function(Option)
-        getgenv().SelectedMob = Option
+        SelectedMob = Option
    end,
 })
 
@@ -90,7 +90,7 @@ local DropdownQuest = Tab:CreateDropdown({
    MultipleOptions = false,
    Flag = "Dropdown2",
    Callback = function(Option)
-       getgenv().SelectedQuest = Option
+       SelectedQuest = Option
    end,
 })
 
@@ -102,7 +102,7 @@ local Slider = Tab:CreateSlider({
    CurrentValue = 1,
    Flag = "Slider1", 
    Callback = function(Value)
-       getgenv().TpDistance = Value
+       TpDistance = Value
    end,
 })
 
@@ -130,7 +130,7 @@ task.spawn(function()
     while wait() do
         pcall(function()
             local FarmModes
-            local Distance = getgenv().TpDistance or 10  -- Use the slider value
+            local Distance = TpDistance 
             local FarmMethod = getgenv().FarmMethod or "Behind"
 
             if FarmMethod == "Above" then
@@ -147,12 +147,12 @@ task.spawn(function()
 end)
 
 local function quest()
-    if data.Quest.Value ~= getgenv().SelectedQuest then
-        LP.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[getgenv().SelectedQuest].HumanoidRootPart.CFrame
+    if data.Quest.Value ~= SelectedQuest then
+        LP.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Others.NPCs[SelectedQuest].HumanoidRootPart.CFrame
         repeat
             wait()
-            events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[getgenv().SelectedQuest])
-        until data.Quest.Value == getgenv().SelectedQuest
+            events.Qaction:InvokeServer(game:GetService("Workspace").Others.NPCs[SelectedQuest])
+        until data.Quest.Value == SelectedQuest
     end
 end
 
@@ -167,7 +167,7 @@ task.spawn(function()
                 end
 
                 for _, v in pairs(game:GetService("Workspace").Living:GetChildren()) do
-                    if v:IsA("Model") and v:FindFirstChild("Humanoid") and v.Name:lower() == getgenv().SelectedMob:lower() and v.Humanoid.Health > 0 then
+                    if v.Name:lower() == SelectedMob:lower() and v.Humanoid.Health > 0 then
                         local distance = GetDistance(v:GetModelCFrame() * FarmModes)
 
                         repeat
