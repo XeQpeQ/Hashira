@@ -1,7 +1,10 @@
 local player = game:GetService("Players").LocalPlayer
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local events = replicatedStorage.Package.Events
+local runService = game:GetService("RunService")
 local data = replicatedStorage.Datas[player.UserId]
+local skills = replicatedStorage.Package.Skills
+local market = game:GetService("MarketplaceService")
 
 local Quest = {
     "Top X Fighter", "SSJB Wukong", "Citizen", "Kid Nohag", "Chilly", "X Fighter Trainer",
@@ -20,112 +23,99 @@ for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     end
 end
 
--- Crear GUI programática
-local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-screenGui.Name = "AutoFarmGUI"
+-- Variables de selección
+local SelectedMob = "None"
+local SelectedQuest = "None"
+getgenv().AutoFarm = false
 
-local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 300, 0, 250)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -125)
-mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-mainFrame.BorderSizePixel = 0
+-- Crear la interfaz de usuario
+local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 300, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 
-local titleLabel = Instance.new("TextLabel", mainFrame)
-titleLabel.Size = UDim2.new(1, 0, 0, 50)
-titleLabel.Text = "AutoFarm GUI"
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.BackgroundTransparency = 1
-titleLabel.TextScaled = true
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Text = "AutoFarm Interface"
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 24
 
-local autofarmToggle = Instance.new("TextButton", mainFrame)
-autofarmToggle.Size = UDim2.new(1, -20, 0, 40)
-autofarmToggle.Position = UDim2.new(0, 10, 0, 60)
-autofarmToggle.Text = "Enable AutoFarm"
-autofarmToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-autofarmToggle.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-autofarmToggle.BorderSizePixel = 0
-autofarmToggle.TextScaled = true
+-- Botón de activación de AutoFarm
+local AutoFarmButton = Instance.new("TextButton", MainFrame)
+AutoFarmButton.Size = UDim2.new(0.8, 0, 0, 40)
+AutoFarmButton.Position = UDim2.new(0.1, 0, 0.2, 0)
+AutoFarmButton.Text = "AutoFarm: OFF"
+AutoFarmButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+AutoFarmButton.TextColor3 = Color3.new(1, 1, 1)
+AutoFarmButton.Font = Enum.Font.SourceSans
+AutoFarmButton.TextSize = 20
 
-local selectedMob = MobTable[1] or "None"
-local selectedQuest = Quest[1] or "None"
-
--- Función para crear menú desplegable
-local function createDropdown(labelText, options, initialSelection, positionY, callback)
-    local label = Instance.new("TextLabel", mainFrame)
-    label.Size = UDim2.new(1, -20, 0, 20)
-    label.Position = UDim2.new(0, 10, 0, positionY)
-    label.Text = labelText
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.BackgroundTransparency = 1
-    label.TextScaled = true
-    
-    local dropdown = Instance.new("TextButton", mainFrame)
-    dropdown.Size = UDim2.new(1, -20, 0, 30)
-    dropdown.Position = UDim2.new(0, 10, 0, positionY + 25)
-    dropdown.Text = initialSelection
-    dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
-    dropdown.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-    dropdown.BorderSizePixel = 0
-    dropdown.TextScaled = true
-
-    local dropdownFrame = Instance.new("Frame", mainFrame)
-    dropdownFrame.Size = UDim2.new(1, -20, 0, #options * 30)
-    dropdownFrame.Position = UDim2.new(0, 10, 0, positionY + 60)
-    dropdownFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    dropdownFrame.BorderSizePixel = 0
-    dropdownFrame.Visible = false
-
-    for i, option in ipairs(options) do
-        local optionButton = Instance.new("TextButton", dropdownFrame)
-        optionButton.Size = UDim2.new(1, 0, 0, 30)
-        optionButton.Position = UDim2.new(0, 0, 0, (i - 1) * 30)
-        optionButton.Text = option
-        optionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        optionButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-        optionButton.BorderSizePixel = 0
-        optionButton.TextScaled = true
-
-        optionButton.MouseButton1Click:Connect(function()
-            dropdown.Text = option
-            dropdownFrame.Visible = false
-            callback(option)
-        end)
-    end
-
-    dropdown.MouseButton1Click:Connect(function()
-        dropdownFrame.Visible = not dropdownFrame.Visible
-    end)
-
-    return dropdown
-end
-
--- Crear dropdowns
-local mobDropdown = createDropdown("Select Mob", MobTable, selectedMob, 100, function(selected)
-    selectedMob = selected
+AutoFarmButton.MouseButton1Click:Connect(function()
+    getgenv().AutoFarm = not getgenv().AutoFarm
+    AutoFarmButton.Text = "AutoFarm: " .. (getgenv().AutoFarm and "ON" or "OFF")
 end)
 
-local questDropdown = createDropdown("Select Quest", Quest, selectedQuest, 150, function(selected)
-    selectedQuest = selected
+-- Dropdown para seleccionar Mob
+local MobDropdown = Instance.new("TextLabel", MainFrame)
+MobDropdown.Text = "Select Mob:"
+MobDropdown.Size = UDim2.new(0.8, 0, 0, 30)
+MobDropdown.Position = UDim2.new(0.1, 0, 0.35, 0)
+MobDropdown.TextColor3 = Color3.new(1, 1, 1)
+MobDropdown.Font = Enum.Font.SourceSans
+MobDropdown.TextSize = 18
+MobDropdown.BackgroundTransparency = 1
+
+local MobSelectButton = Instance.new("TextButton", MainFrame)
+MobSelectButton.Size = UDim2.new(0.8, 0, 0, 40)
+MobSelectButton.Position = UDim2.new(0.1, 0, 0.4, 0)
+MobSelectButton.Text = "None"
+MobSelectButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+MobSelectButton.TextColor3 = Color3.new(1, 1, 1)
+MobSelectButton.Font = Enum.Font.SourceSans
+MobSelectButton.TextSize = 20
+
+MobSelectButton.MouseButton1Click:Connect(function()
+    SelectedMob = MobTable[math.random(1, #MobTable)]
+    MobSelectButton.Text = SelectedMob
 end)
 
--- Toggle de AutoFarm
-local autofarmEnabled = false
-autofarmToggle.MouseButton1Click:Connect(function()
-    autofarmEnabled = not autofarmEnabled
-    getgenv().AutoFarm = autofarmEnabled
-    autofarmToggle.Text = autofarmEnabled and "Disable AutoFarm" or "Enable AutoFarm"
+-- Dropdown para seleccionar Quest
+local QuestDropdown = Instance.new("TextLabel", MainFrame)
+QuestDropdown.Text = "Select Quest:"
+QuestDropdown.Size = UDim2.new(0.8, 0, 0, 30)
+QuestDropdown.Position = UDim2.new(0.1, 0, 0.55, 0)
+QuestDropdown.TextColor3 = Color3.new(1, 1, 1)
+QuestDropdown.Font = Enum.Font.SourceSans
+QuestDropdown.TextSize = 18
+QuestDropdown.BackgroundTransparency = 1
+
+local QuestSelectButton = Instance.new("TextButton", MainFrame)
+QuestSelectButton.Size = UDim2.new(0.8, 0, 0, 40)
+QuestSelectButton.Position = UDim2.new(0.1, 0, 0.6, 0)
+QuestSelectButton.Text = "None"
+QuestSelectButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+QuestSelectButton.TextColor3 = Color3.new(1, 1, 1)
+QuestSelectButton.Font = Enum.Font.SourceSans
+QuestSelectButton.TextSize = 20
+
+QuestSelectButton.MouseButton1Click:Connect(function()
+    SelectedQuest = Quest[math.random(1, #Quest)]
+    QuestSelectButton.Text = SelectedQuest
 end)
 
 -- Función de búsqueda de Quest
 local function quest()
-    if replicatedStorage.Datas[player.UserId].Quest.Value ~= selectedQuest then
-        local questNPC = game:GetService("Workspace").Others.NPCs:FindFirstChild(selectedQuest)
+    if replicatedStorage.Datas[player.UserId].Quest.Value ~= SelectedQuest then
+        local questNPC = game:GetService("Workspace").Others.NPCs:FindFirstChild(SelectedQuest)
         if questNPC then
             player.Character.HumanoidRootPart.CFrame = questNPC.HumanoidRootPart.CFrame
             repeat
                 wait()
                 events.Qaction:InvokeServer(questNPC)
-            until replicatedStorage.Datas[player.UserId].Quest.Value == selectedQuest
+            until replicatedStorage.Datas[player.UserId].Quest.Value == SelectedQuest
         end
     end
 end
@@ -133,16 +123,16 @@ end
 -- Bucle para activar el AutoFarm
 task.spawn(function()
     while task.wait() do
-        if autofarmEnabled then
+        if getgenv().AutoFarm then
             pcall(function()
                 for _, mob in ipairs(game:GetService("Workspace").Living:GetChildren()) do
-                    if mob.Name:lower() == selectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
+                    if mob.Name:lower() == SelectedMob:lower() and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
                         repeat
                             quest()
                             player.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
                             wait()
                             events.p:FireServer("Blacknwhite27", 1)
-                        until not autofarmEnabled or not mob or mob.Humanoid.Health <= 0
+                        until not getgenv().AutoFarm or not mob or mob.Humanoid.Health <= 0
                     end
                 end
             end)
