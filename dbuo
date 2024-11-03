@@ -36,12 +36,6 @@ local Quest = {
     "Kai-fist Master", "Kaio Student", "Turtle Student"
 }
 
--- Variables globales para mantener estado de autofarm
-getgenv().AutoFarm = false
-local SelectedMob = nil
-local SelectedQuest = nil
-local TpDistance = 1
-
 -- Cargar la librería y crear la interfaz
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
