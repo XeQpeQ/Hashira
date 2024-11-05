@@ -3,28 +3,31 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local remoteEvent = ReplicatedStorage:WaitForChild("RemoteEvent")
-
 local brewingFrame = playerGui:WaitForChild("ScreenGui"):WaitForChild("BrewingFrame"):WaitForChild("Brewing")
 local brew1Empty = brewingFrame:WaitForChild("Brew1"):WaitForChild("Empty")
 local brew2Empty = brewingFrame:WaitForChild("Brew2"):WaitForChild("Empty")
 local brew3Empty = brewingFrame:WaitForChild("Brew3"):WaitForChild("Empty")
 local brew1Collect = brewingFrame:WaitForChild("Brew1"):WaitForChild("Brewing"):WaitForChild("Collect")
 local brew2Collect = brewingFrame:WaitForChild("Brew2"):WaitForChild("Brewing"):WaitForChild("Collect")
-local brew3Collect = brewingFrame:WaitForChild("Brew3"):WaitForChild("Collect")
+local brew3Collect = brewingFrame:WaitForChild("Brew3"):WaitForChild("Brewing"):WaitForChild("Collect")
 local collectVisibleCount = 0
+local VirtualUser = game:GetService('VirtualUser')
+local hasIncremented = false
 
-local collectCounted = false
+game:GetService('Players').LocalPlayer.Idled:connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
 getgenv().AutoEnchantPotion = true
-
 task.spawn(function()
     while true do
         if getgenv().AutoEnchantPotion then
-            if brew1Collect.Visible and brew2Collect.Visible and brew3Collect.Visible then
-                if not collectCounted then
+            if brew1Collect.Visible or brew2Collect.Visible or brew3Collect.Visible then
+                if not hasIncremented then
                     collectVisibleCount = collectVisibleCount + 1
-                    collectCounted = true
+                    hasIncremented = true 
                 end
-
                 local args = {
                     [1] = "ClaimPotion",
                     [2] = 1
@@ -32,10 +35,10 @@ task.spawn(function()
                 for _ = 1, 3 do
                     remoteEvent:FireServer(unpack(args))
                 end
-            else
-                collectCounted = false
+                 else
+                 hasIncremented = false
             end
-
+            
             if not brew1Empty.Visible and not brew2Empty.Visible and not brew3Empty.Visible then
                 if collectVisibleCount == 0 then
                     local args = {
@@ -47,7 +50,7 @@ task.spawn(function()
                     end
                 end
             end
-
+            
             if collectVisibleCount == 1 or collectVisibleCount == 2 or collectVisibleCount == 3 then
                 local args = {
                     [1] = "BrewPotion",
@@ -69,10 +72,9 @@ task.spawn(function()
                     remoteEvent:FireServer(unpack(args))
                     remoteEvent:FireServer(unpack(args2))
                 end
-                collectVisibleCount = 0 
+                collectVisibleCount = 0
             end
         end
-        task.wait() 
+        task.wait()  
     end
 end)
-print("Works")
