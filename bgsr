@@ -101,3 +101,4 @@ while getgenv().AutoFarm do
 
 	game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
 end
+print("Works")
