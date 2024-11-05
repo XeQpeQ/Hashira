@@ -10,32 +10,21 @@ local brew2Empty = brewingFrame:WaitForChild("Brew2"):WaitForChild("Empty")
 local brew3Empty = brewingFrame:WaitForChild("Brew3"):WaitForChild("Empty")
 local brew1Collect = brewingFrame:WaitForChild("Brew1"):WaitForChild("Brewing"):WaitForChild("Collect")
 local brew2Collect = brewingFrame:WaitForChild("Brew2"):WaitForChild("Brewing"):WaitForChild("Collect")
-local brew3Collect = brewingFrame:WaitForChild("Brew3"):WaitForChild("Brewing"):WaitForChild("Collect")
+local brew3Collect = brewingFrame:WaitForChild("Brew3"):WaitForChild("Collect")
 local collectVisibleCount = 0
 
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Hashira Hub", HidePremium = false, SaveConfig = false, ConfigFolder = "Orion"})
+local collectCounted = false
+getgenv().AutoEnchantPotion = true
 
-local PlayerTab = Window:MakeTab({
-    Name = "MainTab",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-PlayerTab:AddToggle({
-    Name = "AutoMaxEnchant",
-    Default = false,
-    Callback = function(Value)
-        getgenv().AutoEnchantPotion = Value
-    end    
-})
-
--- Inicia el bucle de recolección y preparación de pociones
 task.spawn(function()
     while true do
         if getgenv().AutoEnchantPotion then
             if brew1Collect.Visible and brew2Collect.Visible and brew3Collect.Visible then
-                collectVisibleCount = collectVisibleCount + 1
+                if not collectCounted then
+                    collectVisibleCount = collectVisibleCount + 1
+                    collectCounted = true
+                end
+
                 local args = {
                     [1] = "ClaimPotion",
                     [2] = 1
@@ -43,9 +32,10 @@ task.spawn(function()
                 for _ = 1, 3 do
                     remoteEvent:FireServer(unpack(args))
                 end
+            else
+                collectCounted = false
             end
-            
-            -- Verifica si todas las ranuras están vacías para iniciar el proceso de "BrewPotion"
+
             if not brew1Empty.Visible and not brew2Empty.Visible and not brew3Empty.Visible then
                 if collectVisibleCount == 0 then
                     local args = {
@@ -57,9 +47,8 @@ task.spawn(function()
                     end
                 end
             end
-            
-            -- Condiciones para iniciar "BrewPotion" dependiendo de collectVisibleCount
-            if collectVisibleCount == 1 or collectVisibleCount == 2 then
+
+            if collectVisibleCount == 1 or collectVisibleCount == 2 or collectVisibleCount == 3 then
                 local args = {
                     [1] = "BrewPotion",
                     [2] = 2
@@ -67,17 +56,22 @@ task.spawn(function()
                 for _ = 1, 3 do
                     remoteEvent:FireServer(unpack(args))
                 end
-            elseif collectVisibleCount == 3 then
+            elseif collectVisibleCount == 4 then
                 local args = {
                     [1] = "BrewPotion",
                     [2] = 5
                 }
+                local args2 = {
+                    [1] = "ClaimPotion",
+                    [2] = 1
+                }
                 for _ = 1, 3 do
                     remoteEvent:FireServer(unpack(args))
+                    remoteEvent:FireServer(unpack(args2))
                 end
-                collectVisibleCount = 0
+                collectVisibleCount = 0 
             end
         end
-        task.wait()  -- Pausa el bucle antes de la siguiente iteración
+        task.wait() 
     end
 end)
