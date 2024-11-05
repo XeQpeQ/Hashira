@@ -90,7 +90,8 @@ UIGradient.Parent = Decore
 
 getgenv().AutoFarm = true
 game.Players.LocalPlayer.PlayerGui.ScreenGui.ClientScript.Disabled = true
-while getgenv().AutoFarm do
+task.spawn(function()
+    while getgenv().AutoFarm do
 	wait()
 	Amount.Text = "Eggs Opened: "..game.Players.LocalPlayer.leaderstats["Eggs Opened"].Value
 	local args = {
@@ -101,4 +102,4 @@ while getgenv().AutoFarm do
 
 	game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
 end
-print("Works")
+end)
