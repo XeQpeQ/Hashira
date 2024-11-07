@@ -96,7 +96,7 @@ task.spawn(function()
 	Amount.Text = "Eggs Opened: "..game.Players.LocalPlayer.leaderstats["Eggs Opened"].Value
 	local args = {
 		[1] = "PurchaseEgg",
-		[2] = "Treat Egg",
+		[2] = "100K Egg",
 		[3] = "Multi"
 	}
 
