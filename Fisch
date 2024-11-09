@@ -1,0 +1,75 @@
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local GuiService = game:GetService("GuiService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Primer task.spawn con Stepped
+task.spawn(function()
+    RunService.Stepped:Connect(function()
+        local shakeUI = Players.LocalPlayer.PlayerGui:FindFirstChild("shakeui")
+        local args = {
+            [1] = 96.00000000000014,
+            [2] = 1
+        }
+        Players.LocalPlayer.Character:FindFirstChild("Flimsy Rod").events.cast:FireServer(unpack(args))
+
+        if shakeUI then
+            local safezone = shakeUI:FindFirstChild("safezone")
+            local button = safezone and safezone:FindFirstChild("button")
+            
+            if button and button.Visible then
+                -- Activa la selección automática de GUI
+                GuiService.AutoSelectGuiEnabled = true
+
+                -- Actualiza la selección de la UI
+                local function updateUISelection()
+                    if GuiService.SelectedObject then
+                        GuiService.SelectedObject.BorderSizePixel = 2
+                        GuiService.SelectedObject.BorderColor3 = Color3.fromRGB(0, 255, 0)
+                    end
+                end
+
+                -- Detecta cambios en la selección de UI
+                GuiService.Changed:Connect(function(property)
+                    if property == "SelectedObject" then
+                        updateUISelection()
+                    end
+                end)
+
+                -- Inicializa la selección en el botón deseado
+                if button then
+                    GuiService.SelectedObject = button
+                else
+                    warn("No se encontró el botón en 'safezone'.")
+                end
+
+                -- Simula presionar la tecla Enter
+                local function pressEnterKey()
+                    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                end
+
+                -- Ejecuta el "presionar Enter"
+                pressEnterKey()
+
+                -- Sale del bucle si el botón ya no está visible
+                if not button.Visible then
+                    return -- Termina esta ejecución de Stepped si el botón desaparece
+                end
+            end
+        end
+    end)
+end)
+
+-- Segundo task.spawn con Stepped
+task.spawn(function()
+    RunService.Stepped:Connect(function()
+        local args2 = {
+            [1] = 100,
+            [2] = false
+        }
+        ReplicatedStorage:WaitForChild("events"):WaitForChild("reelfinished"):FireServer(unpack(args2))
+        workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
+    end)
+end)
