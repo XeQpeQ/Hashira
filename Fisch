@@ -3,15 +3,17 @@ local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
+getgenv().AutoFarm = true
 task.spawn(function()
+if getgenv().AutoFarm then
     RunService.Stepped:Connect(function()
         local shakeUI = Players.LocalPlayer.PlayerGui:FindFirstChild("shakeui")
         local args = {
-            [1] = 96.00000000000014,
-            [2] = 1
-        }
-        Players.LocalPlayer.Character:FindFirstChild("Flimsy Rod").events.cast:FireServer(unpack(args))
+    [1] = 100,
+    [2] = 1
+}
+
+game:GetService("Players").LocalPlayer.Character:FindFirstChild("Lucky Rod").events.cast:FireServer(unpack(args))
 
         if shakeUI then
             local safezone = shakeUI:FindFirstChild("safezone")
@@ -50,9 +52,11 @@ task.spawn(function()
             end
         end
     end)
+   end
 end)
 
 task.spawn(function()
+    if getgenv().AutoFarm then
     RunService.Stepped:Connect(function()
         local args2 = {
             [1] = 100,
@@ -61,4 +65,5 @@ task.spawn(function()
         ReplicatedStorage:WaitForChild("events"):WaitForChild("reelfinished"):FireServer(unpack(args2))
         workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
     end)
+    end
 end)
