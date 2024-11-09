@@ -58,12 +58,12 @@ end)
 task.spawn(function()
     if getgenv().AutoFarm then
     RunService.Stepped:Connect(function()
+        workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
         local args2 = {
             [1] = 100,
             [2] = false
         }
         ReplicatedStorage:WaitForChild("events"):WaitForChild("reelfinished"):FireServer(unpack(args2))
-        workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
     end)
     end
 end)
