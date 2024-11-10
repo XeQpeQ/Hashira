@@ -1,39 +1,37 @@
+getgenv().AutoFarm = true
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Test = 0
-getgenv().AutoFarm = true
+local Test = false
 
 task.spawn(function()
     if getgenv().AutoFarm then
         RunService.Stepped:Connect(function()
-            local shakeUI = Players.LocalPlayer.PlayerGui:FindFirstChild("shakeui")
+            local player = Players.LocalPlayer
+            local shakeUI = player.PlayerGui:FindFirstChild("shakeui")
             
-            if Test == 0 then
-                local args = {
-                    [1] = 100,
-                    [2] = 1
-                }
-                local luckyRod = Players.LocalPlayer.Character:FindFirstChild("Lucky Rod")
-                if luckyRod and luckyRod:FindFirstChild("events") then
-                    luckyRod.events.cast:FireServer(unpack(args))
-                    Test = 1
-                end
+            -- Primer bloque para la acción de "Plastic Rod"
+            if not Test then
+                local args = { [1] = 100, [2] = 1 }
+                player.Character:FindFirstChild("Plastic Rod").events.cast:FireServer(unpack(args))
+                Test = true
             end
 
-            if shakeUI and Test == 1 then
+            -- Si existe el UI "shakeui"
+            if shakeUI then
                 GuiService.AutoSelectGuiEnabled = true
-
                 local selectedObject = nil
 
+                -- Función para actualizar la selección de UI
                 local function updateUISelection()
                     if selectedObject then
-                        selectedObject.BorderSizePixel = 2 
-                        selectedObject.BorderColor3 = Color3.fromRGB(0, 255, 0) 
+                        selectedObject.BorderSizePixel = 2
+                        selectedObject.BorderColor3 = Color3.fromRGB(0, 255, 0)
                     end
                 end
 
+                -- Monitorea los cambios en el objeto seleccionado
                 GuiService.Changed:Connect(function(property)
                     if property == "SelectedObject" then
                         selectedObject = GuiService.SelectedObject
@@ -41,41 +39,33 @@ task.spawn(function()
                     end
                 end)
 
+                -- Inicializa la selección en el botón del "shakeui"
                 local function initializeSelection()
-                    local playerGui = Players.LocalPlayer.PlayerGui
-                    local shakeUI = playerGui:WaitForChild("shakeui")
-
-                    if shakeUI then
-                        local safezone = shakeUI:FindFirstChild("safezone")
-                        if safezone then
-                            local button = safezone:FindFirstChild("button")
-                            if button then
-                                GuiService.SelectedObject = button 
-                            end
+                    local safezone = shakeUI:FindFirstChild("safezone")
+                    if safezone then
+                        local button = safezone:FindFirstChild("button")
+                        if button then
+                            GuiService.SelectedObject = button
                         end
                     end
                 end
-
                 initializeSelection()
                 local VirtualInputManager = game:GetService("VirtualInputManager")
                 VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                task.wait()
                 VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
             end
             
-            -- Reiniciar Test cuando el "reel" aparece
-            local reel = Players.LocalPlayer.PlayerGui:FindFirstChild("reel")
+            -- Verifica si el reel ha terminado
+            local reel = player.PlayerGui:FindFirstChild("reel")
             if reel then
-                task.wait(3)
-                Test = 0
+                local args2 = { [1] = 100, [2] = false }
+            local reelfinished = ReplicatedStorage:WaitForChild("events"):FindFirstChild("reelfinished")
+            if reelfinished then
+                reelfinished:FireServer(unpack(args2))
             end
-        end)
-    end
-end)
-
-task.spawn(function()
-    if getgenv().AutoFarm then
-        RunService.Stepped:Connect(function()
-            local merchant = workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):FindFirstChild("merchant")
+                task.wait(1)
+                local merchant = workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):FindFirstChild("merchant")
             if merchant then
                 local sellAll = merchant:FindFirstChild("sellall")
                 if sellAll then
@@ -83,13 +73,8 @@ task.spawn(function()
                 end
             end
 
-            local args2 = {
-                [1] = 100,
-                [2] = false
-            }
-            local reelfinished = ReplicatedStorage:WaitForChild("events"):FindFirstChild("reelfinished")
-            if reelfinished then
-                reelfinished:FireServer(unpack(args2))
+                task.wait(3)
+                Test = false
             end
         end)
     end
