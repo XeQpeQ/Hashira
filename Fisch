@@ -3,67 +3,66 @@ local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Test = 0
+local reel = Players.LocalPlayer.PlayerGui:FindFirstChild("reel")
 getgenv().AutoFarm = true
+
 task.spawn(function()
-if getgenv().AutoFarm then
-    RunService.Stepped:Connect(function()
-        local shakeUI = Players.LocalPlayer.PlayerGui:FindFirstChild("shakeui")
-        local args = {
-    [1] = 100,
-    [2] = 1
-}
-
-game:GetService("Players").LocalPlayer.Character:FindFirstChild("Lucky Rod").events.cast:FireServer(unpack(args))
-
-        if shakeUI then
-            local safezone = shakeUI:FindFirstChild("safezone")
-            local button = safezone and safezone:FindFirstChild("button")
+    if getgenv().AutoFarm then
+        RunService.Stepped:Connect(function()
+            local shakeUI = Players.LocalPlayer.PlayerGui:FindFirstChild("shakeui")
             
-            if button and button.Visible then
-                GuiService.AutoSelectGuiEnabled = true
+            if Test == 0 then
+                local args = {
+                    [1] = 100,
+                    [2] = 1
+                }
+                game:GetService("Players").LocalPlayer.Character:FindFirstChild("Lucky Rod").events.cast:FireServer(unpack(args))
+                Test = 1 
+            end
 
-                local function updateUISelection()
-                    if GuiService.SelectedObject then
-                        GuiService.SelectedObject.BorderSizePixel = 2
-                        GuiService.SelectedObject.BorderColor3 = Color3.fromRGB(0, 255, 0)
-                    end
-                end
+            if shakeUI and Test == 1 then
+                local safezone = shakeUI:FindFirstChild("safezone")
+                local button = safezone and safezone:FindFirstChild("button")
 
-                GuiService.Changed:Connect(function(property)
-                    if property == "SelectedObject" then
-                        updateUISelection()
-                    end
-                end)
+                if button and button.Visible then
+                    GuiService.AutoSelectGuiEnabled = true
 
-                if button then
+                    GuiService.Changed:Connect(function(property)
+                        if property == "SelectedObject" and GuiService.SelectedObject then
+                            GuiService.SelectedObject.BorderSizePixel = 2
+                            GuiService.SelectedObject.BorderColor3 = Color3.fromRGB(0, 255, 0)
+                        end
+                    end)
+
                     GuiService.SelectedObject = button
-                end
 
-                local function pressEnterKey()
                     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
                     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-                end
-
-                pressEnterKey()
-
-                if not button.Visible then
-                    return 
+                    
+                    if not button.Visible then
+                        Test = 1 
+                    end
                 end
             end
-        end
-    end)
-   end
+
+            if Players.LocalPlayer.PlayerGui:FindFirstChild("reel") then
+                task.wait(2) 
+                Test = 0 
+            end
+        end)
+    end
 end)
 
 task.spawn(function()
     if getgenv().AutoFarm then
-    RunService.Stepped:Connect(function()
-        workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
-        local args2 = {
-            [1] = 100,
-            [2] = false
-        }
-        ReplicatedStorage:WaitForChild("events"):WaitForChild("reelfinished"):FireServer(unpack(args2))
-    end)
+        RunService.Stepped:Connect(function()
+            workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
+            local args2 = {
+                [1] = 100,
+                [2] = false
+            }
+            ReplicatedStorage:WaitForChild("events"):WaitForChild("reelfinished"):FireServer(unpack(args2))
+        end)
     end
 end)
