@@ -14,7 +14,7 @@ task.spawn(function()
             -- Primer bloque para la acción de "Plastic Rod"
             if not Test then
                 local args = { [1] = 100, [2] = 1 }
-                player.Character:FindFirstChild("Plastic Rod").events.cast:FireServer(unpack(args))
+                player.Character:FindFirstChild("Steady Rod").events.cast:FireServer(unpack(args))
                 Test = true
             end
 
@@ -65,7 +65,7 @@ task.spawn(function()
                 reelfinished:FireServer(unpack(args2))
             end
                 task.wait(1)
-                local merchant = workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):FindFirstChild("merchant")
+                local merchant = workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Matt Merchant"):FindFirstChild("merchant")
             if merchant then
                 local sellAll = merchant:FindFirstChild("sellall")
                 if sellAll then
