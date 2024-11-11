@@ -4,68 +4,60 @@ local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Test = false
+local VirtualUser = game:GetService('VirtualUser')
+game:GetService('Players').LocalPlayer.Idled:connect(function()
+VirtualUser:CaptureController()
+ VirtualUser:ClickButton2(Vector2.new())
+end)
+local player = Players.LocalPlayer
+local initialPosition = player.Character and player.Character.PrimaryPart.Position -- Guarda la posición inicial del personaje
 
-task.spawn(function()
+-- Función que se ejecutará en cada fotograma
+local function onRenderStepped()
     if getgenv().AutoFarm then
-        RunService.Stepped:Connect(function()
-            local player = Players.LocalPlayer
-            local shakeUI = player.PlayerGui:FindFirstChild("shakeui")
-            
-            -- Primer bloque para la acción de "Plastic Rod"
-            if not Test then
-                local args = { [1] = 100, [2] = 1 }
-                player.Character:FindFirstChild("Steady Rod").events.cast:FireServer(unpack(args))
-                Test = true
+        local shakeUI = player.PlayerGui:FindFirstChild("shakeui")
+        
+        if not Test then
+            local args = { [1] = 100, [2] = 1 }
+            player.Character:FindFirstChild("Steady Rod").events.cast:FireServer(unpack(args))
+            Test = true
+        end
+
+        if shakeUI then
+            local selectedObject = nil
+
+            -- Función para actualizar la selección de UI
+            local function updateUISelection()
+                if selectedObject then
+                    selectedObject.BorderSizePixel = 2
+                    selectedObject.BorderColor3 = Color3.fromRGB(0, 255, 0)
+                end
             end
 
-            -- Si existe el UI "shakeui"
-            if shakeUI then
-                GuiService.AutoSelectGuiEnabled = true
-                local selectedObject = nil
-
-                -- Función para actualizar la selección de UI
-                local function updateUISelection()
-                    if selectedObject then
-                        selectedObject.BorderSizePixel = 2
-                        selectedObject.BorderColor3 = Color3.fromRGB(0, 255, 0)
+            local function initializeSelection()
+                local safezone = shakeUI:FindFirstChild("safezone")
+                if safezone then
+                    local button = safezone:FindFirstChild("button")
+                    if button then
+                        GuiService.SelectedObject = button
                     end
                 end
-
-                -- Monitorea los cambios en el objeto seleccionado
-                GuiService.Changed:Connect(function(property)
-                    if property == "SelectedObject" then
-                        selectedObject = GuiService.SelectedObject
-                        updateUISelection()
-                    end
-                end)
-
-                -- Inicializa la selección en el botón del "shakeui"
-                local function initializeSelection()
-                    local safezone = shakeUI:FindFirstChild("safezone")
-                    if safezone then
-                        local button = safezone:FindFirstChild("button")
-                        if button then
-                            GuiService.SelectedObject = button
-                        end
-                    end
-                end
-                initializeSelection()
-                local VirtualInputManager = game:GetService("VirtualInputManager")
-                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-                task.wait()
-                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
             end
-            
-            -- Verifica si el reel ha terminado
-            local reel = player.PlayerGui:FindFirstChild("reel")
-            if reel then
-                local args2 = { [1] = 100, [2] = false }
+            initializeSelection()
+
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+            task.wait()
+            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+        end
+        
+        local reel = player.PlayerGui:FindFirstChild("reel")
+        if reel then
+            local args2 = { [1] = 100, [2] = false }
             local reelfinished = ReplicatedStorage:WaitForChild("events"):FindFirstChild("reelfinished")
-            if reelfinished then
-                reelfinished:FireServer(unpack(args2))
-            end
-                task.wait(1)
-                local merchant = workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Matt Merchant"):FindFirstChild("merchant")
+            reelfinished:FireServer(unpack(args2))
+            task.wait(1)
+            local merchant = workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Matt Merchant"):FindFirstChild("merchant")
             if merchant then
                 local sellAll = merchant:FindFirstChild("sellall")
                 if sellAll then
@@ -73,9 +65,20 @@ task.spawn(function()
                 end
             end
 
-                task.wait(3)
-                Test = false
-            end
-        end)
+            task.wait(3)
+            Test = false
+        end
+    end
+end
+
+-- Conectar la función a RenderStepped
+RunService.RenderStepped:Connect(onRenderStepped)
+
+task.spawn(function()
+    while getgenv().AutoFarm do
+        if player.Character and player.Character.PrimaryPart then
+            player.Character:SetPrimaryPartCFrame(CFrame.new(initialPosition))
+        end
+        task.wait(10)
     end
 end)
