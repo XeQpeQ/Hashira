@@ -52,11 +52,17 @@ end
         win:Exit()
     end)
 
-maintab:Toggle('Auto Train E', function(v)
+maintab:Toggle('Auto Train Attack', function(v)
 getgenv().AutoAttack = v
 end)
-maintab:Toggle('Auto Train Q', function(v)
+maintab:Toggle('Auto Train Ki', function(v)
 getgenv().AutoEnergy = v
+end)
+maintab:Toggle('Auto Train Defense', function(v)
+getgenv().AutoDefense = v
+end)
+maintab:Toggle('Auto Rebirth', function(v)
+getgenv().AutoRebirth = v
 end)
 AutoFarm:Toggle('Auto Saibamen', function(v)
 getgenv().AutoSaibamen = v
@@ -171,7 +177,7 @@ end)
 
 task.spawn(function()
     local player = game.Players.LocalPlayer
-    local autoC = false
+    local autoEnergy = false
     
     while wait() do
         pcall(function()
@@ -181,13 +187,13 @@ task.spawn(function()
             if getgenv().AutoEnergy then
                 if energy <= 50 then
                     VirtualInputManager:SendKeyEvent(true, "C", false, game)
-                    autoC = true
+                    autoEnergy = true
                 elseif energy >= maxEnergy then
                     VirtualInputManager:SendKeyEvent(false, "C", false, game)
-                    autoC = false
+                    autoEnergy = false
                 end
                 
-                if not autoC then
+                if not autoEnergy then
                     VirtualInputManager:SendKeyEvent(true, "Q", false, game)
                 else
                     VirtualInputManager:SendKeyEvent(false, "Q", false, game)
@@ -196,6 +202,45 @@ task.spawn(function()
                 VirtualInputManager:SendKeyEvent(false, "C", false, game)
                 VirtualInputManager:SendKeyEvent(false, "Q", false, game)
             end
+        end)
+    end
+end)
+
+task.spawn(function()
+    local player = game.Players.LocalPlayer
+    local autoDefense = false
+    
+    while wait() do
+        pcall(function()
+            local energy2 = workspace[player.Name].State.Energy.Value
+            local maxEnergy2 = workspace[player.Name].State.MaxEnergy.Value
+            
+            if getgenv().AutoDefense then
+                if energy <= 50 then
+                    VirtualInputManager:SendKeyEvent(true, "C", false, game)
+                    autoDefense = true
+                elseif energy2 >= maxEnergy2 then
+                    VirtualInputManager:SendKeyEvent(false, "C", false, game)
+                    autoDefense = false
+                end
+                
+                if not autoDefense then
+                    VirtualInputManager:SendKeyEvent(true, "R", false, game)
+                else
+                    VirtualInputManager:SendKeyEvent(false, "R", false, game)
+                end
+            else
+                VirtualInputManager:SendKeyEvent(false, "C", false, game)
+                VirtualInputManager:SendKeyEvent(false, "R", false, game)
+            end
+        end)
+    end
+end)
+
+task.spawn(function()  
+    while getgenv().AutoRebirth do
+        pcall(function()
+            
         end)
     end
 end)
