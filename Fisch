@@ -10,9 +10,8 @@ VirtualUser:CaptureController()
  VirtualUser:ClickButton2(Vector2.new())
 end)
 local player = Players.LocalPlayer
-local initialPosition = player.Character and player.Character.PrimaryPart.Position -- Guarda la posición inicial del personaje
+local initialPosition = player.Character and player.Character.PrimaryPart.Position 
 
--- Función que se ejecutará en cada fotograma
 local function onRenderStepped()
     if getgenv().AutoFarm then
         local shakeUI = player.PlayerGui:FindFirstChild("shakeui")
@@ -26,7 +25,6 @@ local function onRenderStepped()
         if shakeUI then
             local selectedObject = nil
 
-            -- Función para actualizar la selección de UI
             local function updateUISelection()
                 if selectedObject then
                     selectedObject.BorderSizePixel = 2
@@ -71,7 +69,6 @@ local function onRenderStepped()
     end
 end
 
--- Conectar la función a RenderStepped
 RunService.RenderStepped:Connect(onRenderStepped)
 
 task.spawn(function()
