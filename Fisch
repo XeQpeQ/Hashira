@@ -3,28 +3,27 @@ local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Test = false
 local VirtualUser = game:GetService('VirtualUser')
-game:GetService('Players').LocalPlayer.Idled:connect(function()
-VirtualUser:CaptureController()
- VirtualUser:ClickButton2(Vector2.new())
-end)
+
 local player = Players.LocalPlayer
-local initialPosition = player.Character and player.Character.PrimaryPart.Position 
+local initialCFrame = player.Character and player.Character.PrimaryPart.CFrame  -- Guardar el CFrame completo
+
+-- Detecta la inactividad y resetea el mouse
+game:GetService('Players').LocalPlayer.Idled:connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
 
 local function onRenderStepped()
     if getgenv().AutoFarm then
         local shakeUI = player.PlayerGui:FindFirstChild("shakeui")
         
-        if not Test then
             local args = { [1] = 100, [2] = 1 }
-            player.Character:FindFirstChild("Steady Rod").events.cast:FireServer(unpack(args))
-            Test = true
-        end
+            player.Character:FindFirstChild("Mythical Rod").events.cast:FireServer(unpack(args))
 
         if shakeUI then
             local selectedObject = nil
-
+            GuiService.SelectedObject = nil
             local function updateUISelection()
                 if selectedObject then
                     selectedObject.BorderSizePixel = 2
@@ -48,34 +47,33 @@ local function onRenderStepped()
             task.wait()
             VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
         end
-        
+
         local reel = player.PlayerGui:FindFirstChild("reel")
         if reel then
             local args2 = { [1] = 100, [2] = false }
             local reelfinished = ReplicatedStorage:WaitForChild("events"):FindFirstChild("reelfinished")
             reelfinished:FireServer(unpack(args2))
             task.wait(1)
-            local merchant = workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Matt Merchant"):FindFirstChild("merchant")
+            local merchant = workspace:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):FindFirstChild("merchant")
             if merchant then
                 local sellAll = merchant:FindFirstChild("sellall")
                 if sellAll then
                     sellAll:InvokeServer()
                 end
             end
-
-            task.wait(3)
-            Test = false
         end
     end
 end
 
 RunService.RenderStepped:Connect(onRenderStepped)
 
+-- Mantener la posición y rotación cada 10 segundos
 task.spawn(function()
     while getgenv().AutoFarm do
         if player.Character and player.Character.PrimaryPart then
-            player.Character:SetPrimaryPartCFrame(CFrame.new(initialPosition))
+            -- Reasignar el CFrame completo, no solo la posición
+            player.Character:SetPrimaryPartCFrame(initialCFrame)
         end
-        task.wait(10)
+        task.wait(10) -- Esperar 10 segundos antes de actualizar la posición nuevamente
     end
 end)
