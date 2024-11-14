@@ -18,8 +18,9 @@ local function verificarBarras()
     local agilityBar = player.PlayerGui.PlayerInterface.Center.Zenkai.Container.Progress.AgilityBar.Number
     local kiBar = player.PlayerGui.PlayerInterface.Center.Zenkai.Container.Progress.KiBar.Number
     local defenseBar = player.PlayerGui.PlayerInterface.Center.Zenkai.Container.Progress.DefenseBar.Number
-
-    -- Verificación de estado de las barras
+    local energy = workspace[player.Name].State.Energy.Value
+    local maxEnergy = workspace[player.Name].State.MaxEnergy.Value
+    local previousAutoEnergy, previousAutoDefense = false, false
     local ataqueMaximo = barraAlMaximo(attackBar)
     local agilidadMaxima = barraAlMaximo(agilityBar)
     local energiaMaxima = barraAlMaximo(kiBar)
@@ -58,6 +59,20 @@ end
         getgenv().AutoEnergy = false
         getgenv().AutoDefense = false
     end
+ if energy <= 50 then
+                    previousAutoEnergy = getgenv().AutoEnergy 
+                    previousAutoDefense = getgenv().AutoDefense
+                    getgenv().AutoEnergy = false
+                    getgenv().AutoDefense = false
+                    VirtualInputManager:SendKeyEvent(true, "C", false, game)
+                    autoEnergy = true
+                elseif energy >= maxEnergy then
+                    VirtualInputManager:SendKeyEvent(false, "C", false, game)
+                    getgenv().AutoEnergy = previousAutoEnergy
+                    getgenv().AutoDefense = previousAutoDefense
+                    autoEnergy = false
+                end
+            end
 end
 
 local bb = game:GetService('VirtualUser')
@@ -93,9 +108,6 @@ maintab:Toggle('Auto Farming', function(v)
         getgenv().AutoEnergy = false
         getgenv().AutoDefense = false
     end
-end)
-maintab:Toggle('Auto Charge', function(v)
-    getgenv().AutoCharge = v
 end)
 
 task.spawn(function()
