@@ -53,7 +53,7 @@ local function onRenderStepped()
         if reel then
             local reelfinished = ReplicatedStorage:WaitForChild("events"):FindFirstChild("reelfinished")
             if reelfinished then
-                reelfinished:FireServer(100, false)
+                reelfinished:FireServer(math.random(90,98), false)
             end
         end
     end
