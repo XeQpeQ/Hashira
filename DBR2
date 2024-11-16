@@ -9,7 +9,9 @@ local maximoMensajeMostrado = false
 
 local function convertirValor(valor, sufijo)
     valor = tonumber(valor)
-    if sufijo == "k" then
+    if not sufijo or sufijo == "" then
+        return valor -- Sin sufijo, devuelve el valor directamente
+    elseif sufijo == "k" then
         return valor * 1e3
     elseif sufijo == "M" then
         return valor * 1e6
@@ -24,12 +26,19 @@ end
 
 -- Función para verificar si una barra ha llegado al máximo
 local function barraAlMaximo(barra)
+    -- Extraer los valores y sufijos del texto de la barra
     local valorActual, sufijoActual, valorMaximo, sufijoMaximo = barra.Text:match("(%d+%.?%d*)([kMBT]?)/(%d+%.?%d*)([kMBT]?)")
-    if not valorActual or not valorMaximo then return false end
+    
+    -- Validar que ambos valores fueron encontrados
+    if not valorActual or not valorMaximo then
+        return false
+    end
 
+    -- Convertir los valores a números absolutos (independientemente del sufijo)
     valorActual = convertirValor(valorActual, sufijoActual)
     valorMaximo = convertirValor(valorMaximo, sufijoMaximo)
 
+    -- Verificar si el valor actual ha alcanzado o superado el valor máximo
     return valorActual >= valorMaximo
 end
 
@@ -69,19 +78,27 @@ local function verificarBarras()
     local energy = workspace[player.Name].State.Energy.Value
     local maxEnergy = workspace[player.Name].State.MaxEnergy.Value
 
-if not estados.ataqueMaximo and not estados.agilidadMaxima then
-getgenv().AutoAttack = true
-getgenv().AutoDefense = false
-getgenv().AutoEnergy = false
-elseif not estados.energiaMaxima then
-getgenv().AutoAttack = false
-getgenv().AutoDefense = false
-getgenv().AutoEnergy = true
-elseif not estados.defensaMaxima then
-getgenv().AutoAttack = false
-getgenv().AutoDefense = true
-getgenv().AutoEnergy = false
-end
+if not estados.ataqueMaximo then
+        getgenv().AutoAttack = true
+        maximoMensajeMostrado = false
+        GuiService.SelectedObject = nil
+        getgenv().AutoEnergy = false
+        getgenv().AutoDefense = false
+    elseif not estados.agilidadMaxima then
+        getgenv().AutoAttack = true
+        getgenv().AutoEnergy = false
+        getgenv().AutoDefense = false
+    elseif not estados.energiaMaxima then
+        getgenv().AutoAttack = false
+        getgenv().AutoEnergy = false
+        getgenv().AutoDefense = false
+    elseif not estados.defensaMaxima then
+        getgenv().AutoAttack = false
+        getgenv().AutoEnergy = false
+        getgenv().AutoDefense = true
+   elseif estados.ataqueMaximo and estados.agilidadMaxima and estados.energiaMaxima and estados.defensaMaxima then
+        interactuarConZenkai()
+    end
 
     -- Manejo de energía
     if energy <= 20 then
@@ -90,7 +107,7 @@ end
         getgenv().AutoEnergy = false
         getgenv().AutoDefense = false
         wait(2)
-        if getgenv().AutoFarm then
+        if getgenv().AutoFarm or getgenv().AutoEnergy or getgenv().AutoDefense then
         VirtualInputManager:SendKeyEvent(true, "C", false, game)
         end
     elseif energy >= maxEnergy then
@@ -148,9 +165,9 @@ end)
 task.spawn(function()
     while task.wait() do
         if getgenv().AutoAttack then
-            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
             task.wait()
-            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
+            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
         end
     end
 end)
