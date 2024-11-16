@@ -1,25 +1,11 @@
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
-local maximoMensajeMostrado = false
-local player = game.Players.LocalPlayer
-
-local playerState = workspace:WaitForChild(player.Name):WaitForChild("State")
-local energyObj = playerState:WaitForChild("Energy")
-local maxEnergyObj = playerState:WaitForChild("MaxEnergy")
-
--- Requiere el módulo Virtual Input Manager
 local VirtualInputManager = game:GetService("VirtualInputManager")
--- Función para simular la presión de teclas
+local VirtualUser = game:GetService("VirtualUser")
 
-local function pressKey(keyCode)
-    VirtualInputManager:SendKeyEvent(true, keyCode, false, game)
-end
-
--- Función para simular la liberación de teclas
-local function releaseKey(keyCode)
-    VirtualInputManager:SendKeyEvent(false, keyCode, false, game)
-end
+local player = Players.LocalPlayer
+local maximoMensajeMostrado = false
 
 local function convertirValor(valor, sufijo)
     valor = tonumber(valor)
@@ -36,6 +22,7 @@ local function convertirValor(valor, sufijo)
     end
 end
 
+-- Función para verificar si una barra ha llegado al máximo
 local function barraAlMaximo(barra)
     local valorActual, sufijoActual, valorMaximo, sufijoMaximo = barra.Text:match("(%d+%.?%d*)([kMBT]?)/(%d+%.?%d*)([kMBT]?)")
     if not valorActual or not valorMaximo then return false end
@@ -46,56 +33,81 @@ local function barraAlMaximo(barra)
     return valorActual >= valorMaximo
 end
 
-local function verificarBarras()
+-- Función para gestionar la interacción con Zenkai
+local function interactuarConZenkai()
     local playerGui = player:WaitForChild("PlayerGui")
-    local zenkaiUI = playerGui:WaitForChild("PlayerInterface").Center.Zenkai.Container.Progress
-    local attackBar = zenkaiUI.AttackBar.Number
-    local agilityBar = zenkaiUI.AgilityBar.Number
-    local kiBar = zenkaiUI.KiBar.Number
-    local defenseBar = zenkaiUI.DefenseBar.Number
-    local ataqueMaximo = barraAlMaximo(attackBar)
-    local agilidadMaxima = barraAlMaximo(agilityBar)
-    local energiaMaxima = barraAlMaximo(kiBar)
-    local defensaMaxima = barraAlMaximo(defenseBar)
-    
-    if not ataqueMaximo or not agilidadMaxima then
-        maximoMensajeMostrado = false
-        getgenv().AutoAttack = true
-        getgenv().AutoEnergy = false
-        getgenv().AutoDefense = false
-    elseif ataqueMaximo and agilidadMaxima and not energiaMaxima then
-        getgenv().AutoAttack = false
-        getgenv().AutoEnergy = true
-        getgenv().AutoDefense = false
-    elseif energiaMaxima and not defensaMaxima then
-        getgenv().AutoAttack = false
-        getgenv().AutoEnergy = false
-        getgenv().AutoDefense = true
-    elseif ataqueMaximo and agilidadMaxima and energiaMaxima and defensaMaxima then
-        if not maximoMensajeMostrado then
-            local zenkaiButton = playerGui.PlayerInterface.Center.Zenkai.Info:FindFirstChild("Zenkai")
-            if zenkaiButton and zenkaiButton:FindFirstChild("Button") then
-                GuiService.SelectedObject = zenkaiButton.Button
-                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-                task.wait()
-                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-                maximoMensajeMostrado = true
-            end
-        end
-        getgenv().AutoAttack = false
-        getgenv().AutoEnergy = false
-        getgenv().AutoDefense = false
+    local zenkaiButton = playerGui.PlayerInterface.Center.Zenkai.Info:FindFirstChild("Zenkai")
+
+    if zenkaiButton and zenkaiButton:FindFirstChild("Button") then
+        GuiService.SelectedObject = zenkaiButton.Button
+        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+        task.wait()
+        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+        maximoMensajeMostrado = true
     end
 end
 
--- Función para evitar ser expulsado
-local VirtualUser = game:GetService('VirtualUser')
+-- Función principal para verificar barras y estados
+local function verificarBarras()
+    local playerGui = player:WaitForChild("PlayerGui")
+    local zenkaiUI = playerGui:WaitForChild("PlayerInterface").Center.Zenkai.Container.Progress
+    local prev1, prev2
+    local barras = {
+        ataque = zenkaiUI.AttackBar.Number,
+        agilidad = zenkaiUI.AgilityBar.Number,
+        energia = zenkaiUI.KiBar.Number,
+        defensa = zenkaiUI.DefenseBar.Number
+    }
+
+    local estados = {
+        ataqueMaximo = barraAlMaximo(barras.ataque),
+        agilidadMaxima = barraAlMaximo(barras.agilidad),
+        energiaMaxima = barraAlMaximo(barras.energia),
+        defensaMaxima = barraAlMaximo(barras.defensa)
+    }
+
+    local energy = workspace[player.Name].State.Energy.Value
+    local maxEnergy = workspace[player.Name].State.MaxEnergy.Value
+
+if not estados.ataqueMaximo and not estados.agilidadMaxima then
+getgenv().AutoAttack = true
+getgenv().AutoDefense = false
+getgenv().AutoEnergy = false
+elseif not estados.energiaMaxima then
+getgenv().AutoAttack = false
+getgenv().AutoDefense = false
+getgenv().AutoEnergy = true
+elseif not estados.defensaMaxima then
+getgenv().AutoAttack = false
+getgenv().AutoDefense = true
+getgenv().AutoEnergy = false
+end
+
+    -- Manejo de energía
+    if energy <= 20 then
+        prev1 = getgenv().AutoEnergy
+        prev2 = getgenv().AutoDefense
+        getgenv().AutoEnergy = false
+        getgenv().AutoDefense = false
+        wait(2)
+        if getgenv().AutoFarm then
+        VirtualInputManager:SendKeyEvent(true, "C", false, game)
+        end
+    elseif energy >= maxEnergy then
+        VirtualInputManager:SendKeyEvent(false, "C", false, game)
+        wait(2)
+        getgenv().AutoEnergy = prev1
+        getgenv().AutoDefense = prev2
+    end
+end
+
+-- Evitar expulsión por inactividad
 Players.LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
 
--- Configuración de UI
+-- Configuración de la interfaz
 local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
 local win = HashiraUI:Create({
     Name = "Hashira Hub",
@@ -118,10 +130,13 @@ maintab:Toggle('Auto Farming', function(v)
     if not v then
         getgenv().AutoAttack = false
         getgenv().AutoEnergy = false
+        VirtualInputManager:SendKeyEvent(false, "Q", false, game)
+        VirtualInputManager:SendKeyEvent(false, "C", false, game)
         getgenv().AutoDefense = false
     end
 end)
 
+-- Ciclos asincrónicos para acciones automáticas
 task.spawn(function()
     while task.wait() do
         if getgenv().AutoFarm then
@@ -130,53 +145,32 @@ task.spawn(function()
     end
 end)
 
-    task.spawn(function()
-        while task.wait() do
-            if getgenv().AutoAttack then
-                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
-                task.wait()
-                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
-            end
-        end
-    end)
-
 task.spawn(function()
-    local player = game.Players.LocalPlayer
-    local autoEnergy = false
-    
-    while wait() do
-        pcall(function()
-            local energy = workspace[player.Name].State.Energy.Value
-            local maxEnergy = workspace[player.Name].State.MaxEnergy.Value
-            
-            if getgenv().AutoEnergy then
-                if energy <= 50 then
-                    VirtualInputManager:SendKeyEvent(true, "C", false, game)
-                    autoEnergy = true
-                elseif energy >= maxEnergy then
-                    VirtualInputManager:SendKeyEvent(false, "C", false, game)
-                    autoEnergy = false
-                end
-                
-                if not autoEnergy then
-                    VirtualInputManager:SendKeyEvent(true, "Q", false, game)
-                else
-                    VirtualInputManager:SendKeyEvent(false, "Q", false, game)
-                end
-            else
-                VirtualInputManager:SendKeyEvent(false, "C", false, game)
-                VirtualInputManager:SendKeyEvent(false, "Q", false, game)
-            end
-        end)
+    while task.wait() do
+        if getgenv().AutoAttack then
+            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+            task.wait()
+            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
+        end
     end
 end)
 
 task.spawn(function()
-        while task.wait() do
-            if getgenv().AutoDefense then
-                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.R, false, game)
-                task.wait()
-                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.R, false, game)
-            end
+    while task.wait() do
+        if getgenv().AutoEnergy then
+            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+            task.wait()
+            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
         end
-    end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        if getgenv().AutoDefense then
+            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.R, false, game)
+            task.wait()
+            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.R, false, game)
+        end
+    end
+end)
