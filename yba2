@@ -1,4 +1,4 @@
-local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
+OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
 
 local Window = OrionLib:MakeWindow({
     Name = "Hashira Hub",
@@ -10,6 +10,7 @@ local Window = OrionLib:MakeWindow({
 local MobTable = {}
 local mobNamesAdded = {}
 
+-- Populating MobTable with unique mob names
 for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     if mob:IsA("Model") and not mobNamesAdded[mob.Name] then
         table.insert(MobTable, mob.Name)
@@ -23,6 +24,7 @@ local FarmMethod = "Behind"
 local tweenspeed = 300
 local Distance = 3
 
+-- Function to calculate distance to an endpoint
 local function GetDistance(Endpoint)
     if typeof(Endpoint) == "Instance" then
         Endpoint = Vector3.new(Endpoint.Position.X, LP.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
@@ -32,6 +34,7 @@ local function GetDistance(Endpoint)
     return (Endpoint - LP.Character.HumanoidRootPart.Position).Magnitude
 end
 
+-- Tweening function to move the character smoothly
 function Tween(Endpoint)
     if typeof(Endpoint) == "Instance" then
         Endpoint = Endpoint.CFrame
@@ -45,6 +48,7 @@ function Tween(Endpoint)
     return TweenFunc
 end
 
+-- Noclip activation and deactivation
 local function activarNoclip()
     local Character = LP.Character or LP.CharacterAdded:Wait()
     for _, part in pairs(Character:GetDescendants()) do
@@ -63,40 +67,7 @@ local function desactivarNoclip()
     end
 end
 
-local PlayerTab = Window:MakeTab({
-    Name = "MainTab",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-local function desactivarAntiFall()
-    local character = LP.Character or LP.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    
-    humanoidRootPart:FindFirstChild("BodyVelocity"):Destroy()
-end
-
-
-PlayerTab:AddToggle({
-    Name = "Auto Farm NPC",
-    Default = false,
-    Callback = function(Value)
-        getgenv().AutoFarm = Value
-        if not Value then
-            desactivarNoclip()
-            desactivarAntiFall()
-        end
-    end    
-})
-PlayerTab:AddDropdown({
-    Name = "Select Mob",
-    Default = "None",
-    Options = MobTable,
-    Callback = function(Value)
-        getgenv().SelectedMob = Value
-    end    
-})
-
+-- Anti-fall activation and deactivation
 local function activarAntiFall()
     local character = LP.Character or LP.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
@@ -110,46 +81,92 @@ local function desactivarAntiFall()
     local character = LP.Character or LP.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
     
-    humanoidRootPart:FindFirstChild("BodyVelocity"):Destroy()
+    local bodyVelocity = humanoidRootPart:FindFirstChild("BodyVelocity")
+    if bodyVelocity then
+        bodyVelocity:Destroy()
+    end
 end
 
+-- Main tab UI setup
+local PlayerTab = Window:MakeTab({
+    Name = "MainTab",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Toggle for Auto Farm NPC functionality
+PlayerTab:AddToggle({
+    Name = "Auto Farm NPC",
+    Default = false,
+    Callback = function(Value)
+        getgenv().AutoFarm = Value
+        if not Value then
+            desactivarNoclip()
+            desactivarAntiFall()
+        end
+    end    
+})
+
+-- Mob selection dropdown
+PlayerTab:AddDropdown({
+    Name = "Select Mob",
+    Default = "None",
+    Options = MobTable,
+    Callback = function(Value)
+        getgenv().SelectedMob = Value
+    end    
+})
+
+-- Auto Farm NPC task loop
 task.spawn(function()
     while wait(0.1) do
         if getgenv().AutoFarm then
             activarAntiFall()
             activarNoclip()
+            
             local mob = workspace.Living:FindFirstChild(getgenv().SelectedMob)
             if mob and mob:FindFirstChild("HumanoidRootPart") then
                 local humanoid = mob:FindFirstChildOfClass("Humanoid") -- Obtener el humanoide
-                if humanoid and humanoid.Health == 0 then 
-                    mob:Destroy() 
-                else
-                    local mobPosition = mob.HumanoidRootPart.Position
-                    local directionBehind = -mob.HumanoidRootPart.CFrame.LookVector
-                    local targetPosition = mobPosition + directionBehind * Distance
+                if humanoid then 
+                    if humanoid.Health <= 0 then 
+                        mob:Destroy()  -- Destruir mob si su salud es 0
+                    else
+                        local mobPosition = mob.HumanoidRootPart.Position
+                        local directionBehind = -mob.HumanoidRootPart.CFrame.LookVector
+                        local targetPosition = mobPosition + directionBehind * Distance
 
-                    local targetCFrame = CFrame.new(targetPosition, mobPosition)
+                        local targetCFrame = CFrame.new(targetPosition, mobPosition)
 
-                    Tween(targetCFrame)
-                    local args = {
-                        [1] = "HoldAttack",
-                        [2] = {
-                            ["Bool"] = true,
-                            ["Type"] = "m1"
+                        Tween(targetCFrame)
+
+                        -- Attack logic
+                        local args = {
+                            [1] = "HoldAttack",
+                            [2] = {
+                                ["Bool"] = true,
+                                ["Type"] = "m1"
+                            }
                         }
-                    }
 
-                    game:GetService("Players").LocalPlayer.Character.RemoteEvent:FireServer(unpack(args))
-                    task.wait()
-                    local args = {
-                        [1] = "HoldAttack",
-                        [2] = {
-                            ["Bool"] = false,
-                            ["Type"] = "m1"
+                        local remoteEvent = game:GetService("Players").LocalPlayer.Character:FindFirstChild("RemoteEvent")
+                        if remoteEvent then
+                            remoteEvent:FireServer(unpack(args))
+                        end
+                        
+                        task.wait()
+
+                        local args2 = {
+                            [1] = "HoldAttack",
+                            [2] = {
+                                ["Bool"] = false,
+                                ["Type"] = "m1"
+                            }
                         }
-                    }
 
-                    game:GetService("Players").LocalPlayer.Character.RemoteEvent:FireServer(unpack(args))
+                        if remoteEvent then
+                            remoteEvent:FireServer(unpack(args2))
+                        end
+                    end
                 end
             end
         end
