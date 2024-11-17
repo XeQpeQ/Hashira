@@ -1,20 +1,20 @@
 function fireproximityprompt(ProximityPrompt, Amount, Skip)
     assert(ProximityPrompt, "Argumento #1 faltante o nulo")
-    assert(typeof(ProximityPrompt) == "Instance" and ProximityPrompt:IsA("ProximityPrompt"), "Se intentó activar un Valor que no es un ProximityPrompt")
+    assert(typeof(ProximityPrompt) == "Instance" and ProximityPrompt:IsA("ProximityPrompt"), "Se intentó activar un valor que no es un ProximityPrompt")
 
     local HoldDuration = ProximityPrompt.HoldDuration
     if Skip then
         ProximityPrompt.HoldDuration = 0
     end
 
-    for i = 1, Amount or 1 do
+    for i = 1, (Amount or 1) do
         ProximityPrompt:InputHoldBegin()
         if Skip then
             local RunService = game:GetService("RunService")
-            local Start = os.time()
+            local Start = tick()
             repeat
-                RunService.Heartbeat:Wait(0.1)
-            until os.time() - Start > HoldDuration
+                RunService.Heartbeat:Wait() -- Espera un frame
+            until tick() - Start >= HoldDuration
         end
         ProximityPrompt:InputHoldEnd()
     end
@@ -94,10 +94,11 @@ local function TeleportSilencioso(Destination)
             antifall3:Destroy()
             task.wait(2)
             for i, v in pairs(workspace.Item_Spawns.Items:GetChildren()) do
-                if v:IsA("Model") and v:FindFirstChildWhichIsA("ProximityPrompt") then
-                    fireproximityprompt(v, 1, true)
-                    task.wait()
-                    fireproximityprompt(v, 0, false)
+                if v:IsA("Model") then
+                    local ProximityPrompt = v:FindFirstChildWhichIsA("ProximityPrompt")
+                    if ProximityPrompt then
+                        fireproximityprompt(ProximityPrompt, 1, true)
+                    end
                 end
             end
         end)
