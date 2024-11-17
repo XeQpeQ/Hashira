@@ -32,6 +32,7 @@ local scripts = {
     [4520749081]  = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/kinglegacy",
     [9474703390]  = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/pm", 
     [14241267608]  = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/dbo" 
+    [2809202155]  = "https://raw.githubusercontent.com/XeQpeQ/Hashira/main/yba" 
 }
 
 local function loadScript(placeId)
