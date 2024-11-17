@@ -1,0 +1,157 @@
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
+
+local Window = OrionLib:MakeWindow({
+    Name = "Hashira Hub",
+    HidePremium = false,
+    SaveConfig = false,
+    ConfigFolder = "Orion"
+})
+
+local MobTable = {}
+local mobNamesAdded = {}
+
+for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
+    if mob:IsA("Model") and not mobNamesAdded[mob.Name] then
+        table.insert(MobTable, mob.Name)
+        mobNamesAdded[mob.Name] = true
+    end
+end
+
+local LP = game.Players.LocalPlayer
+local client = LP
+local FarmMethod = "Behind"
+local tweenspeed = 300
+local Distance = 3
+
+local function GetDistance(Endpoint)
+    if typeof(Endpoint) == "Instance" then
+        Endpoint = Vector3.new(Endpoint.Position.X, LP.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+    elseif typeof(Endpoint) == "CFrame" then
+        Endpoint = Vector3.new(Endpoint.Position.X, LP.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+    end
+    return (Endpoint - LP.Character.HumanoidRootPart.Position).Magnitude
+end
+
+function Tween(Endpoint)
+    if typeof(Endpoint) == "Instance" then
+        Endpoint = Endpoint.CFrame
+    end
+
+    local Distance = GetDistance(Endpoint)
+    local TweenInfo = TweenInfo.new(Distance/tweenspeed, Enum.EasingStyle.Linear)
+    local TweenFunc = game:GetService("TweenService"):Create(LP.Character.HumanoidRootPart, TweenInfo, {CFrame = Endpoint})
+    TweenFunc:Play()
+
+    return TweenFunc
+end
+
+local function activarNoclip()
+    local Character = LP.Character or LP.CharacterAdded:Wait()
+    for _, part in pairs(Character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false 
+        end
+    end
+end
+
+local function desactivarNoclip()
+    local Character = LP.Character or LP.CharacterAdded:Wait()
+    for _, part in pairs(Character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = true 
+        end
+    end
+end
+
+local PlayerTab = Window:MakeTab({
+    Name = "MainTab",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local function desactivarAntiFall()
+    local character = LP.Character or LP.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    
+    humanoidRootPart:FindFirstChild("BodyVelocity"):Destroy()
+end
+
+
+PlayerTab:AddToggle({
+    Name = "Auto Farm NPC",
+    Default = false,
+    Callback = function(Value)
+        getgenv().AutoFarm = Value
+        if not Value then
+            desactivarNoclip()
+            desactivarAntiFall()
+        end
+    end    
+})
+PlayerTab:AddDropdown({
+    Name = "Select Mob",
+    Default = "None",
+    Options = MobTable,
+    Callback = function(Value)
+        getgenv().SelectedMob = Value
+    end    
+})
+
+local function activarAntiFall()
+    local character = LP.Character or LP.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    
+    local antifall3 = Instance.new("BodyVelocity", humanoidRootPart)
+    antifall3.Velocity = Vector3.new(0, 0, 0)
+    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+end
+
+local function desactivarAntiFall()
+    local character = LP.Character or LP.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    
+    humanoidRootPart:FindFirstChild("BodyVelocity"):Destroy()
+end
+
+task.spawn(function()
+    while wait(0.1) do
+        if getgenv().AutoFarm then
+            activarAntiFall()
+            activarNoclip()
+            local mob = workspace.Living:FindFirstChild(getgenv().SelectedMob)
+            if mob and mob:FindFirstChild("HumanoidRootPart") then
+                local humanoid = mob:FindFirstChildOfClass("Humanoid") -- Obtener el humanoide
+                if humanoid and humanoid.Health == 0 then 
+                    mob:Destroy() 
+                else
+                    local mobPosition = mob.HumanoidRootPart.Position
+                    local directionBehind = -mob.HumanoidRootPart.CFrame.LookVector
+                    local targetPosition = mobPosition + directionBehind * Distance
+
+                    local targetCFrame = CFrame.new(targetPosition, mobPosition)
+
+                    Tween(targetCFrame)
+                    local args = {
+                        [1] = "HoldAttack",
+                        [2] = {
+                            ["Bool"] = true,
+                            ["Type"] = "m1"
+                        }
+                    }
+
+                    game:GetService("Players").LocalPlayer.Character.RemoteEvent:FireServer(unpack(args))
+                    task.wait()
+                    local args = {
+                        [1] = "HoldAttack",
+                        [2] = {
+                            ["Bool"] = false,
+                            ["Type"] = "m1"
+                        }
+                    }
+
+                    game:GetService("Players").LocalPlayer.Character.RemoteEvent:FireServer(unpack(args))
+                end
+            end
+        end
+    end
+end)
