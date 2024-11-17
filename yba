@@ -91,9 +91,7 @@ local function TeleportSilencioso(Destination)
         TweenDestino:Play()
 
         TweenDestino.Completed:Connect(function()
-            -- Eliminar BodyVelocity para que el personaje ya no esté flotando
             antifall3:Destroy()
-            desactivarNoclip()
             task.wait(2)
             for i, v in pairs(workspace.Item_Spawns.Items:GetChildren()) do
                 if v:IsA("Model") and v:FindFirstChildWhichIsA("ProximityPrompt") then
@@ -140,11 +138,31 @@ maintab:Button('Teleport to item', function()
     end
 end)
 
+maintab:Button('Item Esp', function()
+    local itemSpawns = workspace.Item_Spawns.Items
 
-locationstab:Button('The Outskirts', function()
-    local Destination = workspace.Locations["The Outskirts"]
-    TeleportSilencioso(Destination)
+    local function addHighlight(item)
+        for _, part in pairs(item:GetChildren()) do
+            if part:IsA("MeshPart") or part:IsA("Part") then
+                if not item:FindFirstChild("ItemHighlight") then
+                    local highlight = Instance.new("Highlight")
+                    highlight.Name = "ItemHighlight" 
+                    highlight.Adornee = part  
+                    highlight.Parent = item
+                end
+            end
+        end
+    end
+
+    for _, model in pairs(itemSpawns:GetChildren()) do
+        addHighlight(model)
+    end
+
+    itemSpawns.ChildAdded:Connect(function(newItem)
+        addHighlight(newItem)
+    end)
 end)
+
 
 locationstab:Button("Naples' Sewers", function()
     local Destination = workspace.Locations["Naples' Sewers"]
