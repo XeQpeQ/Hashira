@@ -1,0 +1,177 @@
+function fireproximityprompt(ProximityPrompt, Amount, Skip)
+    assert(ProximityPrompt, "Argumento #1 faltante o nulo")
+    assert(typeof(ProximityPrompt) == "Instance" and ProximityPrompt:IsA("ProximityPrompt"), "Se intentó activar un Valor que no es un ProximityPrompt")
+
+    local HoldDuration = ProximityPrompt.HoldDuration
+    if Skip then
+        ProximityPrompt.HoldDuration = 0
+    end
+
+    for i = 1, Amount or 1 do
+        ProximityPrompt:InputHoldBegin()
+        if Skip then
+            local RunService = game:GetService("RunService")
+            local Start = os.time()
+            repeat
+                RunService.Heartbeat:Wait(0.1)
+            until os.time() - Start > HoldDuration
+        end
+        ProximityPrompt:InputHoldEnd()
+    end
+    ProximityPrompt.HoldDuration = HoldDuration
+end
+
+local TweenService = game:GetService("TweenService")
+local Player = game.Players.LocalPlayer 
+local Character = Player.Character or Player.CharacterAdded:Wait() 
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local Humanoid = Character:WaitForChild("Humanoid") 
+local WalkSpeed = 300 
+local NoclipHeight = 50 
+
+local function activarNoclip()
+    for _, part in pairs(Character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false 
+        end
+    end
+end
+
+local function desactivarNoclip()
+    for _, part in pairs(Character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = true 
+        end
+    end
+end
+
+local function TeleportSilencioso(Destination)
+    if not Destination then
+        warn("No se ha encontrado el destino.")
+        return
+    end
+
+    local antifall3 = Instance.new("BodyVelocity", HumanoidRootPart)
+    antifall3.Velocity = Vector3.new(0, 0, 0)
+    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+
+    activarNoclip()
+
+    local alturaInicial = HumanoidRootPart.Position.Y
+    local alturaDestino = NoclipHeight -- Altura a la que se "teletransporta" el personaje
+    local alturaMeta = HumanoidRootPart.Position + Vector3.new(0, NoclipHeight, 0)
+
+    local distanciaArriba = (alturaMeta - HumanoidRootPart.Position).Magnitude
+    local tiempoArriba = distanciaArriba / WalkSpeed -- Usa la velocidad de caminar para este paso
+
+    local TweenInfoArriba = TweenInfo.new(
+        tiempoArriba, 
+        Enum.EasingStyle.Linear, 
+        Enum.EasingDirection.Out
+    )
+
+    local GoalArriba = {CFrame = CFrame.new(HumanoidRootPart.Position + Vector3.new(0, NoclipHeight, 0))}
+
+    local TweenArriba = TweenService:Create(HumanoidRootPart, TweenInfoArriba, GoalArriba)
+    TweenArriba:Play()
+
+    TweenArriba.Completed:Connect(function()
+        local distancia = (Destination.Position - HumanoidRootPart.Position).Magnitude
+        local tiempo = distancia / WalkSpeed 
+
+        local TweenInfoDestino = TweenInfo.new(
+            tiempo, 
+            Enum.EasingStyle.Linear, 
+            Enum.EasingDirection.Out
+        )
+
+        local GoalDestino = {CFrame = Destination.CFrame}
+
+        local TweenDestino = TweenService:Create(HumanoidRootPart, TweenInfoDestino, GoalDestino)
+        TweenDestino:Play()
+
+        TweenDestino.Completed:Connect(function()
+            -- Eliminar BodyVelocity para que el personaje ya no esté flotando
+            antifall3:Destroy()
+            desactivarNoclip()
+            task.wait(2)
+            for i, v in pairs(workspace.Item_Spawns.Items:GetChildren()) do
+                if v:IsA("Model") and v:FindFirstChildWhichIsA("ProximityPrompt") then
+                    fireproximityprompt(v, 1, true)
+                    task.wait()
+                    fireproximityprompt(v, 0, false)
+                end
+            end
+        end)
+    end)
+end
+
+local VirtualUser = game:GetService('VirtualUser')
+
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+end)
+
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+local maintab = win:Tab('Main')
+local locationstab = win:Tab('Locations')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
+
+maintab:Button('Teleport to item', function()
+    for _, model in pairs(workspace.Item_Spawns.Items:GetChildren()) do
+        for _, part in pairs(model:GetChildren()) do
+            if part:IsA("MeshPart") or part:IsA("Part") then
+                TeleportSilencioso(part)
+            end
+        end
+    end
+end)
+
+
+locationstab:Button('The Outskirts', function()
+    local Destination = workspace.Locations["The Outskirts"]
+    TeleportSilencioso(Destination)
+end)
+
+locationstab:Button("Naples' Sewers", function()
+    local Destination = workspace.Locations["Naples' Sewers"]
+    TeleportSilencioso(Destination)
+end)
+
+locationstab:Button('The Tallest Peak', function()
+    local Destination = workspace.Locations["The Tallest Peak"]
+    TeleportSilencioso(Destination)
+end)
+
+locationstab:Button('The Bar', function()
+    local Destination = workspace.Locations["The Bar"]
+    TeleportSilencioso(Destination)
+end)
+
+locationstab:Button("The Boss' Caffe", function()
+    local Destination = workspace.Locations["The Boss' Caffe"]
+    TeleportSilencioso(Destination)
+end)
+
+locationstab:Button("Eli's Pizzeria", function()
+    local Destination = workspace.Locations["Eli's Pizzeria"]
+    TeleportSilencioso(Destination)
+end)
+
+locationstab:Button('The Arcade', function()
+    local Destination = workspace.Locations["The Arcade"]
+    TeleportSilencioso(Destination)
+end)
