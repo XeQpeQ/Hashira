@@ -140,21 +140,54 @@ maintab:Button('Teleport to item', function()
 end)
 
 maintab:Button('Item Esp', function()
-    local itemSpawns = workspace.Item_Spawns.Items
+local itemSpawns = workspace:WaitForChild("Item_Spawns"):WaitForChild("Items")
 
-    local function addHighlight(item)
-        for _, part in pairs(item:GetChildren()) do
-            if part:IsA("MeshPart") or part:IsA("Part") then
-                if not item:FindFirstChild("ItemHighlight") then
-                    local highlight = Instance.new("Highlight")
-                    highlight.Name = "ItemHighlight" 
-                    highlight.Adornee = part  
-                    highlight.Parent = item
-                end
-            end
+local function addMarker(item)
+    if not item:IsA("Model") then
+        return
+    end
+    
+    local proximityPrompt = item:FindFirstChildOfClass("ProximityPrompt")
+    local objectText = proximityPrompt.ObjectText
+
+    local existingMarker = item:FindFirstChild("ItemMarker")
+    if not existingMarker then
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "ItemMarker"
+        billboard.Adornee = item.PrimaryPart 
+        billboard.Size = UDim2.new(4, 0, 4, 0)
+        billboard.AlwaysOnTop = true
+        billboard.Parent = item
+
+        local label = Instance.new("TextLabel")
+        label.Text = objectText
+        label.BackgroundTransparency = 1
+        label.TextSize = 20
+        label.TextColor3 = Color3.new(1, 0, 0) -- Rojo
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.Parent = billboard
+    else
+        local label = existingMarker:FindFirstChildOfClass("TextLabel")
+        if label then
+            label.Text = objectText
         end
     end
+end
 
+for _, item in pairs(itemSpawns:GetChildren()) do
+    addMarker(item)
+end
+
+itemSpawns.ChildAdded:Connect(function(newItem)
+    if newItem:IsA("Model") then
+        local proximityPrompt = newItem:WaitForChild("ProximityPrompt", 3) -- Espera máximo 3 segundos
+        if proximityPrompt then
+            local objectText = proximityPrompt.ObjectText
+            addMarker(newItem)
+        end
+    end
+end)
+end
     for _, model in pairs(itemSpawns:GetChildren()) do
         addHighlight(model)
     end
