@@ -1,3 +1,26 @@
+function fireproximityprompt(ProximityPrompt, Amount, Skip)
+    assert(ProximityPrompt, "Argumento #1 faltante o nulo")
+    assert(typeof(ProximityPrompt) == "Instance" and ProximityPrompt:IsA("ProximityPrompt"), "Se intentó activar un valor que no es un ProximityPrompt")
+
+    local HoldDuration = ProximityPrompt.HoldDuration
+    if Skip then
+        ProximityPrompt.HoldDuration = 0
+    end
+
+    for i = 1, (Amount or 1) do
+        ProximityPrompt:InputHoldBegin()
+        if Skip then
+            local RunService = game:GetService("RunService")
+            local Start = tick()
+            repeat
+                RunService.Heartbeat:Wait() -- Espera un frame
+            until tick() - Start >= HoldDuration
+        end
+        ProximityPrompt:InputHoldEnd()
+    end
+    ProximityPrompt.HoldDuration = HoldDuration
+end
+
 OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
 
 local Window = OrionLib:MakeWindow({
@@ -10,7 +33,6 @@ local Window = OrionLib:MakeWindow({
 local MobTable = {}
 local mobNamesAdded = {}
 
--- Populating MobTable with unique mob names
 for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     if mob:IsA("Model") and not mobNamesAdded[mob.Name] then
         table.insert(MobTable, mob.Name)
@@ -18,13 +40,27 @@ for _, mob in pairs(game:GetService("Workspace").Living:GetChildren()) do
     end
 end
 
+local TweenService = game:GetService("TweenService")
+local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local Humanoid = Character:WaitForChild("Humanoid")
 local LP = game.Players.LocalPlayer
 local client = LP
 local FarmMethod = "Behind"
 local tweenspeed = 300
-local Distance = 3
+local Distance = 4
+local WalkSpeed = 300
+local NoclipHeight = 50
 
--- Function to calculate distance to an endpoint
+local VirtualUser = game:GetService('VirtualUser')
+
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+-- Obtener distancia
 local function GetDistance(Endpoint)
     if typeof(Endpoint) == "Instance" then
         Endpoint = Vector3.new(Endpoint.Position.X, LP.Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
@@ -34,7 +70,7 @@ local function GetDistance(Endpoint)
     return (Endpoint - LP.Character.HumanoidRootPart.Position).Magnitude
 end
 
--- Tweening function to move the character smoothly
+-- Función de Tween
 function Tween(Endpoint)
     if typeof(Endpoint) == "Instance" then
         Endpoint = Endpoint.CFrame
@@ -48,26 +84,26 @@ function Tween(Endpoint)
     return TweenFunc
 end
 
--- Noclip activation and deactivation
+-- Activar Noclip
 local function activarNoclip()
     local Character = LP.Character or LP.CharacterAdded:Wait()
     for _, part in pairs(Character:GetDescendants()) do
         if part:IsA("BasePart") then
-            part.CanCollide = false 
+            part.CanCollide = false
         end
     end
 end
 
+-- Desactivar Noclip
 local function desactivarNoclip()
     local Character = LP.Character or LP.CharacterAdded:Wait()
     for _, part in pairs(Character:GetDescendants()) do
         if part:IsA("BasePart") then
-            part.CanCollide = true 
+            part.CanCollide = true
         end
     end
 end
 
--- Anti-fall activation and deactivation
 local function activarAntiFall()
     local character = LP.Character or LP.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
@@ -87,14 +123,168 @@ local function desactivarAntiFall()
     end
 end
 
--- Main tab UI setup
+local function TeleportSilencioso(Destination)
+    if not Destination then
+        warn("No se ha encontrado el destino.")
+        return
+    end
+    activarNoclip()
+    local antifall3 = Instance.new("BodyVelocity", HumanoidRootPart)
+    antifall3.Velocity = Vector3.new(0, 0, 0)
+    antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+
+
+    local alturaInicial = HumanoidRootPart.Position.Y
+    local alturaDestino = NoclipHeight -- Altura a la que se "teletransporta" el personaje
+    local alturaMeta = HumanoidRootPart.Position + Vector3.new(0, NoclipHeight, 0)
+
+    local distanciaArriba = (alturaMeta - HumanoidRootPart.Position).Magnitude
+    local tiempoArriba = distanciaArriba / WalkSpeed -- Usa la velocidad de caminar para este paso
+
+    local TweenInfoArriba = TweenInfo.new(
+        tiempoArriba, 
+        Enum.EasingStyle.Linear, 
+        Enum.EasingDirection.Out
+    )
+
+    local GoalArriba = {CFrame = CFrame.new(HumanoidRootPart.Position + Vector3.new(0, NoclipHeight, 0))}
+
+    local TweenArriba = TweenService:Create(HumanoidRootPart, TweenInfoArriba, GoalArriba)
+    TweenArriba:Play()
+
+    TweenArriba.Completed:Connect(function()
+        local distancia = (Destination.Position - HumanoidRootPart.Position).Magnitude
+        local tiempo = distancia / WalkSpeed
+
+        local TweenInfoDestino = TweenInfo.new(
+            tiempo, 
+            Enum.EasingStyle.Linear, 
+            Enum.EasingDirection.Out
+        )
+
+        local GoalDestino = {CFrame = Destination.CFrame}
+
+        local TweenDestino = TweenService:Create(HumanoidRootPart, TweenInfoDestino, GoalDestino)
+        TweenDestino:Play()
+
+        TweenDestino.Completed:Connect(function()
+            antifall3:Destroy()
+            task.wait(2)
+            for i, v in pairs(workspace.Item_Spawns.Items:GetChildren()) do
+                if v:IsA("Model") then
+                    local ProximityPrompt = v:FindFirstChildWhichIsA("ProximityPrompt")
+                    if ProximityPrompt then
+                        fireproximityprompt(ProximityPrompt, 1, true)
+                    end
+                end
+            end
+        end)
+    end)
+end
+
 local PlayerTab = Window:MakeTab({
     Name = "MainTab",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- Toggle for Auto Farm NPC functionality
+local LocationsTab = Window:MakeTab({
+    Name = "Locations",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local itemName = "" 
+
+PlayerTab:AddButton({
+    Name = "Teleport To Item",
+    Callback = function()
+        if itemName == "" then
+            print("Por favor, ingresa el nombre del item primero.")
+            return
+        end
+        
+        local itemFound = false
+        
+        for _, model in pairs(workspace.Item_Spawns.Items:GetChildren()) do
+            local proximityPrompt = model:FindFirstChildOfClass("ProximityPrompt")
+            if proximityPrompt and proximityPrompt.ObjectText == itemName then
+                itemFound = true
+                
+                for _, part in pairs(model:GetChildren()) do
+                    if part:IsA("MeshPart") or part:IsA("Part") then
+                        TeleportSilencioso(part)
+                        break
+                    end
+                end
+                break
+            end
+        end
+    end    
+})
+
+PlayerTab:AddTextbox({
+    Name = "Item Name",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(Value)
+        itemName = Value
+    end	  
+})
+PlayerTab:AddButton({
+    Name = "Item ESP",
+    Callback = function()
+        local itemSpawns = workspace:WaitForChild("Item_Spawns"):WaitForChild("Items")
+
+        local function addMarker(item)
+            if not item:IsA("Model") then
+                return
+            end
+            
+            local proximityPrompt = item:FindFirstChildOfClass("ProximityPrompt")
+            if not proximityPrompt then return end
+            local objectText = proximityPrompt.ObjectText
+
+            local existingMarker = item:FindFirstChild("ItemMarker")
+            if not existingMarker then
+                local billboard = Instance.new("BillboardGui")
+                billboard.Name = "ItemMarker"
+                billboard.Adornee = item.PrimaryPart
+                billboard.Size = UDim2.new(4, 0, 4, 0)
+                billboard.AlwaysOnTop = true
+                billboard.Parent = item
+
+                local label = Instance.new("TextLabel")
+                label.Text = objectText
+                label.BackgroundTransparency = 1
+                label.TextSize = 20
+                label.TextColor3 = Color3.new(1, 0, 0) -- Rojo
+                label.Size = UDim2.new(1, 0, 1, 0)
+                label.Parent = billboard
+            else
+                local label = existingMarker:FindFirstChildOfClass("TextLabel")
+                if label then
+                    label.Text = objectText
+                end
+            end
+        end
+
+        for _, item in pairs(itemSpawns:GetChildren()) do
+            addMarker(item)
+        end
+
+        itemSpawns.ChildAdded:Connect(function(newItem)
+            if newItem:IsA("Model") then
+                local proximityPrompt = newItem:WaitForChild("ProximityPrompt", 3) -- Espera máximo 3 segundos
+                if proximityPrompt then
+                    local objectText = proximityPrompt.ObjectText
+                    addMarker(newItem)
+                end
+            end
+        end)
+    end
+})
+
 PlayerTab:AddToggle({
     Name = "Auto Farm NPC",
     Default = false,
@@ -107,7 +297,6 @@ PlayerTab:AddToggle({
     end    
 })
 
--- Mob selection dropdown
 PlayerTab:AddDropdown({
     Name = "Select Mob",
     Default = "None",
@@ -117,7 +306,54 @@ PlayerTab:AddDropdown({
     end    
 })
 
--- Auto Farm NPC task loop
+LocationsTab:AddButton({
+    Name = "Naples' Sewers",
+    Callback = function()
+        local Destination = workspace.Locations["Naples' Sewers"]
+        TeleportSilencioso(Destination)
+    end    
+})
+
+LocationsTab:AddButton({
+    Name = "The Tallest Peak",
+    Callback = function()
+        local Destination = workspace.Locations["The Tallest Peak"]
+        TeleportSilencioso(Destination)
+    end    
+})
+
+LocationsTab:AddButton({
+    Name = "The Bar",
+    Callback = function()
+        local Destination = workspace.Locations["The Bar"]
+        TeleportSilencioso(Destination)
+    end    
+})
+
+LocationsTab:AddButton({
+    Name = "The Boss' Caffe",
+    Callback = function()
+        local Destination = workspace.Locations["The Boss' Caffe"]
+        TeleportSilencioso(Destination)
+    end    
+})
+
+LocationsTab:AddButton({
+    Name = "Eli's Pizzeria",
+    Callback = function()
+        local Destination = workspace.Locations["Eli's Pizzeria"]
+        TeleportSilencioso(Destination)
+    end    
+})
+
+LocationsTab:AddButton({
+    Name = "The Arcade",
+    Callback = function()
+        local Destination = workspace.Locations["The Arcade"]
+        TeleportSilencioso(Destination)
+    end    
+})
+
 task.spawn(function()
     while wait(0.1) do
         if getgenv().AutoFarm then
@@ -125,11 +361,11 @@ task.spawn(function()
             activarNoclip()
             
             local mob = workspace.Living:FindFirstChild(getgenv().SelectedMob)
-            if mob and mob:FindFirstChild("HumanoidRootPart") then
-                local humanoid = mob:FindFirstChildOfClass("Humanoid") -- Obtener el humanoide
-                if humanoid then 
-                    if humanoid.Health <= 0 then 
-                        mob:Destroy()  -- Destruir mob si su salud es 0
+            if mob then
+                local humanoid2 = mob:FindFirstChildOfClass("Humanoid") -- Obtener el humanoide
+                if humanoid2 then 
+                    if humanoid2.Health <= 0 then 
+                        mob:Destroy() 
                     else
                         local mobPosition = mob.HumanoidRootPart.Position
                         local directionBehind = -mob.HumanoidRootPart.CFrame.LookVector
