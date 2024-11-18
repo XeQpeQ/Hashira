@@ -7,6 +7,12 @@ local VirtualUser = game:GetService("VirtualUser")
 local player = Players.LocalPlayer
 local maximoMensajeMostrado = false
 
+local SafeZone = Instance.new("Part")
+SafeZone.Parent = Workspace
+SafeZone.Size = Vector3.new(50, 2, 50)
+SafeZone.CFrame = CFrame.new(9999, 9999, 9999)
+SafeZone.Anchored = true
+
 local function interactuarConZenkai()
     local playerGui = player:WaitForChild("PlayerGui")
     local zenkaiButton = playerGui.PlayerInterface.Center.Zenkai.Info:FindFirstChild("Zenkai")
@@ -120,7 +126,10 @@ maintab:Toggle('Auto Farming', function(v)
     end
 end)
 
--- Ciclos asincrónicos para acciones automáticas
+maintab:Button('Zona Segura', function()
+     player.Character.HumanoidRootPart.CFrame = SafeZone.CFrame + Vector3.new(0, 2, 0)
+end)
+
 task.spawn(function()
     while task.wait() do
         if getgenv().AutoFarm then
