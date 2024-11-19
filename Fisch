@@ -1,85 +1,120 @@
-getgenv().AutoFarm = true
+local PlayerGUI = game.Players.LocalPlayer.PlayerGui
 local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
+local VirtualInputManager = game:GetService("VirtualInputManager")
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local VirtualUser = game:GetService('VirtualUser')
-local player = Players.LocalPlayer
-local initialCFrame = player.Character and player.Character.PrimaryPart.CFrame
-local Test = false
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
 
--- Detecta la inactividad y resetea el mouse
-player.Idled:Connect(function()
-    VirtualUser:CaptureController()
-    VirtualUser:ClickButton2(Vector2.new())
+local Window = OrionLib:MakeWindow({
+    Name = "Hashira Hub",
+    HidePremium = false,
+    SaveConfig = false,
+    ConfigFolder = "Orion"
+})
+
+local PlayerTab = Window:MakeTab({
+    Name = "MainTab",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local UITab = Window:MakeTab({
+    Name = "UI",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local AutoShakeConnection
+local AutoCastConnection
+local AutoCastConnection2
+
+PlayerTab:AddToggle({
+    Name = "Auto Shake",
+    Callback = function(v)
+        getgenv().AutoShake = v
+    end
+})
+
+PlayerTab:AddToggle({
+    Name = "Auto Reel",
+    Callback = function(v)
+        getgenv().AutoReel = v
+    end
+})
+
+UITab:AddButton({
+    Name = "Unload",
+    Callback = function()
+        if AutoShakeConnection then AutoShakeConnection:Disconnect() end
+        if AutoCastConnection then AutoCastConnection:Disconnect() end
+        if AutoCastConnection2 then AutoCastConnection2:Disconnect() end
+        OrionLib:Destroy()
+    end
+})
+
+PlayerTab:AddToggle({
+    Name = "Auto Cast",
+    Callback = function(v)
+        getgenv().AutoCast = v
+        task.wait()
+        if getgenv().AutoCast then
+            local oldpos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            while getgenv().AutoCast and task.wait() do
+                if game.Players.LocalPlayer.Character.HumanoidRootPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = oldpos
+                else
+                    break
+                end
+            end
+        end
+    end
+})
+
+AutoShakeConnection = PlayerGUI.ChildAdded:Connect(function(GUI)
+    if GUI:IsA("ScreenGui") and GUI.Name == "shakeui" and GUI:FindFirstChild("safezone") then
+        GUI.safezone.ChildAdded:Connect(function(child)
+            if child:IsA("ImageButton") and child.Name == "button" and getgenv().AutoShake then
+                child.AnchorPoint = Vector2.new(0.5, 0.5)
+                child.Position = UDim2.new(0.5, 0, 0.5, 0)
+                task.wait(0.1)
+                while getgenv().AutoShake and child.Visible and RunService.RenderStepped:Wait() do
+                    pcall(function()
+                        GuiService.SelectedObject = child
+                        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                    end)
+                end
+                GuiService.SelectedObject = nil
+            end
+        end)
+    end
 end)
 
-local function handleUISelection(shakeUI)
-    if shakeUI then
-        local safezone = shakeUI:FindFirstChild("safezone")
-        if safezone then
-            local button = safezone:FindFirstChild("button")
-            if button then
-                GuiService.SelectedObject = button
-            end
+AutoShakeConnection = PlayerGUI.ChildAdded:Connect(function(GUI)
+    if GUI:IsA("ScreenGui") and GUI.Name == "reel" and getgenv().AutoReel then
+        local events = ReplicatedStorage:FindFirstChild("events")
+        if events and events:FindFirstChild("reelfinished") then
+            repeat
+                task.wait(2)
+                events.reelfinished:FireServer(100, false)
+            until not GUI or not getgenv().AutoReel
         end
-
-        local VirtualInputManager = game:GetService("VirtualInputManager")
-        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-        task.wait()
-        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-    end
-end
-
-local function onRenderStepped()
-    if getgenv().AutoFarm then
-        if not Test then
-            local args = { [1] = 100, [2] = 1 }
-            local tridentRod = player.Character:FindFirstChild("Trident Rod")
-            if tridentRod and tridentRod:FindFirstChild("events") then
-                tridentRod.events.cast:FireServer(unpack(args))
-            end
-            Test = true
-        end
-
-        -- Manejo de la interfaz shakeUI
-        local shakeUI = player.PlayerGui:FindFirstChild("shakeui")
-        if shakeUI then
-            handleUISelection(shakeUI)
-        end
-
-        -- Manejo de la interfaz reel y reelfinished
-        local reel = player.PlayerGui:FindFirstChild("reel")
-        if reel then
-            local reelfinished = ReplicatedStorage:WaitForChild("events"):FindFirstChild("reelfinished")
-            if reelfinished then
-                reelfinished:FireServer(math.random(90,98), false)
-            end
-        end
-    end
-end
-
--- Ejecutar el evento onRenderStepped cada frame
-RunService.RenderStepped:Connect(onRenderStepped)
-
--- Reseteo de variable de estado Test cada 3 segundos
-task.spawn(function()
-    while getgenv().AutoFarm do
-        local reel = player.PlayerGui:FindFirstChild("reel")
-        if reel then
-            task.wait(3)
-            Test = false
-        end
-        task.wait()
     end
 end)
 
--- Mantener la posición y rotación cada 10 segundos
-task.spawn(function()
-    while getgenv().AutoFarm do
-        if player.Character and player.Character.PrimaryPart then
-            player.Character:SetPrimaryPartCFrame(initialCFrame)
+AutoCastConnection = game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
+    if child:IsA("Tool") and child:FindFirstChild("events") and child.events:FindFirstChild("cast") and getgenv().AutoCast then
+        task.wait(2)
+        child.events.cast:FireServer(100)
+    end
+end)
+
+AutoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
+    if GUI.Name == "reel" and getgenv().AutoCast then
+        local tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        if tool and tool:FindFirstChild("events") and tool.events:FindFirstChild("cast") then
+            task.wait(2)
+            tool.events.cast:FireServer(100)
         end
-        task.wait(10)
     end
 end)
