@@ -4,7 +4,11 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
-
+local VirtualUser = game:GetService("VirtualUser")
+game.Players.LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
 local Window = OrionLib:MakeWindow({
     Name = "Hashira Hub",
     HidePremium = false,
@@ -48,6 +52,11 @@ UITab:AddButton({
         if AutoShakeConnection then AutoShakeConnection:Disconnect() end
         if AutoCastConnection then AutoCastConnection:Disconnect() end
         if AutoCastConnection2 then AutoCastConnection2:Disconnect() end
+        if getgenv().AutoShake or getgenv().AutoCast or getgenv().AutoReel then
+          getgenv().AutoShake = false
+          getgenv().AutoCast = false
+          getgenv().AutoReel = false
+        end
         OrionLib:Destroy()
     end
 })
