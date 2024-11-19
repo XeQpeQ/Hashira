@@ -10,7 +10,7 @@ local maximoMensajeMostrado = false
 local SafeZone = Instance.new("Part")
 SafeZone.Parent = Workspace
 SafeZone.Size = Vector3.new(50, 2, 50)
-SafeZone.CFrame = CFrame.new(9999, 9999, 9999)
+SafeZone.CFrame = CFrame.new(99999, 99999, 99999)
 SafeZone.Anchored = true
 
 local function interactuarConZenkai()
