@@ -56,6 +56,10 @@ PlayerTab:AddToggle({
     Name = "Auto Cast",
     Callback = function(v)
         getgenv().AutoCast = v
+        local Tool = LocalCharacter:FindFirstChildOfClass("Tool")
+        if Tool and Tool:FindFirstChild("events"):WaitForChild("cast") and v == true then
+            Tool.events.cast:FireServer(100)
+        end
         task.wait()
         if getgenv().AutoCast then
             local oldpos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
