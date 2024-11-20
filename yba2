@@ -84,7 +84,6 @@ function Tween(Endpoint)
     return TweenFunc
 end
 
--- Activar Noclip
 local function activarNoclip()
     local Character = LP.Character or LP.CharacterAdded:Wait()
     for _, part in pairs(Character:GetDescendants()) do
@@ -128,57 +127,38 @@ local function TeleportSilencioso(Destination)
         warn("No se ha encontrado el destino.")
         return
     end
+
     activarNoclip()
     local antifall3 = Instance.new("BodyVelocity", HumanoidRootPart)
     antifall3.Velocity = Vector3.new(0, 0, 0)
     antifall3.MaxForce = Vector3.new(9e9, 9e9, 9e9)
 
+    -- Cálculo de la distancia y tiempo hacia el destino
+    local distancia = (Destination.Position - HumanoidRootPart.Position).Magnitude
+    local tiempo = distancia / WalkSpeed
 
-    local alturaInicial = HumanoidRootPart.Position.Y
-    local alturaDestino = NoclipHeight -- Altura a la que se "teletransporta" el personaje
-    local alturaMeta = HumanoidRootPart.Position + Vector3.new(0, NoclipHeight, 0)
-
-    local distanciaArriba = (alturaMeta - HumanoidRootPart.Position).Magnitude
-    local tiempoArriba = distanciaArriba / WalkSpeed -- Usa la velocidad de caminar para este paso
-
-    local TweenInfoArriba = TweenInfo.new(
-        tiempoArriba, 
+    local TweenInfoDestino = TweenInfo.new(
+        tiempo, 
         Enum.EasingStyle.Linear, 
         Enum.EasingDirection.Out
     )
 
-    local GoalArriba = {CFrame = CFrame.new(HumanoidRootPart.Position + Vector3.new(0, NoclipHeight, 0))}
+    local GoalDestino = {CFrame = Destination.CFrame}
 
-    local TweenArriba = TweenService:Create(HumanoidRootPart, TweenInfoArriba, GoalArriba)
-    TweenArriba:Play()
+    local TweenDestino = TweenService:Create(HumanoidRootPart, TweenInfoDestino, GoalDestino)
+    TweenDestino:Play()
 
-    TweenArriba.Completed:Connect(function()
-        local distancia = (Destination.Position - HumanoidRootPart.Position).Magnitude
-        local tiempo = distancia / WalkSpeed
-
-        local TweenInfoDestino = TweenInfo.new(
-            tiempo, 
-            Enum.EasingStyle.Linear, 
-            Enum.EasingDirection.Out
-        )
-
-        local GoalDestino = {CFrame = Destination.CFrame}
-
-        local TweenDestino = TweenService:Create(HumanoidRootPart, TweenInfoDestino, GoalDestino)
-        TweenDestino:Play()
-
-        TweenDestino.Completed:Connect(function()
-            antifall3:Destroy()
-            task.wait(2)
-            for i, v in pairs(workspace.Item_Spawns.Items:GetChildren()) do
-                if v:IsA("Model") then
-                    local ProximityPrompt = v:FindFirstChildWhichIsA("ProximityPrompt")
-                    if ProximityPrompt then
-                        fireproximityprompt(ProximityPrompt, 1, true)
-                    end
+    TweenDestino.Completed:Connect(function()
+        antifall3:Destroy()
+        task.wait(2)
+        for i, v in pairs(workspace.Item_Spawns.Items:GetChildren()) do
+            if v:IsA("Model") then
+                local ProximityPrompt = v:FindFirstChildWhichIsA("ProximityPrompt")
+                if ProximityPrompt then
+                    fireproximityprompt(ProximityPrompt, 1, true)
                 end
             end
-        end)
+        end
     end)
 end
 
