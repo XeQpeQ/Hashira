@@ -3,12 +3,39 @@ local RunService = game:GetService("RunService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
 local VirtualUser = game:GetService("VirtualUser")
+local FishingZonesFolder = Workspace:WaitForChild("zones"):WaitForChild("fishing")
+local TpSpotsFolder = Workspace:WaitForChild("world"):WaitForChild("spawns"):WaitForChild("TpSpots")
+local LocalCharacter = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+
 game.Players.LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
+
+local fischtable = {}
+local teleportSpots = {}
+
+for _, v in pairs(FishingZonesFolder:GetChildren()) do
+    if not table.find(fischtable, v.Name) then
+        table.insert(fischtable, v.Name)
+    end
+end
+
+FishingZonesFolder.ChildAdded:Connect(function(child)
+    if not table.find(fischtable, child.Name) then
+        table.insert(fischtable, child.Name)
+    end
+end)
+
+for _, v in pairs(TpSpotsFolder:GetChildren()) do
+    if not table.find(teleportSpots, v.Name) then
+        table.insert(teleportSpots, v.Name)
+    end
+end
+
 local Window = OrionLib:MakeWindow({
     Name = "Hashira Hub",
     HidePremium = false,
@@ -22,6 +49,12 @@ local PlayerTab = Window:MakeTab({
     PremiumOnly = false
 })
 
+local TeleportTab = Window:MakeTab({
+    Name = "Teleports",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
 local UITab = Window:MakeTab({
     Name = "UI",
     Icon = "rbxassetid://4483345998",
@@ -31,6 +64,7 @@ local UITab = Window:MakeTab({
 local AutoShakeConnection
 local AutoCastConnection
 local AutoCastConnection2
+local ZoneConnection
 
 PlayerTab:AddToggle({
     Name = "Auto Shake",
@@ -46,27 +80,12 @@ PlayerTab:AddToggle({
     end
 })
 
-UITab:AddButton({
-    Name = "Unload",
-    Callback = function()
-        if AutoShakeConnection then AutoShakeConnection:Disconnect() end
-        if AutoCastConnection then AutoCastConnection:Disconnect() end
-        if AutoCastConnection2 then AutoCastConnection2:Disconnect() end
-        if getgenv().AutoShake or getgenv().AutoCast or getgenv().AutoReel then
-          getgenv().AutoShake = false
-          getgenv().AutoCast = false
-          getgenv().AutoReel = false
-        end
-        OrionLib:Destroy()
-    end
-})
-
 PlayerTab:AddToggle({
     Name = "Auto Cast",
     Callback = function(v)
         getgenv().AutoCast = v
         local Tool = LocalCharacter:FindFirstChildOfClass("Tool")
-        if Tool and Tool:FindFirstChild("events"):WaitForChild("cast") and v == true then
+        if Tool and Tool:FindFirstChild("events") and Tool.events:FindFirstChild("cast") and v then
             Tool.events.cast:FireServer(100)
         end
         task.wait()
@@ -80,6 +99,51 @@ PlayerTab:AddToggle({
                 end
             end
         end
+    end
+})
+
+PlayerTab:AddToggle({
+    Name = "Zone Cast",
+    Callback = function(v)
+        getgenv().ZoneCast = v
+    end
+})
+
+PlayerTab:AddDropdown({
+    Name = "Zone",
+    Default = "None",
+    Options = fischtable,
+    Callback = function(v)
+        getgenv().Zone = v
+    end
+})
+
+TeleportTab:AddDropdown({
+    Name = "Teleport To Place",
+    Default = "None",
+    Options = teleportSpots,
+    Callback = function(v)
+        if teleportSpots and game.Players.LocalPlayer.Character.HumanoidRootPart then
+            local target = TpSpotsFolder:FindFirstChild(v)
+            if target then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = target.CFrame + Vector3.new(0, 5, 0)
+            end
+        end
+    end
+})
+
+UITab:AddButton({
+    Name = "Unload",
+    Callback = function()
+        if AutoShakeConnection then AutoShakeConnection:Disconnect() end
+        if AutoCastConnection then AutoCastConnection:Disconnect() end
+        if AutoCastConnection2 then AutoCastConnection2:Disconnect() end
+        if ZoneConnection then ZoneConnection:Disconnect() end
+        getgenv().AutoShake = false
+        getgenv().AutoCast = false
+        getgenv().AutoReel = false
+        getgenv().ZoneCast = false
+        OrionLib:Destroy()
     end
 })
 
@@ -103,18 +167,6 @@ AutoShakeConnection = PlayerGUI.ChildAdded:Connect(function(GUI)
     end
 end)
 
-AutoShakeConnection = PlayerGUI.ChildAdded:Connect(function(GUI)
-    if GUI:IsA("ScreenGui") and GUI.Name == "reel" and getgenv().AutoReel then
-        local events = ReplicatedStorage:FindFirstChild("events")
-        if events and events:FindFirstChild("reelfinished") then
-            repeat
-                task.wait(2)
-                events.reelfinished:FireServer(100, false)
-            until not GUI or not getgenv().AutoReel
-        end
-    end
-end)
-
 AutoCastConnection = game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
     if child:IsA("Tool") and child:FindFirstChild("events") and child.events:FindFirstChild("cast") and getgenv().AutoCast then
         task.wait(2)
@@ -131,3 +183,32 @@ AutoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
         end
     end
 end)
+
+ZoneConnection = game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
+    if getgenv().ZoneCast and child:IsA("Tool") and FishingZonesFolder:FindFirstChild(getgenv().Zone) ~= nil then
+        child.ChildAdded:Connect(function(blehh)
+            if blehh.Name == "bobber" then
+                local RopeConstraint = blehh:FindFirstChildOfClass("RopeConstraint")
+                if getgenv().ZoneCast and RopeConstraint ~= nil then
+                    RopeConstraint.Changed:Connect(function(property)
+                        if property == "Length" then
+                            RopeConstraint.Length = math.huge
+                        end
+                    end)
+                    RopeConstraint.Length = math.huge
+                end
+                task.wait(1)
+                while WaitForSomeone(RenderStepped) do
+                    if getgenv().ZoneCast and blehh.Parent ~= nil then
+                        task.wait()
+                        blehh.CFrame = FishingZonesFolder[getgenv().Zone].CFrame
+                    else
+                        break
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+
