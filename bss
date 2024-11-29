@@ -1,0 +1,303 @@
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
+local VirtualUser = game:GetService("VirtualUser")
+
+game.Players.LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+for _,v in next, game.workspace.Collectibles:GetChildren() do
+    if string.find(v.Name,"") then
+        v:Destroy()
+    end
+end 
+
+local Window = OrionLib:MakeWindow({
+    Name = "Hashira Hub",
+    HidePremium = false,
+    SaveConfig = false,
+    ConfigFolder = "Hashira"
+})
+
+local PlayerTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local BoostTab = Window:MakeTab({
+    Name = "Boosts",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local DispenserTab = Window:MakeTab({
+    Name = "Dispensers",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+PlayerTab:AddToggle({
+    Name = "Auto All Field Booster",
+    Callback = function(v)
+        getgenv().AutoAllFieldBooster = v
+        
+end
+})
+
+BoostTab:AddToggle({
+    Name = "Auto All Field Booster",
+    Callback = function(v)
+        getgenv().AutoAllFieldBooster = v
+        while getgenv().AutoAllFieldBooster == true do 
+local red = "Red Field Booster"
+local Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+Event:FireServer(red)
+local blue = "Blue Field Booster"
+Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+Event:FireServer(blue)
+local mountain = "Field Booster"
+Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+Event:FireServer(mountain)
+wait(5) 
+end 
+end
+})
+
+BoostTab:AddToggle({
+    Name = "Auto Red Field Booster",
+    Callback = function(v)
+        getgenv().AutoRedFieldBooster = v
+        while getgenv().AutoRedFieldBooster == true do 
+local red = "Red Field Booster"
+local Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+Event:FireServer(red)
+wait(5) 
+end 
+end
+})
+BoostTab:AddToggle({
+    Name = "Auto Blue Field Booster",
+    Callback = function(v)
+        getgenv().AutoBlueFieldBooster = v
+        while getgenv().AutoBlueFieldBooster == true do 
+local blue = "Blue Field Booster"
+Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+Event:FireServer(blue)
+wait(5)       
+end 
+end
+})
+ BoostTab:AddToggle({
+    Name = "Auto Field Booster",
+    Callback = function(v)
+        getgenv().AutoFieldBooster = v
+         while getgenv().AutoFieldBooster == true do 
+local mountain = "Field Booster"
+Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+Event:FireServer(mountain)
+ wait(5)        
+ end  
+   end
+})
+PlayerTab:AddDropdown({
+    Name = "Field",
+    Default = "Sunflower Field",
+    Options = {"Sunflower Field", "Dandelion Field","Blue Flower Field","Clover Field","Spider Field","Bamboo Field","Strawberry Field","Pineapple Patch","Stump Field","Cactus Field","Pumpkin Patch","Pine Tree Forest","Rose Field","Mountain Top Field","Mushroom Field","Coconut Field","Pepper Patch"},
+    Callback = function(archos)
+  _G.area = archos
+  _G.cords = game:GetService("Workspace").FlowerZones[_G.area].CFrame
+    end
+})
+PlayerTab:AddDropdown({
+    Name = "Equip Mask",
+    Default = "nil",
+    Options = {"Gummy Mask","Demon Mask","Diamond Mask","Bubble Mask","Fire Mask","Honey Mask",},
+    Callback = function(Value)
+if Value == "Gummy Mask" then 
+A_1 = "Equip"
+A_2 = {["Mute"] = true
+    , ["Type"] = "Gummy Mask", ["Category"] = "Accessory"}
+Event = game:GetService("ReplicatedStorage").Events.ItemPackageEvent
+Event:InvokeServer(A_1, A_2)
+elseif Value == "Demon Mask" then
+A_3 = "Equip"
+A_4 = {["Mute"] = true
+    , ["Type"] = "Demon Mask", ["Category"] = "Accessory"}
+Event = game:GetService("ReplicatedStorage").Events.ItemPackageEvent
+Event:InvokeServer(A_3, A_4)
+elseif Value == "Diamond Mask" then
+A_5 = "Equip"
+A_6 = {["Mute"] = true
+    , ["Type"] = "Diamond Mask", ["Category"] = "Accessory"}
+Event = game:GetService("ReplicatedStorage").Events.ItemPackageEvent
+Event:InvokeServer(A_5, A_6)
+elseif Value == "Bubble Mask" then
+A_7 = "Equip"
+A_8 = {["Mute"] = true
+    , ["Type"] = "Bubble Mask", ["Category"] = "Accessory"}
+Event = game:GetService("ReplicatedStorage").Events.ItemPackageEvent
+Event:InvokeServer(A_7, A_8)
+elseif Value == "Fire Mask" then
+A_9 = "Equip"
+A_10 = {["Mute"] = true
+    , ["Type"] = "Fire Mask", ["Category"] = "Accessory"}
+Event = game:GetService("ReplicatedStorage").Events.ItemPackageEvent
+Event:InvokeServer(A_9, A_10)
+elseif Value == "Honey Mask" then 
+A_11 = "Equip"
+A_12 = {["Mute"] = true
+    , ["Type"] = "Honey Mask", ["Category"] = "Accessory"}
+Event = game:GetService("ReplicatedStorage").Events.ItemPackageEvent
+Event:InvokeServer(A_11, A_12)
+end
+end
+})
+PlayerTab:AddToggle({
+    Name = "Auto Farm",
+    Callback = function(v)
+        getgenv().AutoFarm = v
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = _G.cords
+        wait(0.5)
+         A = {["Name"] = "Sprinkler Builder"}
+local Event = game:GetService("ReplicatedStorage").Events.PlayerActivesCommand
+Event:FireServer(A)
+         plr = game.Players.LocalPlayer
+         while turnoff11 == true do
+player = game:GetService("Players").LocalPlayer
+pollenLbl = player.Character:FindFirstChild("ProgressLabel",true)
+maxpollen = tonumber(pollenLbl.Text:match("%d+$"))
+while player.CoreStats.Pollen.Value>=maxpollen do 
+
+    player.Character:MoveTo(player.SpawnPos.Value.p)
+                wait(0.5)
+                    repeat wait(0.5) 
+                        if player.CoreStats.Pollen.Value < 99   then wait(5)
+wait(0.1)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = _G.cords 
+wait(0.1)
+                            end until player.CoreStats.Pollen.Value < 99     
+end
+ local function collectorSteal()
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v.Name ~= game.Players.LocalPlayer.Name then
+                if v then
+                    if v.Character then
+                        if v.Character:FindFirstChildWhichIsA("Tool") then
+                            if v.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild("ClickEvent") then
+                    v.Character:FindFirstChildWhichIsA("Tool").ClickEvent:FireServer()
+                end
+            end
+        end
+        end
+        end
+        end
+    end
+	if game.Players.LocalPlayer then 
+		if game.Players.LocalPlayer.Character then 
+			if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then 
+				if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):FindFirstChild("ClickEvent", true) then 
+				tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") or nil 
+				end 
+			end 
+		end 
+	if tool then getsenv(tool.ClientScriptMouse).collectStart(game:GetService("Players").LocalPlayer:GetMouse()) end collectorSteal() workspace.NPCs.Onett.Onett["Porcelain Dipper"].ClickEvent:FireServer() end
+	wait(.1)
+	for i,v in pairs(game:GetService("Workspace").Collectibles:GetDescendants()) do
+    if v:IsA("Part") and (plr.Character.HumanoidRootPart.Position - v.Position).Magnitude < 50 then
+        plr.Character.Humanoid:MoveTo(v.Position)
+end
+end
+end
+end
+    end
+})
+PlayerTab:AddToggle({
+    Name = "Auto Convert Pollen",
+    Callback = function(v)
+        getgenv().AutoPollen = v
+         while getgenv().AutoPollen == true do
+local player = game:GetService("Players").LocalPlayer
+local pollenLbl = player.Character:FindFirstChild("ProgressLabel",true)
+local maxpollen = tonumber(pollenLbl.Text:match("%d+$"))
+wait(0.1)                                                                       
+if player.CoreStats.Pollen.Value>=maxpollen then
+
+    player.Character:MoveTo(player.SpawnPos.Value.p)
+                wait(0.5) game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
+if player.CoreStats.Pollen.Value<100  then
+                    wait(2)  game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = _G.cords 
+                    end repeat wait(0.5) until player.CoreStats.Pollen.Value < 99
+end
+end
+   end
+})
+PlayerTab:AddToggle({
+    Name = "Auto Dig",
+    Callback = function(v)
+        getgenv().AutoDig = v
+        while getgenv().AutoDig == true do
+             wait(0.1)
+local function collectorSteal()
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v.Name ~= game.Players.LocalPlayer.Name then
+                if v then
+                    if v.Character then
+                        if v.Character:FindFirstChildWhichIsA("Tool") then
+                            if v.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild("ClickEvent") then
+                    v.Character:FindFirstChildWhichIsA("Tool").ClickEvent:FireServer()
+                end
+            end
+        end
+        end
+        end
+        end
+    end
+	if game.Players.LocalPlayer then 
+		if game.Players.LocalPlayer.Character then 
+			if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then 
+				if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):FindFirstChild("ClickEvent", true) then 
+				tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") or nil 
+				end 
+			end 
+		end 
+	if tool then getsenv(tool.ClientScriptMouse).collectStart(game:GetService("Players").LocalPlayer:GetMouse()) end collectorSteal() workspace.NPCs.Onett.Onett["Porcelain Dipper"].ClickEvent:FireServer() end
+end
+    end
+})
+
+DispenserTab:AddToggle({
+    Name = "Auto All Dispensers",
+    Callback = function(v)
+        getgenv().AutoDispensers = v
+         while getgenv().AutoDispensers == true do 
+                  local A_1 = "Glue Dispenser"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  A_1 = "Wealth Clock"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  A_1 = "Coconut Dispenser"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  A_1 = "Strawberry Dispenser"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  A_1 = "Treat Dispenser"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  A_1 = "Free Ant Pass Dispenser"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  A_1 = "Blueberry Dispenser"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  A_1 = "Honey Dispenser"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  A_1 = "Free Royal Jelly Dispenser"
+                  Event = game:GetService("ReplicatedStorage").Events.ToyEvent
+                  Event:FireServer(A_1)
+                  wait(10)
+            end
+    end
+})
