@@ -1,0 +1,161 @@
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
+local VirtualUser = game:GetService("VirtualUser")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local player = Players.LocalPlayer
+
+player.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+for _, v in pairs(Workspace.Collectibles:GetChildren()) do
+    if string.find(v.Name, "") then
+        v:Destroy()
+    end
+end
+local ZonesTable = {}
+
+-- Llenar el dropdown con las áreas
+for i, v in pairs(game:GetService("Workspace").FlowerZones:GetChildren()) do
+    if table.find(ZonesTable, v.Name) == nil then
+        table.insert(ZonesTable, v.Name)
+    end
+end
+
+PlayerTab:AddDropdown({
+    Name = "Field",
+    Default = "None",
+    Options = ZonesTable, -- Arreglado para pasar la tabla directamente
+    Callback = function(v)
+        getgenv().Zone = v
+    end
+})
+
+PlayerTab:AddToggle({
+    Name = "Auto Farm",
+    Callback = function(v)
+        getgenv().AutoFarm = v
+        if v then
+            startAutoFarm() -- Comenzar Auto Farm
+        else
+            stopAutoFarm() -- Detener Auto Farm
+        end
+    end
+})
+
+-- Variable global para controlar Infinite Jump
+local InfiniteJumpEnabled = false
+
+-- Conectar el evento para Infinite Jump
+game:GetService("UserInputService").JumpRequest:connect(function()
+    if InfiniteJumpEnabled then
+        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end)
+
+-- Función para iniciar Auto Farm
+function startAutoFarm()
+    local zoneName = getgenv().Zone
+    if not zoneName or zoneName == "None" then
+        print("Por favor selecciona un área primero.")
+        getgenv().AutoFarm = false -- Desactivar si no hay zona seleccionada
+        return
+    end
+
+    moveToZone(zoneName) -- Comenzar a moverse hacia la zona seleccionada
+end
+
+-- Función para detener Auto Farm
+function stopAutoFarm()
+    getgenv().AutoFarm = false
+    InfiniteJumpEnabled = false -- Desactivar Infinite Jump
+
+    -- Detener movimiento del personaje
+    local character = game:GetService("Players").LocalPlayer.Character
+    if character and character:FindFirstChild("Humanoid") then
+        character.Humanoid:MoveTo(character.HumanoidRootPart.Position) -- Detener al personaje
+    end
+    print("Auto Farm desactivado.")
+end
+
+-- Función para caminar hacia el área seleccionada
+function moveToZone(zoneName)
+    if not getgenv().AutoFarm then return end -- Salir si Auto Farm está desactivado
+
+    local targetZone = game:GetService("Workspace").FlowerZones:FindFirstChild(zoneName)
+    if not targetZone then
+        print("El área seleccionada no existe.")
+        stopAutoFarm() -- Desactivar si no hay zona válida
+        return
+    end
+
+    local character = game:GetService("Players").LocalPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then
+        print("El personaje no está disponible.")
+        stopAutoFarm() -- Desactivar si no hay personaje
+        return
+    end
+
+    local pathfindingService = game:GetService("PathfindingService")
+    local path = pathfindingService:CreatePath({
+        AgentRadius = 2,
+        AgentHeight = 5,
+        AgentCanJump = true,
+        AgentJumpHeight = 10,
+        AgentMaxSlope = 45,
+    })
+
+    -- Crear la ruta hacia el objetivo
+    path:ComputeAsync(character.HumanoidRootPart.Position, targetZone.Position)
+    local waypoints = path:GetWaypoints()
+
+    if path.Status == Enum.PathStatus.Complete then
+        InfiniteJumpEnabled = true -- Activar Infinite Jump mientras se mueve
+
+        for _, waypoint in ipairs(waypoints) do
+            if not getgenv().AutoFarm then return end -- Salir si Auto Farm se desactiva
+
+            if waypoint.Action == Enum.PathWaypointAction.Jump then
+                -- Saltar si es necesario
+                character.Humanoid:MoveTo(waypoint.Position)
+                character.Humanoid.MoveToFinished:Wait()
+                game:GetService("VirtualInputManager"):SendKeyEvent(true, "Space", false, game)
+                game:GetService("VirtualInputManager"):SendKeyEvent(false, "Space", false, game)
+            else
+                -- Caminar normalmente
+                character.Humanoid:MoveTo(waypoint.Position)
+                character.Humanoid.MoveToFinished:Wait()
+            end
+        end
+
+        InfiniteJumpEnabled = false -- Desactivar Infinite Jump una vez llegado
+        walkAroundArea(targetZone) -- Comenzar a caminar por el área seleccionada
+    else
+        print("No se pudo calcular una ruta hacia el área seleccionada.")
+        stopAutoFarm()
+    end
+end
+
+-- Función para caminar por el área seleccionada
+function walkAroundArea(zone)
+    local character = game:GetService("Players").LocalPlayer.Character
+    if not character or not character:FindFirstChild("Humanoid") then
+        stopAutoFarm() -- Desactivar si no hay personaje
+        return
+    end
+
+    while getgenv().AutoFarm do
+        -- Generar un punto aleatorio dentro del área
+        local randomPoint = zone.Position + Vector3.new(
+            math.random(-zone.Size.X / 2, zone.Size.X / 2),
+            0,
+            math.random(-zone.Size.Z / 2, zone.Size.Z / 2)
+        )
+
+        -- Caminar hacia el punto aleatorio
+        character.Humanoid:MoveTo(randomPoint)
+        character.Humanoid.MoveToFinished:Wait()
+    end
+end
