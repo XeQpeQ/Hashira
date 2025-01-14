@@ -102,12 +102,6 @@ PlayerTab:AddToggle({
     end
 })
 
-PlayerTab:AddToggle({
-    Name = "Zone Cast",
-    Callback = function(v)
-        getgenv().ZoneCast = v
-    end
-})
 
 PlayerTab:AddDropdown({
     Name = "Zone",
@@ -138,6 +132,7 @@ UITab:AddButton({
         if AutoShakeConnection then AutoShakeConnection:Disconnect() end
         if AutoCastConnection then AutoCastConnection:Disconnect() end
         if AutoCastConnection2 then AutoCastConnection2:Disconnect() end
+        if AutoReelConnection then AutoReelConnection:Disconnect() end
         if ZoneConnection then ZoneConnection:Disconnect() end
         getgenv().AutoShake = false
         getgenv().AutoCast = false
@@ -184,31 +179,15 @@ AutoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
     end
 end)
 
-ZoneConnection = game.Players.LocalPlayer.Character.ChildAdded:Connect(function(child)
-    if getgenv().ZoneCast and child:IsA("Tool") and FishingZonesFolder:FindFirstChild(getgenv().Zone) ~= nil then
-        child.ChildAdded:Connect(function(blehh)
-            if blehh.Name == "bobber" then
-                local RopeConstraint = blehh:FindFirstChildOfClass("RopeConstraint")
-                if getgenv().ZoneCast and RopeConstraint ~= nil then
-                    RopeConstraint.Changed:Connect(function(property)
-                        if property == "Length" then
-                            RopeConstraint.Length = math.huge
-                        end
-                    end)
-                    RopeConstraint.Length = math.huge
-                end
-                task.wait(1)
-                while WaitForSomeone(RenderStepped) do
-                    if getgenv().ZoneCast and blehh.Parent ~= nil then
-                        task.wait()
-                        blehh.CFrame = FishingZonesFolder[getgenv().Zone].CFrame
-                    else
-                        break
-                    end
-                end
-            end
-        end)
+AutoReelConnection = PlayerGUI.ChildAdded:Connect(function(child)
+    if GUI.Name == "reel" and getgenv().AutoReel then
+        repeat task.wait(2)
+local args = {
+    [1] = 100,
+    [2] = false
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("reelfinished"):FireServer(unpack(args))
+       until GUI == nil
     end
 end)
-
-
