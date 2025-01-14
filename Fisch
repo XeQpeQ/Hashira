@@ -180,7 +180,7 @@ AutoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
 end)
 
 AutoReelConnection = PlayerGUI.ChildAdded:Connect(function(child)
-    if GUI.Name == "reel" and getgenv().AutoReel then
+    if child.Name == "reel" and getgenv().AutoReel then
         repeat task.wait(2)
 local args = {
     [1] = 100,
@@ -188,6 +188,6 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("reelfinished"):FireServer(unpack(args))
-       until GUI == nil
+       until child == nil
     end
 end)
