@@ -26,7 +26,6 @@ local function interactuarConZenkai()
     end
 end
 
--- Función principal para verificar barras y estados
 local function verificarBarras()
     local playerGui = player:WaitForChild("PlayerGui")
     local zenkaiUI = playerGui:WaitForChild("PlayerInterface").Center.Zenkai.Container.Progress
@@ -73,7 +72,6 @@ if not estados.ataqueMaximo then
         interactuarConZenkai()
     end
 
-    -- Manejo de energía
     if energy <= 20 then
         prev1 = getgenv().AutoEnergy
         prev2 = getgenv().AutoDefense
@@ -91,13 +89,11 @@ if not estados.ataqueMaximo then
     end
 end
 
--- Evitar expulsión por inactividad
 Players.LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
 
--- Configuración de la interfaz
 local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
 local win = HashiraUI:Create({
     Name = "Hashira Hub",
