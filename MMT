@@ -6,11 +6,6 @@ Players.LocalPlayer.Idled:Connect(function()
     VirtualUser:ClickButton2(Vector2.new())
 end)
 
-local storeGui = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI") and game.Players.LocalPlayer.PlayerGui.UI:FindFirstChild("Store")
-if storeGui then
-storeGui:Destroy()
-end
-
 local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
 local win = HashiraUI:Create({
     Name = "Hashira Hub",
