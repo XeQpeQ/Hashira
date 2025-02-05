@@ -1,0 +1,65 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local VirtualUser = game:GetService("VirtualUser")
+Players.LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+
+for _, descendant in pairs(workspace.Plots:GetDescendants()) do
+    if descendant:IsA("TextLabel") and descendant.Text == game.Players.LocalPlayer.DisplayName then
+        local plot = descendant:FindFirstAncestor("Plots") 
+        if plot then
+            local plotModel = plot:FindFirstChildOfClass("Model") 
+            if plotModel then
+                plotModel.Name = game.Players.LocalPlayer.Name
+            end
+        end
+    end
+end
+
+
+coroutine.resume(coroutine.create(function(v)
+    while task.wait() do
+        if getgenv().AutoCollect then
+            for i,v in pairs(workspace.Plots:GetChildren()) do
+if v:IsA("Model") and v.Name == game.Players.LocalPlayer.Name then
+fireproximityprompt(v.House.Giver.Prompt:FindFirstChildWhichIsA("ProximityPrompt"), 1, true)
+end
+end
+        end
+    end
+end))
+
+coroutine.resume(coroutine.create(function(v)
+    while task.wait() do
+        if getgenv().AutoBuild then
+            
+        end
+    end
+end))
+
+local maintab = win:Tab('Main')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
+
+maintab:Toggle('Auto Build', function(v)
+    getgenv().AutoBuild = v
+end)
+
+maintab:Toggle('Auto Collect', function(v)
+    getgenv().AutoCollect = v
+end)
