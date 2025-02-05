@@ -1,0 +1,77 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local VirtualUser = game:GetService("VirtualUser")
+Players.LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+local storeGui = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI") and game.Players.LocalPlayer.PlayerGui.UI:FindFirstChild("Store")
+if storeGui then
+storeGui:Destroy()
+end
+
+local HashiraUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XeQpeQ/Hashira/main/UI2.lua"))()
+local win = HashiraUI:Create({
+    Name = "Hashira Hub",
+    StartupSound = {
+        Toggle = false,
+        SoundID = "rbxassetid://6958727243",
+        TimePosition = 1
+    }
+})
+
+local tycoonsFolder = game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons
+    for _, tycoon in pairs(tycoonsFolder:GetChildren()) do
+        local ownerValue = tycoon:FindFirstChild("Owner")  
+        if ownerValue and tostring(ownerValue.Value) == game.Players.LocalPlayer.Name then
+            tycoon.Name = game.Players.LocalPlayer.Name
+        end
+    end
+
+coroutine.resume(coroutine.create(function()
+    while task.wait(0.1) do
+        if getgenv().AutoBuy then
+            local tycoon = game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons[game.Players.LocalPlayer.Name]
+            if tycoon then
+                local buttons = tycoon.Buttons:GetDescendants()
+                for _, button in pairs(buttons) do
+                    if button:FindFirstChild("Price") and button.Price.Value <= game.Players.LocalPlayer.leaderstats.Cash.Value then
+                        if button:FindFirstChild("Head") then
+                            firetouchinterest(game.Players.LocalPlayer.Character.Head, button.Head, 0)
+                            task.wait()
+                            firetouchinterest(game.Players.LocalPlayer.Character.Head, button.Head, 1)
+                        end
+                    end
+                end
+            end
+        end
+    end
+end))
+
+coroutine.resume(coroutine.create(function(v)
+    while task.wait() do
+        if getgenv().AutoCollect then
+            local giver = game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons[game.Players.LocalPlayer.Name].Essentials.Giver
+            firetouchinterest(game.Players.LocalPlayer.Character.Head, giver, 0)
+            task.wait()
+            firetouchinterest(game.Players.LocalPlayer.Character.Head, giver, 1)
+        end
+    end
+end))
+
+local maintab = win:Tab('Main')
+local uitab = win:Tab('UI')
+
+uitab:Button('Destroy GUI', function()
+    win:Exit()
+end)
+
+maintab:Toggle('Auto Buy', function(v)
+    getgenv().AutoBuy = v
+end)
+
+maintab:Toggle('Auto Collect', function(v)
+    getgenv().AutoCollect = v
+end)
+
