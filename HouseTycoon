@@ -41,31 +41,55 @@ end
     end
 end))
 
-coroutine.resume(coroutine.create(function(v)
-    while task.wait(.5) do
+coroutine.resume(coroutine.create(function()
+    while task.wait(0.5) do
         if getgenv().AutoBuild then
-            game.Players.LocalPlayer.PlayerGui["3D Prompts"]:Destroy()
+            local player = game.Players.LocalPlayer
+            local playerGui = player:FindFirstChild("PlayerGui")
+            local rootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+            
+            if playerGui then
+                local promptGui = playerGui:FindFirstChild("3D Prompts")
+                if promptGui then
+                    promptGui:Destroy()
+                end
+            end
+            
             for _, plot in pairs(workspace.Plots:GetChildren()) do
-    if plot:IsA("Model") and plot.Name == game.Players.LocalPlayer.Name then
-        for _, prompt in pairs(plot.House.PurchasePrompts:GetChildren()) do
-            if prompt:IsA("Part") then
-                prompt.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                if plot:IsA("Model") and plot.Name == player.Name then
+                    local house = plot:FindFirstChild("House")
+                    if house then
+                        local purchasePrompts = house:FindFirstChild("PurchasePrompts")
+                        if purchasePrompts then
+                            for _, prompt in pairs(purchasePrompts:GetChildren()) do
+                                if prompt:IsA("Part") and rootPart then
+                                    prompt.CFrame = rootPart.CFrame * CFrame.new(0, 0, -3) -- Mueve la parte 3 unidades adelante
+                                end
+                            end
+                        end
+                    end
+                end
             end
-        end
-    end
-end
-for i,v in pairs(workspace.Plots:GetChildren()) do
-    if v:IsA("Model") and v.Name == game.Players.LocalPlayer.Name then
-        for i,v2 in pairs(v.House.PurchasePrompts:GetDescendants()) do
-            if v2:IsA("ProximityPrompt") then
-                fireproximityprompt(v2, 1, true) 
+            
+            for _, v in pairs(workspace.Plots:GetChildren()) do
+                if v:IsA("Model") and v.Name == player.Name then
+                    local house = v:FindFirstChild("House")
+                    if house then
+                        local purchasePrompts = house:FindFirstChild("PurchasePrompts")
+                        if purchasePrompts then
+                            for _, v2 in pairs(purchasePrompts:GetDescendants()) do
+                                if v2:IsA("ProximityPrompt") then
+                                    fireproximityprompt(v2, 1, true)
+                                end
+                            end
+                        end
+                    end
+                end
             end
-        end
-    end
-end
         end
     end
 end))
+
 
 local maintab = win:Tab('Main')
 local uitab = win:Tab('UI')
