@@ -42,9 +42,27 @@ end
 end))
 
 coroutine.resume(coroutine.create(function(v)
-    while task.wait() do
+    while task.wait(.5) do
         if getgenv().AutoBuild then
-            
+            game.Players.LocalPlayer.PlayerGui["3D Prompts"]:Destroy()
+            for _, plot in pairs(workspace.Plots:GetChildren()) do
+    if plot:IsA("Model") and plot.Name == game.Players.LocalPlayer.Name then
+        for _, prompt in pairs(plot.House.PurchasePrompts:GetChildren()) do
+            if prompt:IsA("Part") then
+                prompt.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            end
+        end
+    end
+end
+for i,v in pairs(workspace.Plots:GetChildren()) do
+    if v:IsA("Model") and v.Name == game.Players.LocalPlayer.Name then
+        for i,v2 in pairs(v.House.PurchasePrompts:GetDescendants()) do
+            if v2:IsA("ProximityPrompt") then
+                fireproximityprompt(v2, 1, true) 
+            end
+        end
+    end
+end
         end
     end
 end))
