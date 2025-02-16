@@ -141,7 +141,7 @@ def on_search():
 
 # Crear la ventana principal de la interfaz gráfica
 root = tk.Tk()
-root.title("Buscar Videos de YouTube")
+root.title("Buscar Videos")
 root.geometry("600x400")
 root.config(bg="#1e1e1e")
 
