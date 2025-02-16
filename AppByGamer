@@ -1,0 +1,170 @@
+import time
+import re
+import win32gui
+import win32con
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+# Variable global para almacenar los resultados de búsqueda
+video_results = []
+
+def set_window_always_on_top(hwnd):
+    """Configura la ventana para que esté siempre en primer plano."""
+    win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,
+                          win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
+
+def find_window_start_or_end_with(title_substring):
+    """Busca una ventana cuyo título comience o termine con 'title_substring'."""
+    def enum_windows(hwnd, lparam):
+        window_title = win32gui.GetWindowText(hwnd)
+        if window_title.startswith(title_substring) or window_title.endswith(title_substring):
+            lparam.append(hwnd)
+    hwnds = []
+    win32gui.EnumWindows(enum_windows, hwnds)
+    return hwnds[0] if hwnds else None
+
+def open_youtube_video(video_id):
+    """Abre un video de YouTube en modo 'app' y mantiene la ventana al frente."""
+    youtube_video_url = f"https://www.youtube.com/embed/{video_id}?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0"
+    
+    # Configuración de Chrome para abrir en modo "app"
+    chrome_options = Options()
+    chrome_options.add_argument(f"--app={youtube_video_url}")
+    chrome_options.add_argument("--disable-infobars")
+    chrome_options.add_argument("--window-size=800,450")
+    chrome_options.add_argument("--force-device-scale-factor=1")
+    chrome_options.add_argument("--disable-gpu")
+    
+    driver = webdriver.Chrome(options=chrome_options)
+    
+    hwnd = find_window_start_or_end_with("YouTube")
+    if hwnd:
+        set_window_always_on_top(hwnd)
+    else:
+        print("No se encontró la ventana 'YouTube'.")
+
+    try:
+        root.withdraw()  # Oculta la ventana principal mientras se reproduce el video
+        while True:
+            time.sleep(1)
+            hwnd = find_window_start_or_end_with("YouTube")
+            if hwnd:
+                set_window_always_on_top(hwnd)
+            else:
+                print("La aplicación de YouTube se ha cerrado.")
+                break
+    except KeyboardInterrupt:
+        print("Interrupción manual recibida. Cerrando la aplicación...")
+    
+    driver.quit()
+    root.deiconify()  # Vuelve a mostrar la ventana principal
+
+def extract_video_id(url):
+    """Extrae el ID del video de la URL de YouTube."""
+    match = re.search(r"[?&]v=([a-zA-Z0-9_-]{11})", url)
+    return match.group(1) if match else None
+
+def search_youtube_videos(query):
+    """Realiza la búsqueda de videos en YouTube usando Selenium."""
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.get("https://www.youtube.com/results?search_query=" + query)
+    time.sleep(2)
+    video_elements = driver.find_elements(By.XPATH, '//*[@id="video-title"]')[:5]
+    videos = []
+    for element in video_elements:
+        title = element.get_attribute("title")
+        url = element.get_attribute("href")
+        videos.append((title, url))
+    driver.quit()
+    return videos
+
+def on_video_select(event):
+    """Maneja la acción de doble clic en un video."""
+    selected = tree.focus()
+    if selected:
+        # Recupera el índice almacenado en el 'text' del ítem
+        index = int(tree.item(selected, 'text'))
+        selected_video = video_results[index]
+        video_url = selected_video[1]
+        video_id = extract_video_id(video_url)
+        if video_id:
+            open_youtube_video(video_id)
+        else:
+            messagebox.showerror("Error", "No se pudo extraer el ID del video.")
+
+def on_search():
+    """Realiza la búsqueda y actualiza la lista de resultados."""
+    global video_results
+    query = entry_search.get().strip()
+    if query:
+        try:
+            search_results = search_youtube_videos(query)
+            video_results = search_results
+            # Limpia la tabla de resultados
+            for row in tree.get_children():
+                tree.delete(row)
+            # Inserta los nuevos resultados
+            for idx, video in enumerate(search_results):
+                tree.insert("", "end", text=str(idx), values=(video[0],))
+        except Exception as e:
+            messagebox.showerror("Error", f"Ocurrió un error: {e}")
+    else:
+        messagebox.showwarning("Advertencia", "Ingresa un término de búsqueda.")
+
+# ---------------- Interfaz Profesional con ttk ----------------
+
+root = tk.Tk()
+root.title("Buscador Profesional de Videos YouTube")
+root.geometry("700x500")
+root.configure(bg="#f0f2f5")  # Fondo claro y moderno
+
+# Configuración del estilo (se utiliza el tema "clam")
+style = ttk.Style(root)
+style.theme_use("clam")
+style.configure("TFrame", background="#f0f2f5")
+style.configure("TLabel", background="#f0f2f5", font=("Helvetica", 14))
+style.configure("TButton", font=("Helvetica", 12), foreground="#ffffff", background="#4a90e2")
+style.map("TButton", background=[("active", "#357ab8")])
+style.configure("Treeview", font=("Helvetica", 12), rowheight=30, background="#ffffff", fieldbackground="#ffffff")
+style.configure("Treeview.Heading", font=("Helvetica", 12, "bold"), background="#4a90e2", foreground="#ffffff")
+
+# Título principal
+label_title = ttk.Label(root, text="Buscador Profesional de Videos YouTube")
+label_title.pack(pady=20)
+
+# Marco de búsqueda
+search_frame = ttk.Frame(root)
+search_frame.pack(pady=10)
+
+entry_search = ttk.Entry(search_frame, font=("Helvetica", 12), width=50)
+entry_search.grid(row=0, column=0, padx=(0, 10), ipady=4)
+
+search_button = ttk.Button(search_frame, text="Buscar", command=on_search)
+search_button.grid(row=0, column=1, ipadx=10, ipady=4)
+
+# Marco para los resultados (utilizando Treeview)
+results_frame = ttk.Frame(root)
+results_frame.pack(pady=10, fill="both", expand=True)
+
+# Definición de la tabla con una columna para el título
+columns = ("Título",)
+tree = ttk.Treeview(results_frame, columns=columns, show="headings")
+tree.heading("Título", text="Título")
+tree.column("Título", anchor="center")
+tree.pack(side="left", fill="both", expand=True, padx=(20, 0), pady=10)
+
+# Scrollbar vertical para el Treeview
+scrollbar = ttk.Scrollbar(results_frame, orient="vertical", command=tree.yview)
+tree.configure(yscroll=scrollbar.set)
+scrollbar.pack(side="right", fill="y", padx=(0, 20), pady=10)
+
+# Vincula el evento de doble clic a la función que reproduce el video
+tree.bind("<Double-1>", on_video_select)
+
+root.mainloop()
